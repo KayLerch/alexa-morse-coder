@@ -2,11 +2,13 @@ package me.lerch.alexa.morse.skill.speechlets;
 
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import me.lerch.alexa.morse.skill.intents.*;
+import me.lerch.alexa.morse.skill.model.MorseCode;
 import me.lerch.alexa.morse.skill.utils.MorseUtils;
 import me.lerch.alexa.morse.skill.utils.SsmlUtils;
 import me.lerch.alexa.morse.skill.wrapper.AbstractSpeechlet;
 import me.lerch.alexa.morse.skill.wrapper.IIntentHandler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,6 @@ public class MorseSpeechlet extends AbstractSpeechlet {
     public MorseSpeechlet() {
         intentHandlers = new ArrayList<>();
         intentHandlers.add(new EncodeIntentHandler());
-        intentHandlers.add(new SpellIntentHandler());
         intentHandlers.add(new ExerciseIntentHandler());
         intentHandlers.add(new CancelIntentHandler());
         intentHandlers.add(new HelpIntentHandler());
@@ -41,8 +42,14 @@ public class MorseSpeechlet extends AbstractSpeechlet {
 
     @Override
     public SsmlOutputSpeech getWelcomeSpeech() {
+        String hi = "hi";
+        try {
+            hi = SsmlUtils.getAudio(MorseUtils.encode("hi").getMp3Url());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml("<speak>" + MorseUtils.getSsml("hi") + " welcome to Morse coder. Let me encode, spell or teach you some Morse code.</speak>");
+        outputSpeech.setSsml("<speak>" + hi + " welcome to Morse coder. Let me encode, spell or teach you some Morse code.</speak>");
         return outputSpeech;
     }
 }

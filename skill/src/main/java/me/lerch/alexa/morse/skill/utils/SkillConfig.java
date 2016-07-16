@@ -27,7 +27,11 @@ public class SkillConfig {
     private static final Map<Integer, ArrayList<String>> exerciseWords = new HashMap<>();
 
     // some constants not worth having them in a properties-files
-    public static final String SessionAttributeExercisedWord = "exercisedWord";
+    public static final String SessionAttributeExercisedWordLiteral = "exercisedWordLiteral";
+    public static final String SessionAttributeExercisedWordPhonetic = "exercisedWordPhonetic";
+    public static final String SessionAttributeExercisedWordCode = "exercisedWordCode";
+    public static final String SessionAttributeExercisedWordAudio = "exercisedWordAudio";
+    public static final String SessionAttributeExercisedWordSpeed = "exercisedWordSpeed";
     public static final String SessionAttributeYesNoQuestion = "yesNoQuestion";
     public static final String SessionAttributeExercisesTotal = "exercisesTotal";
     public static final String SessionAttributeExercisesRetries = "exercisesRetries";
@@ -149,6 +153,18 @@ public class SkillConfig {
     /**
      * Url of the S3-bucket where all audio-files of morse codes are stored in
      */
+    public static String getMorseCoderAPIuser() {
+        return properties.getProperty("MorseCoderAPIuser");
+    }
+
+    public static String getMorseCoderAPIpass() {
+        return properties.getProperty("MorseCoderAPIpass");
+    }
+
+    public static String getMorseCoderAPIencode() {
+        return properties.getProperty("MorseCoderAPIencode");
+    }
+
     public static String getS3BucketUrl() {
         return properties.getProperty("S3BucketUrl");
     }
@@ -171,6 +187,10 @@ public class SkillConfig {
 
     public static String getS3BucketFolderMp3Slower() {
         return properties.getProperty("S3BucketFolderMp3Slower");
+    }
+
+    public static String getReadOutLevelFast() {
+        return properties.getProperty("ReadOutLevelFast");
     }
 
     public static String getReadOutLevelNormal() {

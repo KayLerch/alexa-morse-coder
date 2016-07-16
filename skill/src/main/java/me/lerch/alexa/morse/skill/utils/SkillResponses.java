@@ -4,14 +4,12 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.*;
+import me.lerch.alexa.morse.skill.model.MorseCode;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by Kay on 22.05.2016.
- */
 public class SkillResponses {
 
     /**
@@ -21,12 +19,12 @@ public class SkillResponses {
      * @return corresponding speechlet response with information on the session to be closed
      */
     public static SpeechletResponse getGoodBye(Intent intent, Session session) {
-        Integer total = SkillLogic.getExercisesTotal(session);
-        Integer retries = SkillLogic.getExercisesRetries(session);
-        Integer correct = SkillLogic.getExercisesCorrect(session);
+        Integer total = SessionManager.getExercisesTotal(session);
+        Integer retries = SessionManager.getExercisesRetries(session);
+        Integer correct = SessionManager.getExercisesCorrect(session);
         SpeechletResponse response = null;
         if (total > 0) {
-            String strContent = "You made " + (total + retries) + " attempts to solve " + correct + " out of " + total + " morse codes. That's a final score of " + SkillLogic.getScore(session) + ".";
+            String strContent = "You made " + (total + retries) + " attempts to solve " + correct + " out of " + total + " morse codes. That's a final score of " + SessionManager.getScore(session) + ".";
             SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
             outputSpeech.setSsml("<speak>" + strContent + "</speak>");
             SimpleCard card = new SimpleCard();
@@ -117,16 +115,20 @@ public class SkillResponses {
      * @param session current session with some exercise data
      * @return corresponding speechlet response to an exercise request (including the playback of morse code of a randomly picked word)
      */
-    public static SpeechletResponse getExerciseAskResponse(Intent intent, Session session) {
-        String word = getRandomExerciseWord(SkillLogic.getExerciseLevel(session));
+    public static SpeechletResponse getExerciseAskResponse(Intent intent, Session session) throws IOException {
+        String word = getRandomExerciseWord(SessionManager.getExerciseLevel(session));
+        // get current playback-speed
+        Integer speed = SessionManager.getPlaybackSpeed(session);
+        // get encoded text representation
+        MorseCode code = MorseUtils.encode(word, speed);
         // keep this word in mind in order to evaluate it against the users answer
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWord, word);
+        SessionManager.setExercisedCode(session, code);
         // increment exercise counter
-        SkillLogic.incrementExercisesTotal(session);
+        SessionManager.incrementExercisesTotal(session);
 
-        OutputSpeech outputSpeech = SkillResponses.getExerciseAskSpeech(word);
-        Reprompt reprompt = SkillResponses.getExerciseAskReprompt(word);
-        Card card = SkillResponses.getExerciseCard(word, true);
+        OutputSpeech outputSpeech = SkillResponses.getExerciseAskSpeech(code);
+        Reprompt reprompt = SkillResponses.getExerciseAskReprompt(code);
+        Card card = SkillResponses.getExerciseCard(code, true);
 
         SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
         response.setShouldEndSession(false);
@@ -141,13 +143,12 @@ public class SkillResponses {
      * @return the corresponding speechlet response to a repeat request
      */
     public static SpeechletResponse getExerciseRepeatResponse(Intent intent, Session session) {
-        // read out the word (if any) which was given as a morse code to the user
-        String sessionWord = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWord) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWord).toString() : null;
+        MorseCode code = SessionManager.getExercisedCode(session);
         // increment retry counter
-        SkillLogic.incrementExercisesRetries(session);
+        SessionManager.incrementExercisesRetries(session);
         // decide for playing back the morse code a bit slower
-        OutputSpeech outputSpeech = SkillResponses.getExerciseAskSpeech(sessionWord, SkillConfig.getReadOutLevelSlower());
-        Reprompt reprompt = SkillResponses.getExerciseAskReprompt(sessionWord);
+        OutputSpeech outputSpeech = SkillResponses.getExerciseAskSpeech(code);
+        Reprompt reprompt = SkillResponses.getExerciseAskReprompt(code);
 
         SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
         response.setShouldEndSession(false);
@@ -164,30 +165,27 @@ public class SkillResponses {
      * @return the corresponding speechlet response to the surrender
      */
     public static SpeechletResponse getExerciseFinalFalseResponse(Intent intent, Session session) {
-        // read out the word (if any) which was given as a morse code to the user
-        String sessionWord = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWord) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWord).toString() : null;
+        MorseCode code = SessionManager.getExercisedCode(session);
 
-        SkillLogic.decreaseScore(session, 1);
-
-        String strSpelled = sessionWord.length() <= SkillConfig.ExerciseWordMaxLengthForSpelling ?
-                SsmlUtils.getBreakMs(300) + " spelled " + MorseUtils.getSsmlSpellout(sessionWord) : "";
+        SessionManager.decreaseScore(session, 1);
 
         String strContent = ResponsePhrases.getCorrectAnswerIs() + SsmlUtils.getBreakMs(300) +
-                sessionWord + strSpelled +
-                "<p>" + ResponsePhrases.getScoreIs() + " " + SkillLogic.getScore(session) + "</p> <p>" +
+                code.getLiteral() +
+                "<p>" + ResponsePhrases.getScoreIs() + " " + SessionManager.getScore(session) + "</p> <p>" +
                 ResponsePhrases.getWantAnotherCode() + "</p>";
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
 
-        Card card = getExerciseCard(sessionWord, false);
+        Card card = getExerciseCard(code, false);
 
         SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
         response.setShouldEndSession(false);
 
         // decrease the length of exercise words
-        SkillLogic.decreaseExercisesLevel(session);
+        SessionManager.decreaseExercisesLevel(session);
 
-        session.removeAttribute(SkillConfig.SessionAttributeExercisedWord);
+        SessionManager.resetExercisedCode(session);
+
         session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
         return response;
     }
@@ -217,26 +215,27 @@ public class SkillResponses {
      * @return the corresponding speechlet response to the given answer
      */
     public static SpeechletResponse getExerciseCorrectResponse(Intent intent, Session session) {
-        String sessionWord = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWord) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWord).toString() : null;
-        SkillLogic.incrementExercisesCorrect(session);
-        SkillLogic.getExercisesRetries(session);
+        MorseCode code = SessionManager.getExercisedCode(session);
+
+        SessionManager.incrementExercisesCorrect(session);
+        SessionManager.getExercisesRetries(session);
         // add score depending on length of the word
-        SkillLogic.increaseScore(session, sessionWord.length());
+        SessionManager.increaseScore(session, code.getLiteral().length());
         // increase length of exercise word
-        SkillLogic.increaseExercisesLevel(session);
+        SessionManager.increaseExercisesLevel(session);
 
         String strContent = ResponsePhrases.getSuperlative() + "! " +
                 ResponsePhrases.getAnswerCorrect() + "." +
-                "<p>" + ResponsePhrases.getScoreIs() + SkillLogic.getScore(session) + "</p>" +
+                "<p>" + ResponsePhrases.getScoreIs() + SessionManager.getScore(session) + "</p>" +
                 "<p>" + ResponsePhrases.getWantAnotherCode() + "</p>";
 
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
-        Card card = getExerciseCard(sessionWord, false);
+        Card card = getExerciseCard(code, false);
         SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
         response.setShouldEndSession(false);
 
-        session.removeAttribute(SkillConfig.SessionAttributeExercisedWord);
+        SessionManager.resetExercisedCode(session);
         session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
         return response;
     }
@@ -248,11 +247,11 @@ public class SkillResponses {
      * @return the corresponding speechlet response to the cancellation request
      */
     public static SpeechletResponse getExerciseCancelResponse(Intent intent, Session session) {
-        // read out the word (if any) which was given as a morse code to the user
-        String sessionWord = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWord) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWord).toString() : null;
+        MorseCode code = SessionManager.getExercisedCode(session);
+
         String strContent = "";
-        if (sessionWord != null && !sessionWord.isEmpty()) {
-            strContent += ResponsePhrases.getCorrectAnswerIs() + "<p>" + sessionWord + "</p>";
+        if (code.isValid()) {
+            strContent += ResponsePhrases.getCorrectAnswerIs() + "<p>" + code.getLiteral() + "</p>";
         }
         strContent += " <p>" + ResponsePhrases.getWantAnotherCode() + "</p>";
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
@@ -260,7 +259,7 @@ public class SkillResponses {
         SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
         response.setShouldEndSession(false);
 
-        session.removeAttribute(SkillConfig.SessionAttributeExercisedWord);
+        SessionManager.resetExercisedCode(session);
         session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
         return response;
     }
@@ -271,15 +270,17 @@ public class SkillResponses {
      * @param session the current session
      * @return the corresponding speechlet response to the encoding request
      */
-    public static SpeechletResponse getEncodeResponse(Intent intent, Session session) {
+    public static SpeechletResponse getEncodeResponse(Intent intent, Session session) throws IOException {
         String SlotName = SkillConfig.getAlexaSlotName();
         String text = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
 
-        String strContent = "Morse code of " + text + " is as follows: " + MorseUtils.getSsml(text) + "<p>Do you want me to encode another name?</p>";
+        MorseCode code = MorseUtils.encode(text, 200);
+
+        String strContent = "Morse code of " + text + " is as follows: " + SsmlUtils.getAudio(code.getMp3Url()) + "<p>Do you want me to encode another name?</p>";
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
 
-        Card card = getExerciseCard(text.trim(), false);
+        Card card = getExerciseCard(code, false);
         SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
         session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherEncode);
         response.setShouldEndSession(false);
@@ -287,46 +288,13 @@ public class SkillResponses {
     }
 
     /**
-     * This one handles a spell out request by the user.
-     * @param intent the intent given (should include the word to spell out by Alexa)
-     * @param session the current session
-     * @return the corresponding speechlet response to the spell out request
-     */
-    public static SpeechletResponse getSpellResponse(Intent intent, Session session) {
-        String SlotName = SkillConfig.getAlexaSlotName();
-        String text = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
-
-        String strContent = MorseUtils.getSsmlSpellout(text) + "<p>" + text + "</p><p>Do you want me to spell another name?</p>";
-        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml("<speak>" + strContent + "</speak>");
-
-        Card card = getExerciseCard(text.trim(), false);
-
-        SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
-        response.setShouldEndSession(false);
-        session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherSpell);
-        return response;
-    }
-
-    /**
      * gives you the response on a new exercise (including the audio output of the morse code)
-     * @param text the word which is part of the current exercise (the one to guess)
+     * @param code Morse code
      * @return the output speech
      */
-    private static OutputSpeech getExerciseAskSpeech(String text) {
-        // by default set playback speed the normal
-        return getExerciseAskSpeech(text, SkillConfig.getReadOutLevelNormal());
-    }
-
-    /**
-     * gives you the response on a new exercise (including the audio output of the morse code)
-     * @param text the word which is part of the current exercise (the one to guess)
-     * @param dotLength indicates the playback speed
-     * @return the output speech
-     */
-    private static OutputSpeech getExerciseAskSpeech(String text, String dotLength) {
+    private static OutputSpeech getExerciseAskSpeech(MorseCode code) {
         String strContent = "<p>" + ResponsePhrases.getListenUp() + "</p>" +
-                MorseUtils.getSsml(text, dotLength) + "<p>" + ResponsePhrases.getWhatsTheAnswer() + "</p>";
+                SsmlUtils.getAudio(code.getMp3Url()) + "<p>" + ResponsePhrases.getWhatsTheAnswer() + "</p>";
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
         return outputSpeech;
@@ -334,11 +302,11 @@ public class SkillResponses {
 
     /**
      * Gets the reprompt for a new exercise
-     * @param text the word which is part of the exercise (the one to guess)
+     * @param code Morse code
      * @return reprompt to be assigned to the speechlet response
      */
-    private static Reprompt getExerciseAskReprompt(String text) {
-        String strContent2 = "<p>" + ResponsePhrases.getHelpYou() + "</p>" + MorseUtils.getSsml(text, SkillConfig.getReadOutLevelSlower()) + "<p>" + ResponsePhrases.getWhatsTheAnswer() + "</p>";
+    private static Reprompt getExerciseAskReprompt(MorseCode code) {
+        String strContent2 = "<p>" + ResponsePhrases.getHelpYou() + "</p>" + SsmlUtils.getAudio(code.getMp3Url()) + "<p>" + ResponsePhrases.getWhatsTheAnswer() + "</p>";
         SsmlOutputSpeech repromptSpeech = new SsmlOutputSpeech();
         repromptSpeech.setSsml("<speak>" + strContent2 + "</speak>");
         Reprompt reprompt = new Reprompt();
@@ -348,14 +316,14 @@ public class SkillResponses {
 
     /**
      * This one returns a card with an image illustrating the given text as morse code
-     * @param text a string which should be displayed on the image as morse code
+     * @param code morse code object with all representations of the encoded text
      * @param codeOnly set true if you don't want to show the word but only its morse code
      * @return a card to be added to a speechlet response
      */
-    private static Card getExerciseCard(String text, Boolean codeOnly) {
+    private static Card getExerciseCard(MorseCode code, Boolean codeOnly) {
         String imgUri = null;
         try {
-            imgUri = ImageUtils.getImage(text.trim(), codeOnly);
+            imgUri = ImageUtils.getImage(code.getLiteral().trim(), codeOnly);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -366,8 +334,8 @@ public class SkillResponses {
             img.setLargeImageUrl(imgUri);
             card.setImage(img);
         }
-        card.setTitle("Morse Code: " + (codeOnly ? "" : text));
-        card.setText(MorseUtils.diDahDit(text));
+        card.setTitle("Morse Code: " + (codeOnly ? "" : code.getLiteral()));
+        card.setText(code.getPhonetic());
         return card;
     }
 
@@ -376,7 +344,7 @@ public class SkillResponses {
      * @param wordLength the number of letters the random word should contain
      * @return random word
      */
-    public static String getRandomExerciseWord(Integer wordLength) {
+    private static String getRandomExerciseWord(Integer wordLength) {
         List<String> exerciseWords = SkillConfig.getExerciseWords(wordLength);
         // pick random word from a collection
         int idx = new Random().nextInt(exerciseWords.size());

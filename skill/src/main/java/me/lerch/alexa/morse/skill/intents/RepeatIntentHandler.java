@@ -5,7 +5,7 @@ import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
-import me.lerch.alexa.morse.skill.utils.SkillLogic;
+import me.lerch.alexa.morse.skill.utils.SessionManager;
 import me.lerch.alexa.morse.skill.utils.SkillResponses;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
@@ -21,7 +21,7 @@ public class RepeatIntentHandler extends AbstractIntentHandler {
     @Override
     public SpeechletResponse handleIntentRequest(Intent intent, Session session) {
         // if there is an exercise ongoing ...
-        return SkillLogic.hasExercisePending(intent, session) ?
+        return SessionManager.hasExercisePending(session) ?
                 // repeat the morse code of the word given for the current exercise
                 SkillResponses.getExerciseRepeatResponse(intent, session) :
                 // otherwise there's nothing to repeat

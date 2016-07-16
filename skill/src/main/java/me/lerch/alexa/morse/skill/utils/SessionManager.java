@@ -2,11 +2,37 @@ package me.lerch.alexa.morse.skill.utils;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
+import me.lerch.alexa.morse.skill.model.MorseCode;
 
-/**
- * Created by Kay on 23.05.2016.
- */
-public class SkillLogic {
+public class SessionManager {
+    public static void setExercisedCode(Session session, MorseCode code) {
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordLiteral, code.getLiteral());
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordCode, code.getCode());
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic, code.getPhonetic());
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, code.getDotLength());
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordAudio, code.getMp3Url());
+    }
+
+    public static MorseCode getExercisedCode(Session session) {
+        String literal = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordLiteral) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordLiteral).toString() : null;
+        String audio = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordAudio) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordAudio).toString() : null;
+        String code = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordCode) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordCode).toString() : null;
+        String phonetic = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordPhonetic) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic).toString() : null;
+        Integer dot = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordSpeed) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWordSpeed).toString()) : null;
+        return new MorseCode(code, audio, literal, phonetic, dot);
+    }
+
+    public static void resetExercisedCode(Session session) {
+        session.removeAttribute(SkillConfig.SessionAttributeExercisedWordLiteral);
+        session.removeAttribute(SkillConfig.SessionAttributeExercisedWordAudio);
+        session.removeAttribute(SkillConfig.SessionAttributeExercisedWordCode);
+        session.removeAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic);
+    }
+
+    public static Integer getPlaybackSpeed(Session session) {
+        return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordSpeed) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWordSpeed).toString()) : Integer.valueOf(SkillConfig.getReadOutLevelNormal());
+    }
+
     /**
      * @param session session data
      * @return current score based on given answers, processed exercises and reattempts
@@ -157,14 +183,11 @@ public class SkillLogic {
 
     /**
      * Returns if there is an exercise going on at the moment based on the information provided
-     * @param intent intent given by the user
      * @param session session data (should at least give a hint to an ongoing exercise)
      * @return true if there is an exercise going on at the moment
      */
-    public static Boolean hasExercisePending(Intent intent, Session session) {
-        // read out the word (if any) which was given as a morse code to the user
-        String sessionWord = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWord) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWord).toString() : null;
-        return (sessionWord != null && !sessionWord.isEmpty());
+    public static Boolean hasExercisePending(Session session) {
+        return getExercisedCode(session).isValid();
     }
 
     /**
@@ -178,7 +201,7 @@ public class SkillLogic {
         String SlotNameExerciseWord = SkillConfig.getAlexaSlotExerciseWord();
 
         // read out the word (if any) which was given as a morse code to the user
-        String sessionWord = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWord) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWord).toString() : null;
+        String sessionWord = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordLiteral) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordLiteral).toString() : null;
 
         // read out the word (if any) which was given by the user as an answer
         String intentWord =

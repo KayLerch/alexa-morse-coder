@@ -7,6 +7,8 @@ import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.utils.SkillResponses;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
+import java.io.IOException;
+
 /**
  * This implementation supports the builtin next intent for skipping and going next
  */
@@ -19,6 +21,10 @@ public class NextIntentHandler extends AbstractIntentHandler {
     @Override
     public SpeechletResponse handleIntentRequest(Intent intent, Session session) {
         // in any case, "next" means to give the user a new exercise
-        return SkillResponses.getExerciseAskResponse(intent, session);
+        try {
+            return SkillResponses.getExerciseAskResponse(intent, session);
+        } catch (IOException e) {
+            return getErrorResponse();
+        }
     }
 }
