@@ -13,15 +13,17 @@ public class MorseCode {
     private String phonetic;
     private String literal;
     private String mp3Url;
+    private Integer dotLength;
 
     public MorseCode() {
     }
 
-    public MorseCode(final String code, final String mp3Url, final String literal, final String phonetic) {
+    public MorseCode(final String code, final String mp3Url, final String literal, final String phonetic, final Integer dotLength) {
         this.code = code;
         this.mp3Url = mp3Url;
         this.literal = literal;
         this.phonetic = phonetic;
+        this.dotLength = dotLength;
     }
 
     public static MorseCode fromJsonString(String json) throws IOException {
@@ -36,6 +38,14 @@ public class MorseCode {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Integer getDotLength() {
+        return dotLength;
+    }
+
+    public void setDotLength(Integer dotLength) {
+        this.dotLength = dotLength;
     }
 
     public String getLiteral() {
@@ -63,6 +73,6 @@ public class MorseCode {
     }
 
     public static MorseCode getEmpty() {
-        return new MorseCode(null, null, null, null);
+        return new MorseCode(null, null, null, null, null);
     }
 }

@@ -40,7 +40,7 @@ public class EncodeService {
             // then encode the line as code representation
             final String code = MorseUtils.encode(line);
             // return all strings and url to mp3
-            return new MorseCode(code, url, line, phonetic);
+            return new MorseCode(code, url, line, phonetic, dot);
         } catch (Exception ex) {
             logger.severe(ex.getMessage());
             return MorseCode.getEmpty();
