@@ -3,7 +3,7 @@ package me.lerch.alexa.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import me.lerch.alexa.model.MorseCodeAudio;
+import me.lerch.alexa.model.MorseCode;
 import me.lerch.alexa.utils.MorseUtils;
 import me.lerch.alexa.utils.Mp3Utils;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class EncodeService {
     @GET
     @Path("{dot}/{line}")
     @Produces(MediaType.APPLICATION_JSON)
-    public MorseCodeAudio encode(@PathParam("dot") Integer dot, @PathParam("line") String line) {
+    public MorseCode encode(@PathParam("dot") Integer dot, @PathParam("line") String line) {
         try {
             // first encode the line to acoustic file and upload to S3
             final String url = uploadMorseToS3(line, dot, bucket);
@@ -40,10 +40,10 @@ public class EncodeService {
             // then encode the line as code representation
             final String code = MorseUtils.encode(line);
             // return all strings and url to mp3
-            return new MorseCodeAudio(code, url, line, phonetic);
+            return new MorseCode(code, url, line, phonetic);
         } catch (Exception ex) {
             logger.severe(ex.getMessage());
-            return MorseCodeAudio.getEmpty();
+            return MorseCode.getEmpty();
         }
     }
 
