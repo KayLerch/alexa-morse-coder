@@ -6,7 +6,7 @@ import javax.sound.sampled.*;
 import java.io.*;
 import java.net.URLDecoder;
 
-public class WaveUtils {
+public class MorseUtils {
     private static final int FREQ = 500;
     private static final ImmutableMap<String, String> MORSE_ALPAHBET = ImmutableMap.<String, String>builder()
             .put("a", ".-").put("b", "-...").put("c", "-.-.").put("d", "-..")
@@ -23,9 +23,45 @@ public class WaveUtils {
             .put("ñ", "--.--").put(".", ".-.-.-").put(",", "..--..").put(":", "---...")
             .put(";", "-.-.-.").put("?", "..--..").put("-", "-....-").put("_", "..--.-")
             .put("(", "-.--.").put(")", "-.--.-").put("'", ".----.").put("=", "-...-")
-            .put("+", ".-.-.").put("/", "-..-.").put("@", ".--.-.")
+            .put("+", ".-.-.").put("/", "-..-.").put("@", ".--.-.").put(" ", " ")
             .build();
     private static AudioFormat AUDIO_MP3_FORMAT = new AudioFormat(16000F, 8, 1, true, false);
+
+    public static String diDahDit(String line) {
+        final StringBuilder sb = new StringBuilder();
+        final String[] words = line.split(" ");
+
+        for (int k = 0; k < words.length; k++) {
+            final char[] wordChars = words[k].toLowerCase().toCharArray();
+            for (int j = 0; j < wordChars.length; j++) {
+                final String s = String.valueOf(wordChars[j]);
+                final char[] morseChars = encode(s).toCharArray();
+                for (int i = 0; i < morseChars.length; i++) {
+                    final String s2 = String.valueOf(morseChars[i]);
+                    sb.append("-".equals(s2) ? "dah" : i + 1 == morseChars.length ? "dit" : "di");
+                    // seperate tones by dash except for last tone of a letter
+                    sb.append(i + 1 < morseChars.length ? "-" : "");
+                }
+                // seperate letters by space except for last letter
+                sb.append(j + 1 < wordChars.length ? " " : "");
+            }
+            // seperate words by slash except for last word
+            sb.append(k + 1 < words.length ? " / " : "");
+        }
+        return sb.toString();
+    }
+
+    public static String encode(String text) {
+        final StringBuilder sb = new StringBuilder();
+        for (final char c : text.toLowerCase().toCharArray()) {
+            final String s = String.valueOf(c);
+            if (MORSE_ALPAHBET.containsKey(s)) {
+                sb.append(MORSE_ALPAHBET.get(s));
+            }
+            sb.append(" ");
+        }
+        return sb.toString().trim();
+    }
 
     public static File encodeMorseToWave(String line, final Integer DOT, final String filename) throws LineUnavailableException, InterruptedException, IOException, UnsupportedAudioFileException {
         line = URLDecoder.decode(line, "UTF-8");

@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import me.lerch.alexa.model.MorseCodeAudio;
-import me.lerch.alexa.utils.WaveUtils;
+import me.lerch.alexa.utils.MorseUtils;
 import me.lerch.alexa.utils.Mp3Utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,18 +23,24 @@ import java.util.logging.Logger;
 @Component
 @Path("/encode")
 public class EncodeService {
-    private static Logger logger = Logger.getLogger(WaveUtils.class.getName());
+    private static Logger logger = Logger.getLogger(MorseUtils.class.getName());
 
     @Value("${my.bucket}")
     String bucket;
 
     @GET
-    @Path("{dot}/{code}")
+    @Path("{dot}/{line}")
     @Produces(MediaType.APPLICATION_JSON)
-    public MorseCodeAudio encode(@PathParam("dot") Integer dot, @PathParam("code") String code) {
+    public MorseCodeAudio encode(@PathParam("dot") Integer dot, @PathParam("line") String line) {
         try {
-            final String url = uploadMorseToS3(code, dot, bucket);
-            return new MorseCodeAudio(code, url);
+            // first encode the line to acoustic file and upload to S3
+            final String url = uploadMorseToS3(line, dot, bucket);
+            // next encode the line as phonetic literal
+            final String phonetic = MorseUtils.diDahDit(line);
+            // then encode the line as code representation
+            final String code = MorseUtils.encode(line);
+            // return all strings and url to mp3
+            return new MorseCodeAudio(code, url, line, phonetic);
         } catch (Exception ex) {
             logger.severe(ex.getMessage());
             return MorseCodeAudio.getEmpty();
@@ -53,7 +59,7 @@ public class EncodeService {
         if (!s3Client.doesObjectExist(bucket, mp3Filename)) {
             logger.info(String.format("%s not found in S3 bucket. Start encoding code now.", mp3Filename));
             // convert the code to phonetic version as wave
-            final File wavFile = WaveUtils.encodeMorseToWave(line, DOT, filenameWav);
+            final File wavFile = MorseUtils.encodeMorseToWave(line, DOT, filenameWav);
             // convert the wave file to mp3 leveraging ffmpeg
             final File mp3File = Mp3Utils.convertWaveToMp3(wavFile, mp3Filename);
             // upload mp3 to S3 bucket
