@@ -1,8 +1,5 @@
 package me.lerch.alexa.morse.skill.utils;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -127,13 +124,6 @@ public class SkillConfig {
      */
     public static String getAlexaIntentEncode() {
         return properties.getProperty("AlexaIntentEncode");
-    }
-
-    /**
-     * Name of the intent handling the spelling of words
-     */
-    public static String getAlexaIntentSpell() {
-        return properties.getProperty("AlexaIntentSpell");
     }
 
     /**
