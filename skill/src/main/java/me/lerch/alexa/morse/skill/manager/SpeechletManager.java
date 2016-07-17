@@ -4,12 +4,14 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import me.lerch.alexa.morse.skill.model.MorseCode;
 import me.lerch.alexa.morse.skill.utils.ResponsePhrases;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.utils.SsmlUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Random;
 
@@ -135,6 +137,9 @@ public class SpeechletManager {
         final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
         response.setShouldEndSession(false);
         response.setReprompt(reprompt);
+
+        // publish code to edge device
+        LightboxManager.publishState(code);
         return response;
     }
 
@@ -144,7 +149,7 @@ public class SpeechletManager {
      * @param session current session with some exercise data
      * @return the corresponding speechlet response to a repeat request
      */
-    public static SpeechletResponse getExerciseRepeatResponse(final Intent intent, final Session session) {
+    public static SpeechletResponse getExerciseRepeatResponse(final Intent intent, final Session session) throws UnsupportedEncodingException, JsonProcessingException {
         final MorseCode code = SessionManager.getExercisedCode(session);
         // increment retry counter
         SessionManager.incrementExercisesRetries(session);
@@ -155,6 +160,9 @@ public class SpeechletManager {
         final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
         response.setShouldEndSession(false);
         response.setReprompt(reprompt);
+
+        // publish code to edge device
+        LightboxManager.publishState(code);
         return response;
     }
 
@@ -286,6 +294,8 @@ public class SpeechletManager {
         final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
         session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherEncode);
         response.setShouldEndSession(false);
+        // publish code to edge device
+        LightboxManager.publishState(code);
         return response;
     }
 

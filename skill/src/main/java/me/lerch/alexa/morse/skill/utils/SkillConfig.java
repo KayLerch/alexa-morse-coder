@@ -47,7 +47,6 @@ public class SkillConfig {
     public static final String IntentNameBuiltinCancel = "AMAZON.CancelIntent";
     public static final String IntentNameBuiltinStop = "AMAZON.StopIntent";
     public static final String IntentNameBuiltinYes = "AMAZON.YesIntent";
-    public static final Integer ExerciseWordMaxLengthForSpelling = 5;
     public static final Integer ExerciseWordMaxLengthForOutput = 15;
     public static final Integer ExerciseWordMinLength = 3;
     public static final Integer ExerciseWordMaxLength = 8;
@@ -110,6 +109,10 @@ public class SkillConfig {
      */
     public static ArrayList<String> getExerciseWords(final Integer wordLength) {
         return exerciseWords.containsKey(wordLength) ? exerciseWords.get(wordLength) : new ArrayList<>();
+    }
+
+    public static String getIOTthingName() {
+        return properties.getProperty("IOTthingName");
     }
 
     /**
@@ -195,23 +198,5 @@ public class SkillConfig {
 
     public static String getReadOutLevelSlower() {
         return properties.getProperty("ReadOutLevelSlower");
-    }
-
-    public static AWSCredentials getAWSCredentials() {
-        final String awsKey = getAWSAccessKey();
-        final String awsSecret = getAWSAccessSecret();
-
-        if (awsKey != null && !awsKey.isEmpty() && awsSecret != null && !awsSecret.isEmpty()) {
-            return new BasicAWSCredentials(awsKey, awsSecret);
-        }
-        return null;
-    }
-
-    private static String getAWSAccessKey() {
-        return properties.getProperty("AWSAccessKey");
-    }
-
-    private static String getAWSAccessSecret() {
-        return properties.getProperty("AWSAccessSecret");
     }
 }

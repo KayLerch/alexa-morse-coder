@@ -94,8 +94,7 @@ class CardImageManager {
     }
 
     private static Boolean isImageAlreadyExisting(final String word, final Boolean codeOnly) {
-        final AWSCredentials awsCredentials = SkillConfig.getAWSCredentials();
-        final AmazonS3Client s3Client = awsCredentials != null ? new AmazonS3Client(awsCredentials) : new AmazonS3Client();
+        final AmazonS3Client s3Client = new AmazonS3Client();
         return s3Client.doesObjectExist(SkillConfig.getS3BucketName(), getFileKey(word, codeOnly));
     }
 
@@ -117,8 +116,7 @@ class CardImageManager {
             final byte[] bImageData = bos.toByteArray();
             bis = new ByteArrayInputStream(bImageData);
             // upload to s3 bucket
-            final AWSCredentials awsCredentials = SkillConfig.getAWSCredentials();
-            final AmazonS3Client s3Client = awsCredentials != null ? new AmazonS3Client(awsCredentials) : new AmazonS3Client();
+            final AmazonS3Client s3Client = new AmazonS3Client();
             final PutObjectRequest s3Put = new PutObjectRequest(bucket, fileKey, bis, null).withCannedAcl(CannedAccessControlList.PublicRead);
             s3Client.putObject(s3Put);
             return getS3Url(word, codeOnly);
