@@ -159,7 +159,7 @@ public class SpeechletManager {
         final MorseCode code = SessionManager.getExercisedCode(session);
         // increment retry counter
         SessionManager.incrementExercisesRetries(session);
-        // decide for playing back the morse code a bit slower
+        // decide for playing back the morse code
         final OutputSpeech outputSpeech = SpeechletManager.getExerciseAskSpeech(code);
         final Reprompt reprompt = SpeechletManager.getExerciseAskReprompt(code);
 
@@ -278,19 +278,37 @@ public class SpeechletManager {
         return response;
     }
 
-    public static SpeechletResponse getSetupUpRespone(final Session session) {
-        SessionManager.increasePlaybackSpeed(session);
-        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml("<speak>Speed of playback goes up.</speak>");
+    public static SpeechletResponse getSetupUpRespone(final Session session) throws IOException {
+        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        String speech = SessionManager.increasePlaybackSpeed(session) ?
+                "Speed of playback goes up." : "I don't want to go faster. That would sound too weird.";
+
+        if (SessionManager.hasExercisePending(session)) {
+            final MorseCode code = SessionManager.refreshExercisedCode(session);
+            outputSpeech = getExerciseAskSpeech(code, speech + " Here is your last code.");
+        }
+        else {
+            outputSpeech.setSsml(speech + " Start exercise now?");
+            session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
+        }
         final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
         response.setShouldEndSession(false);
         return response;
     }
 
-    public static SpeechletResponse getSetupDownRespone(final Session session) {
-        SessionManager.decreasePlaybackSpeed(session);
-        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml("<speak>Speed of playback goes down.</speak>");
+    public static SpeechletResponse getSetupDownRespone(final Session session) throws IOException {
+        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        String speech = SessionManager.decreasePlaybackSpeed(session) ?
+                "Speed of playback goes down." : "I don't want to go slower.";
+
+        if (SessionManager.hasExercisePending(session)) {
+            final MorseCode code = SessionManager.refreshExercisedCode(session);
+            outputSpeech = getExerciseAskSpeech(code, speech + " Here is your last code.");
+        }
+        else {
+            outputSpeech.setSsml(speech + " Start exercise now?");
+            session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
+        }
         final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
         response.setShouldEndSession(false);
         return response;
@@ -332,7 +350,7 @@ public class SpeechletManager {
         final String SlotName = SkillConfig.getAlexaSlotName();
         final String text = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
 
-        final MorseCode code = MorseApiManager.encode(text, 200);
+        final MorseCode code = MorseApiManager.encode(text, SessionManager.getPlaybackSpeed(session));
 
         final String strContent = "Morse code of " + text + " is as follows: " + SsmlUtils.getAudio(code.getMp3Url()) + "<p>Do you want me to encode another name?</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
@@ -353,12 +371,22 @@ public class SpeechletManager {
      * @param code Morse code
      * @return the output speech
      */
-    private static OutputSpeech getExerciseAskSpeech(final MorseCode code) {
-        final String strContent = "<p>" + ResponsePhrases.getListenUp() + "</p>" +
+    private static SsmlOutputSpeech getExerciseAskSpeech(final MorseCode code, final String preface) {
+        final String strContent = "<p>" + (preface != null ? preface : ResponsePhrases.getListenUp()) + "</p>" +
                 SsmlUtils.getAudio(code.getMp3Url()) + "<p>" + ResponsePhrases.getWhatsTheAnswer() + "</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
         return outputSpeech;
+    }
+
+    /**
+     * gives you the response on a new exercise (including the audio output of the morse code)
+     *
+     * @param code Morse code
+     * @return the output speech
+     */
+    private static SsmlOutputSpeech getExerciseAskSpeech(final MorseCode code) {
+        return getExerciseAskSpeech(code, null);
     }
 
     /**

@@ -5,7 +5,17 @@ import com.amazon.speech.speechlet.Session;
 import me.lerch.alexa.morse.skill.model.MorseCode;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 
+import java.io.IOException;
+
 public class SessionManager {
+    static MorseCode refreshExercisedCode(final Session session) throws IOException {
+        final MorseCode currentCode = getExercisedCode(session);
+        final MorseCode newCode = MorseApiManager.encode(currentCode.getLiteral(), currentCode.getDotLength());
+        setExercisedCode(session, newCode);
+        return newCode;
+    }
+
+
     static void setExercisedCode(final Session session, final MorseCode code) {
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordLiteral, code.getLiteral());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordCode, code.getCode());
@@ -34,18 +44,22 @@ public class SessionManager {
         return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordSpeed) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWordSpeed).toString()) : SkillConfig.getReadOutLevelNormal();
     }
 
-    static Integer increasePlaybackSpeed(final Session session) {
+    static Boolean increasePlaybackSpeed(final Session session) {
         final Integer min = SkillConfig.getReadOutLevelMin();
-        final Integer val = getPlaybackSpeed(session) - SkillConfig.getReadOutLevelStep();
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, val >= min ? val : min);
-        return (val >= min ? val : min);
+        final Integer speed = getPlaybackSpeed(session);
+        Integer newSpeed = speed - SkillConfig.getReadOutLevelStep();
+        newSpeed = newSpeed >= min ? newSpeed : min;
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, newSpeed);
+        return newSpeed != speed;
     }
 
-    static Integer decreasePlaybackSpeed(final Session session) {
+    static Boolean decreasePlaybackSpeed(final Session session) {
         final Integer max = SkillConfig.getReadOutLevelMax();
-        final Integer val = getPlaybackSpeed(session) + SkillConfig.getReadOutLevelStep();
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, val <= max ? val : max);
-        return (val <= max ? val : max);
+        final Integer speed = getPlaybackSpeed(session);
+        Integer newSpeed = speed + SkillConfig.getReadOutLevelStep();
+        newSpeed = newSpeed <= max ? newSpeed : max;
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, newSpeed);
+        return newSpeed != speed;
     }
 
     /**

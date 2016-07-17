@@ -27,11 +27,6 @@ public class SkillConfig {
     private static final String slotSetupCommandsFileEnable = "alexa-skill-slot-setupcommand-enable";
     private static final String slotSetupCommandsFileUp = "alexa-skill-slot-setupcommand-up";
     private static final String slotSetupCommandsFileDown = "alexa-skill-slot-setupcommand-down";
-    private static final Map<Integer, List<String>> exerciseWords = getExerciseWords(slotExerciseWordsFilePattern);
-    public static final List<String> setupUpWords = getWordsFromResource(slotSetupCommandsFileUp);
-    public static final List<String> setupDownWords = getWordsFromResource(slotSetupCommandsFileDown);
-    public static final List<String> setupEnableWords = getWordsFromResource(slotSetupCommandsFileEnable);
-    public static final List<String> setupDisableWords = getWordsFromResource(slotSetupCommandsFileDisable);
 
     // some constants not worth having them in a properties-files
     public static final String SessionAttributeExercisedWordLiteral = "exercisedWordLiteral";
@@ -85,6 +80,12 @@ public class SkillConfig {
         }
 
     }
+
+    private static final Map<Integer, List<String>> exerciseWords = getExerciseWords(slotExerciseWordsFilePattern);
+    public static final List<String> setupUpWords = getWordsFromResource(slotSetupCommandsFileUp);
+    public static final List<String> setupDownWords = getWordsFromResource(slotSetupCommandsFileDown);
+    public static final List<String> setupEnableWords = getWordsFromResource(slotSetupCommandsFileEnable);
+    public static final List<String> setupDisableWords = getWordsFromResource(slotSetupCommandsFileDisable);
 
     private static Map<Integer, List<String>> getExerciseWords(final String slotExerciseWordsFilePattern) {
         final Map<Integer, List<String>> words = new HashMap<>();

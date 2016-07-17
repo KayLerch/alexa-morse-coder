@@ -23,12 +23,22 @@ public class SetupIntentHandler extends AbstractIntentHandler {
 
     @Override
     public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
-        switch (SessionManager.getSetupMode(intent, session)) {
-            case UP: return SpeechletManager.getSetupUpRespone(session);
-            case DOWN: return SpeechletManager.getSetupDownRespone(session);
-            case ON: return SpeechletManager.getSetupEnableResponse(session);
-            case OFF: return SpeechletManager.getSetupDisableRespone(session);
-            default: return getErrorResponse("Command is unknown.");
+        try {
+            switch (SessionManager.getSetupMode(intent, session)) {
+                case UP:
+                    return SpeechletManager.getSetupUpRespone(session);
+                case DOWN:
+                    return SpeechletManager.getSetupDownRespone(session);
+                case ON:
+                    return SpeechletManager.getSetupEnableResponse(session);
+                case OFF:
+                    return SpeechletManager.getSetupDisableRespone(session);
+                default:
+                    return getErrorResponse("Command is unknown.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return getErrorResponse();
         }
     }
 }

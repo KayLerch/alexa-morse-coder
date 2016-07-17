@@ -18,7 +18,7 @@ import java.net.URLEncoder;
 
 public class MorseApiManager {
     public static MorseCode encode(String line) throws IOException {
-        return encode(line, Integer.valueOf(SkillConfig.getReadOutLevelNormal()));
+        return encode(line, SkillConfig.getReadOutLevelNormal());
     }
 
     public static MorseCode encode(final String line, final Integer dot) throws IOException {
