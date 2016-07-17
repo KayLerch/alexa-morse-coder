@@ -10,18 +10,6 @@ Encode morse the name {Name}
 Encode translate {Name}
 Encode translate name {Name}
 Encode translate the name {Name}
-Spell say {Name}
-Spell say name {Name}
-Spell say the name {Name}
-Spell pronounce {Name}
-Spell pronounce name {Name}
-Spell pronounce the name {Name}
-Spell spell {Name}
-Spell spell name {Name}
-Spell spell the name {Name}
-Spell spell out {Name}
-Spell spell out name {Name}
-Spell spell out the name {Name}
 Exercise exercise me
 Exercise train me
 Exercise teach me

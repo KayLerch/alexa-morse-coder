@@ -10,15 +10,6 @@
       ]
     },
     {
-      "intent": "Spell",
-      "slots": [
-        {
-          "name": "Name",
-          "type": "AMAZON.US_FIRST_NAME"
-        }
-      ]
-    },
-    {
       "intent": "Exercise",
       "slots": [
         {
