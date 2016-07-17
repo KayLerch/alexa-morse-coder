@@ -1,11 +1,20 @@
 {
   "intents": [
     {
+      "intent": "Setup",
+      "slots": [
+        {
+          "name": "SetupCommand",
+          "type": "SetupCommands"
+        }
+      ]
+    },
+    {
       "intent": "Encode",
       "slots": [
         {
           "name": "Name",
-          "type": "AMAZON.US_FIRST_NAME"
+          "type": "AMAZON.LITERAL"
         }
       ]
     },

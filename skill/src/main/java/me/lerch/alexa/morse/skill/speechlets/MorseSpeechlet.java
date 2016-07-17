@@ -21,6 +21,7 @@ public class MorseSpeechlet extends AbstractSpeechlet {
         intentHandlers.add(new ExerciseIntentHandler());
         intentHandlers.add(new CancelIntentHandler());
         intentHandlers.add(new HelpIntentHandler());
+        intentHandlers.add(new SetupIntentHandler());
         intentHandlers.add(new NextIntentHandler());
         intentHandlers.add(new NoIntentHandler());
         intentHandlers.add(new RepeatIntentHandler());

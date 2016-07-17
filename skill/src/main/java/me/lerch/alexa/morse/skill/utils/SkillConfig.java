@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Encapsulates access to application-wide property values
@@ -18,11 +15,23 @@ public class SkillConfig {
         WantAnotherExercise, WantAnotherEncode, WantAnotherSpell, WantAnotherTry
     }
 
+    public enum SETUP_MODE {
+        UP, DOWN, ON, OFF, NAN
+    }
+
     private static Properties properties = new Properties();
     private static final String defaultPropertiesFile = "app.properties";
     private static final String customPropertiesFile = "my.app.properties";
     private static final String slotExerciseWordsFilePattern = "alexa-skill-slot-exercisewords-char";
-    private static final Map<Integer, ArrayList<String>> exerciseWords = new HashMap<>();
+    private static final String slotSetupCommandsFileDisable = "alexa-skill-slot-setupcommand-disable";
+    private static final String slotSetupCommandsFileEnable = "alexa-skill-slot-setupcommand-enable";
+    private static final String slotSetupCommandsFileUp = "alexa-skill-slot-setupcommand-up";
+    private static final String slotSetupCommandsFileDown = "alexa-skill-slot-setupcommand-down";
+    private static final Map<Integer, List<String>> exerciseWords = getExerciseWords(slotExerciseWordsFilePattern);
+    public static final List<String> setupUpWords = getWordsFromResource(slotSetupCommandsFileUp);
+    public static final List<String> setupDownWords = getWordsFromResource(slotSetupCommandsFileDown);
+    public static final List<String> setupEnableWords = getWordsFromResource(slotSetupCommandsFileEnable);
+    public static final List<String> setupDisableWords = getWordsFromResource(slotSetupCommandsFileDisable);
 
     // some constants not worth having them in a properties-files
     public static final String SessionAttributeExercisedWordLiteral = "exercisedWordLiteral";
@@ -36,6 +45,9 @@ public class SkillConfig {
     public static final String SessionAttributeExercisesCorrect = "exercisesCorrect";
     public static final String SessionAttributeExerciseLevel = "exerciseLevel";
     public static final String SessionAttributeExerciseScore = "exerciseScore";
+    public static final String ThingNamePrefix = "morse";
+    public static final String ThingAttributeName = "name";
+    public static final String ThingAttributeDisabled = "disabled";
     public static final String IntentNameBuiltinHelp = "AMAZON.HelpIntent";
     public static final String IntentNameBuiltinNext = "AMAZON.NextIntent";
     public static final String IntentNameBuiltinNo = "AMAZON.NoIntent";
@@ -71,16 +83,22 @@ public class SkillConfig {
                 }
             }
         }
-        // load exercise words of different lengths into static hashmap
-        for (int i = ExerciseWordMinLength; i <= ExerciseWordMaxLength; i++) {
-            loadExerciseWords(i);
-        }
+
     }
 
-    private static void loadExerciseWords(final Integer wordLength) {
-        final String filePath = slotExerciseWordsFilePattern + wordLength;
+    private static Map<Integer, List<String>> getExerciseWords(final String slotExerciseWordsFilePattern) {
+        final Map<Integer, List<String>> words = new HashMap<>();
+        // load exercise words of different lengths into static hashmap
+        for (int i = ExerciseWordMinLength; i <= ExerciseWordMaxLength; i++) {
+            final String filePath = slotExerciseWordsFilePattern + i;
+            words.put(i, getWordsFromResource(filePath));
+        }
+        return words;
+    }
+
+    private static List<String> getWordsFromResource(final String filePath) {
         final InputStream slotExerciseWordsStream = SkillConfig.class.getClassLoader().getResourceAsStream(filePath);
-        final ArrayList<String> words = new ArrayList<>();
+        final List<String> words = new ArrayList<>();
         try {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(slotExerciseWordsStream));
             String line;
@@ -97,19 +115,27 @@ public class SkillConfig {
                     e.printStackTrace();
                 }
             }
-            exerciseWords.put(wordLength, words);
         }
+        return words;
     }
 
     /**
      * List of words used to exercise the user in morse code
      */
-    public static ArrayList<String> getExerciseWords(final Integer wordLength) {
+    public static List<String> getExerciseWords(final Integer wordLength) {
         return exerciseWords.containsKey(wordLength) ? exerciseWords.get(wordLength) : new ArrayList<>();
     }
 
-    public static String getIOTthingName() {
-        return properties.getProperty("IOTthingName");
+    public static String getIOTendpoint() {
+        return properties.getProperty("IOTendpoint");
+    }
+
+    public static String getIOTtopicPrefix() {
+        return properties.getProperty("IOTtopicPrefix");
+    }
+
+    public static String getIOTtopicSuffix() {
+        return properties.getProperty("IOTtopicSuffix");
     }
 
     /**
@@ -134,10 +160,24 @@ public class SkillConfig {
     }
 
     /**
+     * Name of the intent handling the iot setup
+     */
+    public static String getAlexaIntentIotSetup() {
+        return properties.getProperty("AlexaIntentIotSetup");
+    }
+
+    /**
      * Name of the slot which holds a first name to either be spelled or encoded to morse code
      */
     public static String getAlexaSlotName() {
         return properties.getProperty("AlexaSlotName");
+    }
+
+    /**
+     * Name of the slot which holds the action in the iot setup command
+     */
+    public static String getAlexaSlotIoTSetupCommand() {
+        return properties.getProperty("AlexaSlotIoTSetupCommand");
     }
 
     /**
@@ -146,6 +186,7 @@ public class SkillConfig {
     public static String getAlexaSlotExerciseWord() {
         return properties.getProperty("AlexaSlotExerciseWord");
     }
+
 
     /**
      * Url of the S3-bucket where all audio-files of morse codes are stored in
@@ -178,15 +219,19 @@ public class SkillConfig {
         return properties.getProperty("S3BucketFolderImgCodes");
     }
 
-    public static String getReadOutLevelFast() {
-        return properties.getProperty("ReadOutLevelFast");
+    public static Integer getReadOutLevelMin() {
+        return Integer.valueOf(properties.getProperty("ReadOutLevelMin"));
     }
 
-    public static String getReadOutLevelNormal() {
-        return properties.getProperty("ReadOutLevelNormal");
+    public static Integer getReadOutLevelNormal() {
+        return Integer.valueOf(properties.getProperty("ReadOutLevelNormal"));
     }
 
-    public static String getReadOutLevelSlower() {
-        return properties.getProperty("ReadOutLevelSlower");
+    public static Integer getReadOutLevelMax() {
+        return Integer.valueOf(properties.getProperty("ReadOutLevelMax"));
+    }
+
+    public static Integer getReadOutLevelStep() {
+        return Integer.valueOf(properties.getProperty("ReadOutLevelStep"));
     }
 }

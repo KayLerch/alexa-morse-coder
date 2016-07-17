@@ -1,3 +1,11 @@
+Setup {SetupCommand} speed
+Setup {SetupCommand} playback speed
+Setup Speed {SetupCommand}
+Setup Speed {SetupCommand} playback
+Setup Slow {SetupCommand}
+Setup Play {SetupCommand}
+Setup {SetupCommand} device integration
+Setup {SetupCommand} data progagation
 Encode play back {Name}
 Encode play back name {Name}
 Encode play back the name {Name}

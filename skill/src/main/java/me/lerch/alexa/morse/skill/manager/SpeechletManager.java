@@ -18,7 +18,8 @@ import java.util.Random;
 public class SpeechletManager {
     /**
      * This one handles a cancellation request
-     * @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session session data with useful information on the exercises
      * @return corresponding speechlet response with information on the session to be closed
      */
@@ -35,8 +36,7 @@ public class SpeechletManager {
             card.setTitle("Final score");
             card.setContent(strContent);
             response = SpeechletResponse.newTellResponse(outputSpeech, card);
-        }
-        else {
+        } else {
             final String strContent = "Ok.";
             final PlainTextOutputSpeech plainOutput = new PlainTextOutputSpeech();
             plainOutput.setText(strContent);
@@ -48,7 +48,8 @@ public class SpeechletManager {
 
     /**
      * This one handles a general help intent
-     * @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session session data
      * @return corresponding speechlet response including some general information about the morse skill
      */
@@ -66,7 +67,8 @@ public class SpeechletManager {
 
     /**
      * This method handles a help intent dedicated to the exercise feature of the skill
-     * @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session session data
      * @return corresponding speechlet response including some useful information on the exercise feature
      */
@@ -83,7 +85,8 @@ public class SpeechletManager {
 
     /**
      * This one handles the request of introducing to another spell out request
-     * @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session session data
      * @return corresponding speechlet response to another spell out intro request
      */
@@ -99,7 +102,8 @@ public class SpeechletManager {
 
     /**
      * This one handles the request of introducing to another encoding request
-     * @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session session data
      * @return corresponding speechlet response to another encoding intro request
      */
@@ -115,7 +119,8 @@ public class SpeechletManager {
 
     /**
      * This one handles the user's request for a new exercise word
-     *  @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session current session with some exercise data
      * @return corresponding speechlet response to an exercise request (including the playback of morse code of a randomly picked word)
      */
@@ -139,13 +144,14 @@ public class SpeechletManager {
         response.setReprompt(reprompt);
 
         // publish code to edge device
-        LightboxManager.publishState(code);
+        IotDeviceManager.publishState(code, session);
         return response;
     }
 
     /**
      * This one handles the user's request to repeat a word in an ongoing exercise.
-     * @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session current session with some exercise data
      * @return the corresponding speechlet response to a repeat request
      */
@@ -162,7 +168,7 @@ public class SpeechletManager {
         response.setReprompt(reprompt);
 
         // publish code to edge device
-        LightboxManager.publishState(code);
+        IotDeviceManager.publishState(code, session);
         return response;
     }
 
@@ -170,7 +176,8 @@ public class SpeechletManager {
      * This one handles the final decision of user to not have any more attempts on an ongoing exercise
      * Instead (because he gave up be denying another guess) the correct answer is given by Alexa in the
      * resulting response of this method
-     * @param intent intent given by the user
+     *
+     * @param intent  intent given by the user
      * @param session current session with some data of the exercise
      * @return the corresponding speechlet response to the surrender
      */
@@ -202,7 +209,8 @@ public class SpeechletManager {
 
     /**
      * This one reacts on a user given a wrong answer in an exercise
-     * @param intent the intent given by the user (should contain the wrong answer)
+     *
+     * @param intent  the intent given by the user (should contain the wrong answer)
      * @param session the current session with some exercise data
      * @return the corresponding speechlet response to the given answer
      */
@@ -220,7 +228,8 @@ public class SpeechletManager {
 
     /**
      * This one reacts on a user given a correct answer in an exercise
-     * @param intent the intent given by the user
+     *
+     * @param intent  the intent given by the user
      * @param session the current session with some exercise data
      * @return the corresponding speechlet response to the given answer
      */
@@ -236,7 +245,7 @@ public class SpeechletManager {
 
         final String strContent = ResponsePhrases.getSuperlative() + "! " +
                 ResponsePhrases.getAnswerCorrect() + "." +
-                "<p>" + ResponsePhrases.getScoreIs() + SessionManager.getScore(session) + "</p>" +
+                "<p>" + ResponsePhrases.getScoreIs() + " " + SessionManager.getScore(session) + "</p>" +
                 "<p>" + ResponsePhrases.getWantAnotherCode() + "</p>";
 
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
@@ -250,9 +259,47 @@ public class SpeechletManager {
         return response;
     }
 
+    public static SpeechletResponse getSetupEnableResponse(final Session session) {
+        String thingName = IotDeviceManager.createThing(session);
+        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        outputSpeech.setSsml("<speak>From now on, whenever this skill plays back a Morse code, it propagates data to a device shadow whose name you can find in your Alexa app.</speak>");
+        final Card card = CardImageManager.getIotSetupCard(thingName);
+        SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech, card);
+        response.setShouldEndSession(false);
+        return response;
+    }
+
+    public static SpeechletResponse getSetupDisableRespone(final Session session) {
+        IotDeviceManager.disableThing(session);
+        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        outputSpeech.setSsml("<speak>From now on, no more data will be propagated to your device shadow.</speak>");
+        SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
+        response.setShouldEndSession(false);
+        return response;
+    }
+
+    public static SpeechletResponse getSetupUpRespone(final Session session) {
+        SessionManager.increasePlaybackSpeed(session);
+        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        outputSpeech.setSsml("<speak>Speed of playback goes up.</speak>");
+        final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
+        response.setShouldEndSession(false);
+        return response;
+    }
+
+    public static SpeechletResponse getSetupDownRespone(final Session session) {
+        SessionManager.decreasePlaybackSpeed(session);
+        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        outputSpeech.setSsml("<speak>Speed of playback goes down.</speak>");
+        final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
+        response.setShouldEndSession(false);
+        return response;
+    }
+
     /**
      * This one handles a cancel request in an ongoing exercise
-     * @param intent the intent provided by the user
+     *
+     * @param intent  the intent provided by the user
      * @param session the current session with exercise data
      * @return the corresponding speechlet response to the cancellation request
      */
@@ -276,7 +323,8 @@ public class SpeechletManager {
 
     /**
      * This one handles an encode request by the user
-     * @param intent the intent given (should include the word to encode)
+     *
+     * @param intent  the intent given (should include the word to encode)
      * @param session the current session
      * @return the corresponding speechlet response to the encoding request
      */
@@ -295,12 +343,13 @@ public class SpeechletManager {
         session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherEncode);
         response.setShouldEndSession(false);
         // publish code to edge device
-        LightboxManager.publishState(code);
+        IotDeviceManager.publishState(code, session);
         return response;
     }
 
     /**
      * gives you the response on a new exercise (including the audio output of the morse code)
+     *
      * @param code Morse code
      * @return the output speech
      */
@@ -314,6 +363,7 @@ public class SpeechletManager {
 
     /**
      * Gets the reprompt for a new exercise
+     *
      * @param code Morse code
      * @return reprompt to be assigned to the speechlet response
      */
@@ -328,6 +378,7 @@ public class SpeechletManager {
 
     /**
      * Returns a random word out of the exercise word list with a specific length
+     *
      * @param wordLength the number of letters the random word should contain
      * @return random word
      */

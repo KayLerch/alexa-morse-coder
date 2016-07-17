@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import me.lerch.alexa.morse.skill.model.MorseCode;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,6 +16,19 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 class CardImageManager {
+    static Card getIotSetupCard(final String thingName) {
+        SimpleCard card = new SimpleCard();
+        card.setTitle("Enabled device propagation");
+        card.setContent("There is an MQTT-topic created for you so you are able to subscribe" +
+                " information of Morse codes played back to Alexa. Don't worry. This topic" +
+                " is dedicated to your Amazon account so you are only provided with Morse codes" +
+                " requested with your Alexa devices.<br>" +
+                " From your application subscribe to MQTT over Websockets using:<br>" +
+                " Endpoint: " + SkillConfig.getIOTendpoint() + "<br>" +
+                " Topic: " + SkillConfig.getIOTtopicPrefix() + thingName + SkillConfig.getIOTtopicSuffix());
+        return card;
+    }
+
     /**
      * This one returns a card with an image illustrating the given text as morse code
      * @param code morse code object with all representations of the encoded text

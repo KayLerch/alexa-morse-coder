@@ -31,7 +31,21 @@ public class SessionManager {
     }
 
     static Integer getPlaybackSpeed(final Session session) {
-        return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordSpeed) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWordSpeed).toString()) : Integer.valueOf(SkillConfig.getReadOutLevelNormal());
+        return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordSpeed) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWordSpeed).toString()) : SkillConfig.getReadOutLevelNormal();
+    }
+
+    static Integer increasePlaybackSpeed(final Session session) {
+        final Integer min = SkillConfig.getReadOutLevelMin();
+        final Integer val = getPlaybackSpeed(session) - SkillConfig.getReadOutLevelStep();
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, val >= min ? val : min);
+        return (val >= min ? val : min);
+    }
+
+    static Integer decreasePlaybackSpeed(final Session session) {
+        final Integer max = SkillConfig.getReadOutLevelMax();
+        final Integer val = getPlaybackSpeed(session) + SkillConfig.getReadOutLevelStep();
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, val <= max ? val : max);
+        return (val <= max ? val : max);
     }
 
     /**
@@ -42,14 +56,13 @@ public class SessionManager {
         if (!session.getAttributes().containsKey(SkillConfig.SessionAttributeExerciseScore)) {
             session.setAttribute(SkillConfig.SessionAttributeExerciseScore, 0);
             return 0;
-        }
-        else {
+        } else {
             return Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExerciseScore).toString());
         }
     }
 
-    static Integer decreaseScore(final Session session, final Integer add) {
-        final Integer val = getScore(session) - add;
+    static Integer decreaseScore(final Session session, final Integer sub) {
+        final Integer val = getScore(session) - sub;
         session.setAttribute(SkillConfig.SessionAttributeExerciseScore, val >= 0 ? val : 0);
         return (val >= 0 ? val : 0);
     }
@@ -63,6 +76,7 @@ public class SessionManager {
     /**
      * Decrease the level by one. The value of the level corresponds to the length of words
      * given by Alexa in exercises
+     *
      * @param session session data
      * @return the new value of the level
      */
@@ -77,6 +91,7 @@ public class SessionManager {
     /**
      * Increase the level by one. The value of the level corresponds to the length of words
      * given by Alexa in exercises
+     *
      * @param session session data
      * @return the new value of the level after incrementing it
      */
@@ -91,6 +106,7 @@ public class SessionManager {
     /**
      * gets the current exercise level. The value of the level corresponds to the length of words
      * given by Alexa in exercises
+     *
      * @param session session data
      * @return the current value of the level
      */
@@ -98,14 +114,14 @@ public class SessionManager {
         if (!session.getAttributes().containsKey(SkillConfig.SessionAttributeExerciseLevel)) {
             session.setAttribute(SkillConfig.SessionAttributeExerciseLevel, SkillConfig.ExerciseLevelDefault);
             return SkillConfig.ExerciseLevelDefault;
-        }
-        else {
+        } else {
             return Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExerciseLevel).toString());
         }
     }
 
     /**
      * Increase the number of processed exercises by one
+     *
      * @param session session data (should contain the value to increment)
      * @return new total of processed exercises
      */
@@ -117,6 +133,7 @@ public class SessionManager {
 
     /**
      * Returns the total of exercises processed in the current session
+     *
      * @param session session data (should contain the value to return, otherwise set to 0)
      * @return the current total of processed exercises
      */
@@ -124,14 +141,14 @@ public class SessionManager {
         if (!session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisesTotal)) {
             session.setAttribute(SkillConfig.SessionAttributeExercisesTotal, 0);
             return 0;
-        }
-        else {
+        } else {
             return Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisesTotal).toString());
         }
     }
 
     /**
      * Increments the number of correct answers given by the user
+     *
      * @param session session data (should contain the value to increment)
      * @return the new number of correct answers
      */
@@ -143,6 +160,7 @@ public class SessionManager {
 
     /**
      * Returns the number of correct answers given by the user in the current session
+     *
      * @param session session data (should contain the value to return, otherwise set to 0)
      * @return the current number of correct answers
      */
@@ -150,14 +168,14 @@ public class SessionManager {
         if (!session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisesCorrect)) {
             session.setAttribute(SkillConfig.SessionAttributeExercisesCorrect, 0);
             return 0;
-        }
-        else {
+        } else {
             return Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisesCorrect).toString());
         }
     }
 
     /**
      * Increments the number of retries given by the user
+     *
      * @param session session data (should contain the value to increment, otherwise set to 0)
      * @return the new number of retries needed by the user to solve an exercise
      */
@@ -169,6 +187,7 @@ public class SessionManager {
 
     /**
      * Returns the number of retries given by the user
+     *
      * @param session session data (should contain the value to return)
      * @return the current number of retries needed by the user to solve an exercise
      */
@@ -176,14 +195,24 @@ public class SessionManager {
         if (!session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisesRetries)) {
             session.setAttribute(SkillConfig.SessionAttributeExercisesRetries, 0);
             return 0;
-        }
-        else {
+        } else {
             return Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisesRetries).toString());
         }
     }
 
+    public static SkillConfig.SETUP_MODE getSetupMode(final Intent intent, final Session session) {
+        final String SlotName = SkillConfig.getAlexaSlotIoTSetupCommand();
+        final String command = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
+
+        return SkillConfig.setupUpWords.contains(command) ? SkillConfig.SETUP_MODE.UP :
+                SkillConfig.setupDownWords.contains(command) ? SkillConfig.SETUP_MODE.DOWN :
+                        SkillConfig.setupEnableWords.contains(command) ? SkillConfig.SETUP_MODE.ON :
+                                SkillConfig.setupDisableWords.contains(command) ? SkillConfig.SETUP_MODE.OFF : SkillConfig.SETUP_MODE.NAN;
+    }
+
     /**
      * Returns if there is an exercise going on at the moment based on the information provided
+     *
      * @param session session data (should at least give a hint to an ongoing exercise)
      * @return true if there is an exercise going on at the moment
      */
@@ -194,7 +223,8 @@ public class SessionManager {
     /**
      * Looks for a correct given answer in an ongoing exercise. Based on the information provided
      * the method checks if the intended word matches the exercise word
-     * @param intent intent given by the user
+     *
+     * @param intent  intent given by the user
      * @param session session data (should contain the word to match)
      * @return true if the intent is equal to the exercise word in the session data
      */
@@ -214,7 +244,8 @@ public class SessionManager {
 
     /**
      * Checks if an intended word is supported to be encoded by Alexa
-     * @param intent intent given by the user
+     *
+     * @param intent  intent given by the user
      * @param session session data
      * @return true if intent is valid and ready to encode by the skill
      */
