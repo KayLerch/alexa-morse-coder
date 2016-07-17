@@ -20,6 +20,7 @@ public class StartoverIntentHandler extends AbstractIntentHandler {
         try {
             return SpeechletManager.getExerciseAskResponse(intent, session);
         } catch (IOException e) {
+            e.printStackTrace();
             return getErrorResponse();
         }
     }

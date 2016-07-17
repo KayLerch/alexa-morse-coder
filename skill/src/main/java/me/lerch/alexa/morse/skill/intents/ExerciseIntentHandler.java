@@ -35,6 +35,7 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
                     // if no exercise pending, start a new one by playing back a morse code
                     SpeechletManager.getExerciseAskResponse(intent, session);
         } catch (IOException e) {
+            e.printStackTrace();
             return getErrorResponse();
         }
     }

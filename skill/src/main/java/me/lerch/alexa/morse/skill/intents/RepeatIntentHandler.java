@@ -4,10 +4,13 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.manager.SessionManager;
 import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * This intent handler reacts on a repeat request
@@ -21,11 +24,16 @@ public class RepeatIntentHandler extends AbstractIntentHandler {
     @Override
     public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
         // if there is an exercise ongoing ...
-        return SessionManager.hasExercisePending(session) ?
-                // repeat the morse code of the word given for the current exercise
-                SpeechletManager.getExerciseRepeatResponse(intent, session) :
-                // otherwise there's nothing to repeat
-                getNothingToRepeatError();
+        try {
+            return SessionManager.hasExercisePending(session) ?
+                    // repeat the morse code of the word given for the current exercise
+                    SpeechletManager.getExerciseRepeatResponse(intent, session) :
+                    // otherwise there's nothing to repeat
+                    getNothingToRepeatError();
+        } catch (UnsupportedEncodingException | JsonProcessingException e) {
+            e.printStackTrace();
+            return getErrorResponse();
+        }
     }
 
     /**

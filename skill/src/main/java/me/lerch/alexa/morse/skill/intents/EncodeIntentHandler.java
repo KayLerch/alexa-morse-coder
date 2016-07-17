@@ -31,6 +31,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
                     // otherwise: tell the user that the name is not accepted
                     getErrorResponse("Only names with less than " + (SkillConfig.ExerciseWordMaxLengthForOutput + 1) + " characters are supported.");
         } catch (IOException e) {
+            e.printStackTrace();
             return getErrorResponse();
         }
     }

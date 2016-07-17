@@ -34,6 +34,7 @@ public class YesIntentHandler extends AbstractIntentHandler {
                                                 SpeechletManager.getHelpDuringExercise(intent, session) :
                                                     SpeechletManager.getHelpAboutAll(intent, session);
         } catch (IOException e) {
+            e.printStackTrace();
             return getErrorResponse();
         }
 
