@@ -4,8 +4,8 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
-import me.lerch.alexa.morse.skill.utils.SessionManager;
-import me.lerch.alexa.morse.skill.utils.SkillResponses;
+import me.lerch.alexa.morse.skill.manager.SessionManager;
+import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 /**
@@ -18,12 +18,12 @@ public class HelpIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(Intent intent, Session session) {
+    public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
         // if there is an ongoing exercise
         return SessionManager.hasExercisePending(session) ?
                 // respond with help information dedicated to the exercise intent
-                SkillResponses.getHelpDuringExercise(intent, session) :
+                SpeechletManager.getHelpDuringExercise(intent, session) :
                 // otherwise: play back the general help information
-                SkillResponses.getHelpAboutAll(intent, session);
+                SpeechletManager.getHelpAboutAll(intent, session);
     }
 }

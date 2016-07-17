@@ -2,8 +2,7 @@ package me.lerch.alexa.morse.skill.speechlets;
 
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import me.lerch.alexa.morse.skill.intents.*;
-import me.lerch.alexa.morse.skill.model.MorseCode;
-import me.lerch.alexa.morse.skill.utils.MorseUtils;
+import me.lerch.alexa.morse.skill.manager.MorseApiManager;
 import me.lerch.alexa.morse.skill.utils.SsmlUtils;
 import me.lerch.alexa.morse.skill.wrapper.AbstractSpeechlet;
 import me.lerch.alexa.morse.skill.wrapper.IIntentHandler;
@@ -44,11 +43,11 @@ public class MorseSpeechlet extends AbstractSpeechlet {
     public SsmlOutputSpeech getWelcomeSpeech() {
         String hi = "hi";
         try {
-            hi = SsmlUtils.getAudio(MorseUtils.encode("hi").getMp3Url());
+            hi = SsmlUtils.getAudio(MorseApiManager.encode("hi").getMp3Url());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + hi + " welcome to Morse coder. Let me encode, spell or teach you some Morse code.</speak>");
         return outputSpeech;
     }

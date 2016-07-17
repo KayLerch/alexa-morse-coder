@@ -1,6 +1,7 @@
-package me.lerch.alexa.morse.skill.utils;
+package me.lerch.alexa.morse.skill.manager;
 
 import me.lerch.alexa.morse.skill.model.MorseCode;
+import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,7 +16,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.IOException;
 import java.net.URLEncoder;
 
-public class MorseUtils {
+public class MorseApiManager {
     public static MorseCode encode(String line) throws IOException {
         return encode(line, Integer.valueOf(SkillConfig.getReadOutLevelNormal()));
     }

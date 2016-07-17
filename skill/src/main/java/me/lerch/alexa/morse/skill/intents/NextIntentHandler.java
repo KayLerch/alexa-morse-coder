@@ -4,7 +4,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
-import me.lerch.alexa.morse.skill.utils.SkillResponses;
+import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.IOException;
@@ -19,10 +19,10 @@ public class NextIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(Intent intent, Session session) {
+    public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
         // in any case, "next" means to give the user a new exercise
         try {
-            return SkillResponses.getExerciseAskResponse(intent, session);
+            return SpeechletManager.getExerciseAskResponse(intent, session);
         } catch (IOException e) {
             return getErrorResponse();
         }

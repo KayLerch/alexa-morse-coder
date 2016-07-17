@@ -14,6 +14,7 @@ public class MorseCode {
     private String literal;
     private String mp3Url;
     private Integer dotLength;
+    private String json;
 
     public MorseCode() {
     }
@@ -35,7 +36,7 @@ public class MorseCode {
     }
 
     public static MorseCode fromJsonString(String json) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        final ObjectMapper objectMapper = new ObjectMapper();
         final ObjectReader r = objectMapper.reader(MorseCode.class);
         return r.without(DeserializationFeature.WRAP_EXCEPTIONS).readValue(json);
     }
@@ -44,7 +45,7 @@ public class MorseCode {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(final String code) {
         this.code = code;
     }
 
@@ -52,7 +53,7 @@ public class MorseCode {
         return dotLength;
     }
 
-    public void setDotLength(Integer dotLength) {
+    public void setDotLength(final Integer dotLength) {
         this.dotLength = dotLength;
     }
 
@@ -60,7 +61,7 @@ public class MorseCode {
         return literal;
     }
 
-    public void setLiteral(String literal) {
+    public void setLiteral(final String literal) {
         this.literal = literal;
     }
 
@@ -68,7 +69,7 @@ public class MorseCode {
         return mp3Url;
     }
 
-    public void setMp3Url(String mp3Url) {
+    public void setMp3Url(final String mp3Url) {
         this.mp3Url = mp3Url;
     }
 
@@ -76,7 +77,7 @@ public class MorseCode {
         return phonetic;
     }
 
-    public void setPhonetic(String phonetic) {
+    public void setPhonetic(final String phonetic) {
         this.phonetic = phonetic;
     }
 

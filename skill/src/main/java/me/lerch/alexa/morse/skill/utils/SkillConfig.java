@@ -22,7 +22,8 @@ public class SkillConfig {
     }
 
     private static Properties properties = new Properties();
-    private static final String propertiesFile = "app.properties";
+    private static final String defaultPropertiesFile = "app.properties";
+    private static final String customPropertiesFile = "my.app.properties";
     private static final String slotExerciseWordsFilePattern = "alexa-skill-slot-exercisewords-char";
     private static final Map<Integer, ArrayList<String>> exerciseWords = new HashMap<>();
 
@@ -57,7 +58,10 @@ public class SkillConfig {
      * reading out values from different resource files
      */
     static {
-        InputStream propertiesStream = SkillConfig.class.getClassLoader().getResourceAsStream(propertiesFile);
+        final String propertiesFile =
+                SkillConfig.class.getClassLoader().getResource(customPropertiesFile) != null ?
+                        customPropertiesFile : defaultPropertiesFile;
+        final InputStream propertiesStream = SkillConfig.class.getClassLoader().getResourceAsStream(propertiesFile);
         try {
             properties.load(propertiesStream);
         } catch (IOException e) {
@@ -77,13 +81,13 @@ public class SkillConfig {
         }
     }
 
-    private static void loadExerciseWords(Integer wordLength) {
-        String filePath = slotExerciseWordsFilePattern + wordLength;
-        InputStream slotExerciseWordsStream = SkillConfig.class.getClassLoader().getResourceAsStream(filePath);
-        ArrayList<String> words = new ArrayList<>();
+    private static void loadExerciseWords(final Integer wordLength) {
+        final String filePath = slotExerciseWordsFilePattern + wordLength;
+        final InputStream slotExerciseWordsStream = SkillConfig.class.getClassLoader().getResourceAsStream(filePath);
+        final ArrayList<String> words = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(slotExerciseWordsStream));
-            String line = null;
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(slotExerciseWordsStream));
+            String line;
             while ((line = reader.readLine()) != null) {
                 words.add(line.toLowerCase());
             }
@@ -104,7 +108,7 @@ public class SkillConfig {
     /**
      * List of words used to exercise the user in morse code
      */
-    public static ArrayList<String> getExerciseWords(Integer wordLength) {
+    public static ArrayList<String> getExerciseWords(final Integer wordLength) {
         return exerciseWords.containsKey(wordLength) ? exerciseWords.get(wordLength) : new ArrayList<>();
     }
 
@@ -181,14 +185,6 @@ public class SkillConfig {
         return properties.getProperty("S3BucketFolderImgCodes");
     }
 
-    public static String getS3BucketFolderMp3Normal() {
-        return properties.getProperty("S3BucketFolderMp3Normal");
-    }
-
-    public static String getS3BucketFolderMp3Slower() {
-        return properties.getProperty("S3BucketFolderMp3Slower");
-    }
-
     public static String getReadOutLevelFast() {
         return properties.getProperty("ReadOutLevelFast");
     }
@@ -202,8 +198,8 @@ public class SkillConfig {
     }
 
     public static AWSCredentials getAWSCredentials() {
-        String awsKey = getAWSAccessKey();
-        String awsSecret = getAWSAccessSecret();
+        final String awsKey = getAWSAccessKey();
+        final String awsSecret = getAWSAccessSecret();
 
         if (awsKey != null && !awsKey.isEmpty() && awsSecret != null && !awsSecret.isEmpty()) {
             return new BasicAWSCredentials(awsKey, awsSecret);
