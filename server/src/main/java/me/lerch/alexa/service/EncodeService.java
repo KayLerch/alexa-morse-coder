@@ -28,20 +28,20 @@ public class EncodeService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public MorseCode getMorse(@QueryParam("line") String line, @QueryParam("wpm") Integer wpm, @QueryParam("fw") Integer fw) {
-        return encode(line, wpm, fw != null ? fw : wpm);
+    public MorseCode getMorse(@QueryParam("text") String text, @QueryParam("wpm") Integer wpm, @QueryParam("fw") Integer fw) {
+        return encode(text, wpm, fw != null ? fw : wpm);
     }
 
-    private MorseCode encode(final String line, final Integer wpm, final Integer wpmFarnsworth) {
+    private MorseCode encode(final String text, final Integer wpm, final Integer wpmFarnsworth) {
         try {
             // first encode the line to acoustic file and upload to S3
-            final String url = uploadMorseToS3(line, wpm, wpmFarnsworth);
+            final String url = uploadMorseToS3(text, wpm, wpmFarnsworth);
             // next encode the line as phonetic literal
-            final String phonetic = MorseUtils.diDahDit(line);
+            final String phonetic = MorseUtils.diDahDit(text);
             // then encode the line as code representation
-            final String code = MorseUtils.encode(line);
+            final String code = MorseUtils.encode(text);
             // return all strings and url to mp3
-            return new MorseCode(code, url, line, phonetic, wpm, wpmFarnsworth);
+            return new MorseCode(code, url, text, phonetic, wpm, wpmFarnsworth);
         } catch (Exception ex) {
             logger.severe(ex.getMessage());
             return MorseCode.getEmpty();

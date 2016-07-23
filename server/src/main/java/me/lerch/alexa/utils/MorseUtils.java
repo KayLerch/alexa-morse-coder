@@ -31,9 +31,9 @@ public class MorseUtils {
             .put("+", ".-.-.").put("/", "-..-.").put("@", ".--.-.").put(" ", " ")
             .build();
 
-    public static String diDahDit(String line) {
+    public static String diDahDit(String text) {
         final StringBuilder sb = new StringBuilder();
-        final String[] words = line.split(" ");
+        final String[] words = text.split(" ");
 
         for (int k = 0; k < words.length; k++) {
             final char[] wordChars = words[k].toLowerCase().toCharArray();
@@ -67,12 +67,12 @@ public class MorseUtils {
         return sb.toString().trim();
     }
 
-    public static File encodeMorseToWave(String line, final String filename, final int wpm) throws InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException {
-        return encodeMorseToWave(line, filename, wpm, wpm);
+    public static File encodeMorseToWave(String text, final String filename, final int wpm) throws InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException {
+        return encodeMorseToWave(text, filename, wpm, wpm);
     }
 
-    public static File encodeMorseToWave(String line, final String filename, final int wpm,  final int wpmFarnsworth) throws LineUnavailableException, InterruptedException, IOException, UnsupportedAudioFileException {
-        line = URLDecoder.decode(line, "UTF-8");
+    public static File encodeMorseToWave(String text, final String filename, final int wpm,  final int wpmFarnsworth) throws LineUnavailableException, InterruptedException, IOException, UnsupportedAudioFileException {
+        text = URLDecoder.decode(text, "UTF-8");
         // calculate length of a dot (dit)
         // 1200/wpm/8/(1000/sample)
         final int DOT = Math.round(MILLIS_OF_A_DIT_AT_1_WPM / wpm / 8 / (1000 / SAMPLE));
@@ -83,7 +83,7 @@ public class MorseUtils {
         final int SPACE_WORD = DOTfw * 7;
 
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        for (final char c : line.toLowerCase().toCharArray()) {
+        for (final char c : text.toLowerCase().toCharArray()) {
             String s = String.valueOf(c);
             if (" ".equals(s)) {
                 addSpace(bos, SPACE_WORD);
