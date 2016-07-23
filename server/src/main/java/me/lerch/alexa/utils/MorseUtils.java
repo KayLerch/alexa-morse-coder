@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import javax.sound.sampled.*;
 import java.io.*;
 import java.net.URLDecoder;
+import java.util.Arrays;
 
 public class MorseUtils {
     private static final int FREQ = 500;
@@ -58,7 +59,7 @@ public class MorseUtils {
             if (MORSE_ALPAHBET.containsKey(s)) {
                 sb.append(MORSE_ALPAHBET.get(s));
             }
-            sb.append(" ");
+            sb.append(" / ");
         }
         return sb.toString().trim();
     }
@@ -70,24 +71,21 @@ public class MorseUtils {
         final Integer SPACE_WORD = DOT * 7;
 
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        final StringBuilder sb = new StringBuilder();
         for (final char c : line.toLowerCase().toCharArray()) {
             String s = String.valueOf(c);
             if (" ".equals(s)) {
-                sb.append("/");
                 sleep(bos, SPACE_WORD);
             } else if (MORSE_ALPAHBET.containsKey(s)) {
-                for (char note : MORSE_ALPAHBET.get(s).toCharArray()) {
-                    sb.append(note);
-
-                    for (int i = 0; i < (note == '.' ? DOT : DASH) * 8; i++) {
+                char[] signs = MORSE_ALPAHBET.get(s).toCharArray();
+                for (int j = 0; j < signs.length; j++) {
+                    for (int i = 0; i < (signs[j] == '.' ? DOT : DASH) * 8; i++) {
                         bos.write(new byte[]{(byte) (Math.sin(i / (16000F / FREQ) * 2.0 * Math.PI) * 127.0)}, 0, 1);
                     }
-                    sleep(bos, DOT);
+                    // only pause if not the last sign of a character
+                    if (j + 1 < signs.length) sleep(bos, DOT);
                 }
+                sleep(bos, SPACE_LETTER);
             }
-            sleep(bos, SPACE_LETTER);
-            sb.append(" ");
         }
         byte[] b = bos.toByteArray();
         bos.close();
@@ -102,8 +100,9 @@ public class MorseUtils {
     }
 
     private static void sleep(final ByteArrayOutputStream bos, final Integer factor) {
-        for (int i = 0; i < (factor * 8); i++) {
-            bos.write(new byte[]{(byte) (0)}, 0, 1);
-        }
+        int len = factor * 8;
+        byte[] b = new byte[len];
+        Arrays.fill(b, (byte)0);
+        bos.write(b, 0, len);
     }
 }
