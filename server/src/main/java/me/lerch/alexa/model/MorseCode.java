@@ -27,12 +27,12 @@ public class MorseCode {
         this.phonetic = phonetic;
         this.wpm = wpm;
         this.wpmSpaces = wpmSpaces;
-        this.farnsworth = wpmSpaces != wpm;
+        this.farnsworth = !wpm.equals(wpmSpaces);
     }
 
     public static MorseCode fromJsonString(String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        final ObjectReader r = objectMapper.reader(MorseCode.class);
+        final ObjectReader r = objectMapper.readerFor(MorseCode.class);
         return r.without(DeserializationFeature.WRAP_EXCEPTIONS).readValue(json);
     }
 
