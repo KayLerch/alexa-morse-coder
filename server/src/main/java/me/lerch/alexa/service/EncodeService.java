@@ -48,9 +48,9 @@ public class EncodeService {
         }
     }
 
-    private String uploadMorseToS3(final String line, final int wpm, final int wpmFarnsworth) throws IOException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException {
+    private String uploadMorseToS3(final String text, final int wpm, final int wpmFarnsworth) throws IOException, InterruptedException, UnsupportedAudioFileException, LineUnavailableException {
         // generate filenames
-        final String filename = URLEncoder.encode(line.replace(" ", "_"), "UTF-8") + "-" + String.valueOf(wpm) + "-" + String.valueOf(wpmFarnsworth);
+        final String filename = URLEncoder.encode(text.replace(" ", "_"), "UTF-8") + "-" + String.valueOf(wpm) + "-" + String.valueOf(wpmFarnsworth);
         final String mp3Filename = filename + ".mp3";
         final String filenameWav = filename + ".wav";
 
@@ -60,7 +60,7 @@ public class EncodeService {
         if (!s3Client.doesObjectExist(bucket, mp3Filename)) {
             logger.info(String.format("%s not found in S3 bucket. Start encoding code now.", mp3Filename));
             // convert the code to phonetic version as wave
-            final File wavFile = MorseUtils.encodeMorseToWave(line, filenameWav, wpm, wpmFarnsworth);
+            final File wavFile = MorseUtils.encodeMorseToWave(text, filenameWav, wpm, wpmFarnsworth);
             // convert the wave file to mp3 leveraging ffmpeg
             final File mp3File = Mp3Utils.convertWaveToMp3(wavFile, mp3Filename);
             // upload mp3 to S3 bucket

@@ -71,16 +71,19 @@ public class MorseUtils {
         return encodeMorseToWave(text, filename, wpm, wpm);
     }
 
+    public static int calculateLengthOfDit(int wpm) {
+        return Math.round(MILLIS_OF_A_DIT_AT_1_WPM / wpm / 8 / (1000 / SAMPLE));
+    }
+
     public static File encodeMorseToWave(String text, final String filename, final int wpm,  final int wpmFarnsworth) throws LineUnavailableException, InterruptedException, IOException, UnsupportedAudioFileException {
         text = URLDecoder.decode(text, "UTF-8");
         // calculate length of a dot (dit)
-        // 1200/wpm/8/(1000/sample)
-        final int DOT = Math.round(MILLIS_OF_A_DIT_AT_1_WPM / wpm / 8 / (1000 / SAMPLE));
-        final int DOTfw = Math.round(MILLIS_OF_A_DIT_AT_1_WPM / wpmFarnsworth / 8 / (1000 / SAMPLE));
+        final int DIT = calculateLengthOfDit(wpm);
+        final int DITfw = calculateLengthOfDit(wpmFarnsworth);
         // derive length of dah and spaces from dit length (according to Morse standards)
-        final int DASH = DOT * 3;
-        final int SPACE_LETTER = DOTfw * 3;
-        final int SPACE_WORD = DOTfw * 7;
+        final int DAH = DIT * 3;
+        final int SPACE_LETTER = DITfw * 3;
+        final int SPACE_WORD = DITfw * 7;
 
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         for (final char c : text.toLowerCase().toCharArray()) {
@@ -90,11 +93,11 @@ public class MorseUtils {
             } else if (MORSE_ALPAHBET.containsKey(s)) {
                 char[] signs = MORSE_ALPAHBET.get(s).toCharArray();
                 for (int j = 0; j < signs.length; j++) {
-                    for (int i = 0; i < (signs[j] == '.' ? DOT : DASH) * 8; i++) {
+                    for (int i = 0; i < (signs[j] == '.' ? DIT : DAH) * 8; i++) {
                         bos.write(new byte[]{(byte) (Math.sin(i / (SAMPLE / FREQ) * 2.0 * Math.PI) * 127.0)}, 0, 1);
                     }
                     // only pause if not the last sign of a character
-                    if (j + 1 < signs.length) addSpace(bos, DOT);
+                    if (j + 1 < signs.length) addSpace(bos, DIT);
                 }
                 addSpace(bos, SPACE_LETTER);
             }
