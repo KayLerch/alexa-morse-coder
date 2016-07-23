@@ -9,6 +9,7 @@ import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class YesIntentHandler extends AbstractIntentHandler {
     @Override
@@ -33,7 +34,7 @@ public class YesIntentHandler extends AbstractIntentHandler {
                                             SessionManager.hasExercisePending(session) ?
                                                 SpeechletManager.getHelpDuringExercise(intent, session) :
                                                     SpeechletManager.getHelpAboutAll(intent, session);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();
         }

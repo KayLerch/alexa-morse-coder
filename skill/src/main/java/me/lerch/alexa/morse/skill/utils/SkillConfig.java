@@ -33,7 +33,9 @@ public class SkillConfig {
     public static final String SessionAttributeExercisedWordPhonetic = "exercisedWordPhonetic";
     public static final String SessionAttributeExercisedWordCode = "exercisedWordCode";
     public static final String SessionAttributeExercisedWordAudio = "exercisedWordAudio";
-    public static final String SessionAttributeExercisedWordSpeed = "exercisedWordSpeed";
+    public static final String SessionAttributeExercisedWpm = "exercisedWpm";
+    public static final String SessionAttributeExercisedWpmSpaces = "exercisedWpmSpaces";
+    public static final String SessionAttributeExercisedFarnsworth = "exercisedFarnsworth";
     public static final String SessionAttributeYesNoQuestion = "yesNoQuestion";
     public static final String SessionAttributeExercisesTotal = "exercisesTotal";
     public static final String SessionAttributeExercisesRetries = "exercisesRetries";
@@ -220,19 +222,23 @@ public class SkillConfig {
         return properties.getProperty("S3BucketFolderImgCodes");
     }
 
-    public static Integer getReadOutLevelMin() {
-        return Integer.valueOf(properties.getProperty("ReadOutLevelMin"));
+    public static Integer getWpmLevelMin() {
+        return Integer.valueOf(properties.getProperty("WpmLevelMin"));
     }
 
-    public static Integer getReadOutLevelNormal() {
-        return Integer.valueOf(properties.getProperty("ReadOutLevelNormal"));
+    public static Integer getWpmLevelDefault() {
+        return Integer.valueOf(properties.getProperty("WpmLevelDefault"));
     }
 
-    public static Integer getReadOutLevelMax() {
-        return Integer.valueOf(properties.getProperty("ReadOutLevelMax"));
+    public static Integer getWpmLevelMax() {
+        return Integer.valueOf(properties.getProperty("WpmLevelMax"));
     }
 
-    public static Integer getReadOutLevelStep() {
-        return Integer.valueOf(properties.getProperty("ReadOutLevelStep"));
+    public static Integer getWpmLevelStep() {
+        return Integer.valueOf(properties.getProperty("WpmLevelStep"));
+    }
+
+    public static Integer getFarnsworthWpmReduction() {
+        return Integer.valueOf(properties.getProperty("FarnsworthWpmReduction"));
     }
 }

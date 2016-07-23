@@ -12,6 +12,7 @@ import me.lerch.alexa.morse.skill.utils.SsmlUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Random;
 
@@ -124,12 +125,10 @@ public class SpeechletManager {
      * @param session current session with some exercise data
      * @return corresponding speechlet response to an exercise request (including the playback of morse code of a randomly picked word)
      */
-    public static SpeechletResponse getExerciseAskResponse(final Intent intent, final Session session) throws IOException {
+    public static SpeechletResponse getExerciseAskResponse(final Intent intent, final Session session) throws IOException, URISyntaxException {
         final String word = getRandomExerciseWord(SessionManager.getExerciseLevel(session));
-        // get current playback-speed
-        final Integer speed = SessionManager.getPlaybackSpeed(session);
         // get encoded text representation
-        final MorseCode code = MorseApiManager.encode(word, speed);
+        final MorseCode code = MorseApiManager.encode(word, SessionManager.getWpm(session), SessionManager.getWpmSpaces(session));
         // keep this word in mind in order to evaluate it against the users answer
         SessionManager.setExercisedCode(session, code);
         // increment exercise counter
@@ -278,10 +277,10 @@ public class SpeechletManager {
         return response;
     }
 
-    public static SpeechletResponse getSetupUpRespone(final Session session) throws IOException {
+    public static SpeechletResponse getSetupUpRespone(final Session session) throws IOException, URISyntaxException {
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        String speech = SessionManager.increasePlaybackSpeed(session) ?
-                "Speed of playback goes up." : "I don't want to go faster. That would sound too weird.";
+        Integer wpm = SessionManager.increaseWpm(session);
+        String speech = "Playback speed is set to " + String.valueOf(wpm) + " words per minute.";
 
         if (SessionManager.hasExercisePending(session)) {
             final MorseCode code = SessionManager.refreshExercisedCode(session);
@@ -296,10 +295,10 @@ public class SpeechletManager {
         return response;
     }
 
-    public static SpeechletResponse getSetupDownRespone(final Session session) throws IOException {
+    public static SpeechletResponse getSetupDownRespone(final Session session) throws IOException, URISyntaxException {
         SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        String speech = SessionManager.decreasePlaybackSpeed(session) ?
-                "Speed of playback goes down." : "I don't want to go slower.";
+        Integer wpm = SessionManager.decreaseWpm(session);
+        String speech = "Playback speed is set to " + String.valueOf(wpm) + " words per minute.";
 
         if (SessionManager.hasExercisePending(session)) {
             final MorseCode code = SessionManager.refreshExercisedCode(session);
@@ -346,11 +345,11 @@ public class SpeechletManager {
      * @param session the current session
      * @return the corresponding speechlet response to the encoding request
      */
-    public static SpeechletResponse getEncodeResponse(final Intent intent, final Session session) throws IOException {
+    public static SpeechletResponse getEncodeResponse(final Intent intent, final Session session) throws IOException, URISyntaxException {
         final String SlotName = SkillConfig.getAlexaSlotName();
         final String text = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
 
-        final MorseCode code = MorseApiManager.encode(text, SessionManager.getPlaybackSpeed(session));
+        final MorseCode code = MorseApiManager.encode(text, SessionManager.getWpm(session), SessionManager.getWpmSpaces(session));
 
         final String strContent = "Morse code of " + text + " is as follows: " + SsmlUtils.getAudio(code.getMp3Url()) + "<p>Do you want me to encode another name?</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();

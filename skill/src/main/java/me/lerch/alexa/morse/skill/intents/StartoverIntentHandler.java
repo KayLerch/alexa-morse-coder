@@ -8,6 +8,7 @@ import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class StartoverIntentHandler extends AbstractIntentHandler {
     @Override
@@ -19,7 +20,7 @@ public class StartoverIntentHandler extends AbstractIntentHandler {
     public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
         try {
             return SpeechletManager.getExerciseAskResponse(intent, session);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();
         }

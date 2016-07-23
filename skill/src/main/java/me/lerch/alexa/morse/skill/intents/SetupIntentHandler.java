@@ -9,6 +9,7 @@ import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Handles an intent given while setting up Iot device integration
@@ -36,7 +37,7 @@ public class SetupIntentHandler extends AbstractIntentHandler {
                 default:
                     return getErrorResponse("Command is unknown.");
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();
         }

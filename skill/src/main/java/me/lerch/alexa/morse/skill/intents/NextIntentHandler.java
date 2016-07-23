@@ -8,6 +8,7 @@ import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * This implementation supports the builtin next intent for skipping and going next
@@ -23,7 +24,7 @@ public class NextIntentHandler extends AbstractIntentHandler {
         // in any case, "next" means to give the user a new exercise
         try {
             return SpeechletManager.getExerciseAskResponse(intent, session);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();
         }

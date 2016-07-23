@@ -3,8 +3,8 @@ package me.lerch.alexa.morse.skill.utils;
 import java.util.Random;
 
 public class ResponsePhrases {
-    private static String[] superlatives = new String[]{"awesome", "excellent", "fantastic", "brilliant", "wow", "great", "gosh"};
-    private static String[] answerCorrect = new String[]{"your answer is correct", "that was correct", "you nailed it", "answer is right", "you got it right"};
+    private static String[] superlatives = new String[]{"awesome", "excellent", "fantastic", "brilliant", "wow", "great", "perfect", "incredible", "super", "amazing"};
+    private static String[] answerCorrect = new String[]{"your answer is correct", "that is correct", "you nailed it", "answer is right", "you got it right", "that's it"};
     private static String[] wantAnotherCode = new String[]{"do you want to continue with another code?", "do you want to go on with the next code?", "do you want to continue?", "go on with next code?", "are you prepared for the next code?", "do you want the next morse code?"};
     private static String[] scoreIs = new String[]{"current score is", "your score is", "your current score is", "score is"};
     private static String[] wasNotCorrect = new String[]{"Sorry, this was not correct", "No, this is not correct", "Not really", "No, that's not it", "Sorry, you failed", "No", "Wrong", "That's wrong"};

@@ -1,5 +1,6 @@
 package me.lerch.alexa.morse.skill.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,25 +14,29 @@ public class MorseCode {
     private String phonetic;
     private String literal;
     private String mp3Url;
-    private Integer dotLength;
-    private String json;
+    private Integer wpm;
+    private Integer wpmSpaces;
+    private Boolean farnsworth;
 
     public MorseCode() {
     }
 
-    public MorseCode(final String code, final String mp3Url, final String literal, final String phonetic, final Integer dotLength) {
+    public MorseCode(final String code, final String mp3Url, final String literal, final String phonetic, final Integer wpm, final Integer wpmSpaces) {
         this.code = code;
         this.mp3Url = mp3Url;
         this.literal = literal;
         this.phonetic = phonetic;
-        this.dotLength = dotLength;
+        this.wpm = wpm;
+        this.wpmSpaces = wpmSpaces;
+        this.farnsworth = wpmSpaces != wpm;
     }
 
+    @JsonIgnore
     public Boolean isValid() {
         return code != null && !code.isEmpty() &&
                 mp3Url != null && !mp3Url.isEmpty() &&
                 literal != null && !literal.isEmpty() &&
-                dotLength != null && dotLength > 0 &&
+                wpm != null && wpm > 0 &&
                 phonetic != null && !phonetic.isEmpty();
     }
 
@@ -45,23 +50,39 @@ public class MorseCode {
         return code;
     }
 
-    public void setCode(final String code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public Integer getDotLength() {
-        return dotLength;
+    public Integer getWpm() {
+        return wpm;
     }
 
-    public void setDotLength(final Integer dotLength) {
-        this.dotLength = dotLength;
+    public void setWpm(Integer wpm) {
+        this.wpm = wpm;
+    }
+
+    public Boolean getFarnsworth() {
+        return farnsworth;
+    }
+
+    public void setFarnsworth(Boolean farnsworth) {
+        this.farnsworth = farnsworth;
+    }
+
+    public Integer getWpmSpaces() {
+        return wpmSpaces;
+    }
+
+    public void setWpmSpaces(Integer wpmSpaces) {
+        this.wpmSpaces = wpmSpaces;
     }
 
     public String getLiteral() {
         return literal;
     }
 
-    public void setLiteral(final String literal) {
+    public void setLiteral(String literal) {
         this.literal = literal;
     }
 
@@ -69,7 +90,7 @@ public class MorseCode {
         return mp3Url;
     }
 
-    public void setMp3Url(final String mp3Url) {
+    public void setMp3Url(String mp3Url) {
         this.mp3Url = mp3Url;
     }
 
@@ -77,11 +98,11 @@ public class MorseCode {
         return phonetic;
     }
 
-    public void setPhonetic(final String phonetic) {
+    public void setPhonetic(String phonetic) {
         this.phonetic = phonetic;
     }
 
     public static MorseCode getEmpty() {
-        return new MorseCode(null, null, null, null, null);
+        return new MorseCode(null, null, null, null, null, null);
     }
 }

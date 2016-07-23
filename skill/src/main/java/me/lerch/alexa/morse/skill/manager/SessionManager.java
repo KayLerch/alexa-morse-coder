@@ -6,11 +6,12 @@ import me.lerch.alexa.morse.skill.model.MorseCode;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class SessionManager {
-    static MorseCode refreshExercisedCode(final Session session) throws IOException {
+    static MorseCode refreshExercisedCode(final Session session) throws IOException, URISyntaxException {
         final MorseCode currentCode = getExercisedCode(session);
-        final MorseCode newCode = MorseApiManager.encode(currentCode.getLiteral(), currentCode.getDotLength());
+        final MorseCode newCode = MorseApiManager.encode(currentCode.getLiteral(), currentCode.getWpm(), currentCode.getWpmSpaces());
         setExercisedCode(session, newCode);
         return newCode;
     }
@@ -20,7 +21,9 @@ public class SessionManager {
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordLiteral, code.getLiteral());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordCode, code.getCode());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic, code.getPhonetic());
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, code.getDotLength());
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, code.getWpm());
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces, code.getWpmSpaces());
+        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, code.getFarnsworth());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordAudio, code.getMp3Url());
     }
 
@@ -29,8 +32,9 @@ public class SessionManager {
         final String audio = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordAudio) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordAudio).toString() : null;
         final String code = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordCode) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordCode).toString() : null;
         final String phonetic = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordPhonetic) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic).toString() : null;
-        final Integer dot = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordSpeed) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWordSpeed).toString()) : null;
-        return new MorseCode(code, audio, literal, phonetic, dot);
+        final Integer wpm = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpm) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpm).toString()) : null;
+        final Integer wpmSpaces = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpm) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpm).toString()) : null;
+        return new MorseCode(code, audio, literal, phonetic, wpm, wpmSpaces);
     }
 
     static void resetExercisedCode(final Session session) {
@@ -40,26 +44,28 @@ public class SessionManager {
         session.removeAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic);
     }
 
-    static Integer getPlaybackSpeed(final Session session) {
-        return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordSpeed) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWordSpeed).toString()) : SkillConfig.getReadOutLevelNormal();
+    static Integer getWpm(final Session session) {
+        return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpm) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpm).toString()) : SkillConfig.getWpmLevelDefault();
     }
 
-    static Boolean increasePlaybackSpeed(final Session session) {
-        final Integer min = SkillConfig.getReadOutLevelMin();
-        final Integer speed = getPlaybackSpeed(session);
-        Integer newSpeed = speed - SkillConfig.getReadOutLevelStep();
-        newSpeed = newSpeed >= min ? newSpeed : min;
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, newSpeed);
-        return newSpeed != speed;
+    static Integer getWpmSpaces(final Session session) {
+        return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpmSpaces) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces).toString()) : SkillConfig.getWpmLevelDefault();
     }
 
-    static Boolean decreasePlaybackSpeed(final Session session) {
-        final Integer max = SkillConfig.getReadOutLevelMax();
-        final Integer speed = getPlaybackSpeed(session);
-        Integer newSpeed = speed + SkillConfig.getReadOutLevelStep();
-        newSpeed = newSpeed <= max ? newSpeed : max;
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWordSpeed, newSpeed);
-        return newSpeed != speed;
+    static Integer increaseWpm(final Session session) {
+        final Integer max = SkillConfig.getWpmLevelMax();
+        final Integer speed = getWpm(session);
+        final Integer newSpeed = speed + SkillConfig.getWpmLevelStep();
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, newSpeed <= max ? newSpeed : max);
+        return newSpeed;
+    }
+
+    static Integer decreaseWpm(final Session session) {
+        final Integer min = SkillConfig.getWpmLevelMin();
+        final Integer speed = getWpm(session);
+        final Integer newSpeed = speed - SkillConfig.getWpmLevelStep();
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, newSpeed >= min ? newSpeed : min);
+        return newSpeed;
     }
 
     /**

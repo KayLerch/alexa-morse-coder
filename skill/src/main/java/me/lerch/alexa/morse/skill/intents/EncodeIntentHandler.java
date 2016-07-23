@@ -9,6 +9,7 @@ import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * This implementation handles the encode intent. A user requested the morse code of a name
@@ -30,7 +31,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
                     SpeechletManager.getEncodeResponse(intent, session) :
                     // otherwise: tell the user that the name is not accepted
                     getErrorResponse("Only names with less than " + (SkillConfig.ExerciseWordMaxLengthForOutput + 1) + " characters are supported.");
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();
         }

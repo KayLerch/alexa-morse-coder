@@ -8,6 +8,7 @@ import me.lerch.alexa.morse.skill.wrapper.AbstractSpeechlet;
 import me.lerch.alexa.morse.skill.wrapper.IIntentHandler;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class MorseSpeechlet extends AbstractSpeechlet {
         String hi = "hi";
         try {
             hi = SsmlUtils.getAudio(MorseApiManager.encode("hi").getMp3Url());
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e ) {
             e.printStackTrace();
         }
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();

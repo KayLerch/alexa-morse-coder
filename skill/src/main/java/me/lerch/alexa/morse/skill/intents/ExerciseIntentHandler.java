@@ -9,6 +9,7 @@ import me.lerch.alexa.morse.skill.utils.*;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Handles an intent given while exercising with the morse skill
@@ -34,7 +35,7 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
                             SpeechletManager.getExerciseFalseResponse(intent, session) :
                     // if no exercise pending, start a new one by playing back a morse code
                     SpeechletManager.getExerciseAskResponse(intent, session);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();
         }
