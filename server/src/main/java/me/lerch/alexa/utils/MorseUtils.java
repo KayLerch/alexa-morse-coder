@@ -8,7 +8,11 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 
 public class MorseUtils {
+    // wpm = word per minute
+    private static final int MILLIS_OF_A_DIT_AT_1_WPM = 1200;
     private static final int FREQ = 500;
+    private static final float SAMPLE = 16000F;
+    private static AudioFormat AUDIO_MP3_FORMAT = new AudioFormat(SAMPLE, 8, 1, true, false);
     private static final ImmutableMap<String, String> MORSE_ALPAHBET = ImmutableMap.<String, String>builder()
             .put("a", ".-").put("b", "-...").put("c", "-.-.").put("d", "-..")
             .put("e", ".").put("f", "..-.").put("g", "--.").put("h", "....")
@@ -26,7 +30,6 @@ public class MorseUtils {
             .put("(", "-.--.").put(")", "-.--.-").put("'", ".----.").put("=", "-...-")
             .put("+", ".-.-.").put("/", "-..-.").put("@", ".--.-.").put(" ", " ")
             .build();
-    private static AudioFormat AUDIO_MP3_FORMAT = new AudioFormat(16000F, 8, 1, true, false);
 
     public static String diDahDit(String line) {
         final StringBuilder sb = new StringBuilder();
@@ -64,27 +67,36 @@ public class MorseUtils {
         return sb.toString().trim();
     }
 
-    public static File encodeMorseToWave(String line, final Integer DOT, final String filename) throws LineUnavailableException, InterruptedException, IOException, UnsupportedAudioFileException {
+    public static File encodeMorseToWave(String line, final String filename, final int wpm) throws InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException {
+        return encodeMorseToWave(line, filename, wpm, wpm);
+    }
+
+    public static File encodeMorseToWave(String line, final String filename, final int wpm,  final int wpmFarnsworth) throws LineUnavailableException, InterruptedException, IOException, UnsupportedAudioFileException {
         line = URLDecoder.decode(line, "UTF-8");
-        final Integer DASH = DOT * 3;
-        final Integer SPACE_LETTER = DOT * 3;
-        final Integer SPACE_WORD = DOT * 7;
+        // calculate length of a dot (dit)
+        // 1200/wpm/8/(1000/sample)
+        final int DOT = Math.round(MILLIS_OF_A_DIT_AT_1_WPM / wpm / 8 / (1000 / SAMPLE));
+        final int DOTfw = Math.round(MILLIS_OF_A_DIT_AT_1_WPM / wpmFarnsworth / 8 / (1000 / SAMPLE));
+        // derive length of dah and spaces from dit length (according to Morse standards)
+        final int DASH = DOT * 3;
+        final int SPACE_LETTER = DOTfw * 3;
+        final int SPACE_WORD = DOTfw * 7;
 
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         for (final char c : line.toLowerCase().toCharArray()) {
             String s = String.valueOf(c);
             if (" ".equals(s)) {
-                sleep(bos, SPACE_WORD);
+                addSpace(bos, SPACE_WORD);
             } else if (MORSE_ALPAHBET.containsKey(s)) {
                 char[] signs = MORSE_ALPAHBET.get(s).toCharArray();
                 for (int j = 0; j < signs.length; j++) {
                     for (int i = 0; i < (signs[j] == '.' ? DOT : DASH) * 8; i++) {
-                        bos.write(new byte[]{(byte) (Math.sin(i / (16000F / FREQ) * 2.0 * Math.PI) * 127.0)}, 0, 1);
+                        bos.write(new byte[]{(byte) (Math.sin(i / (SAMPLE / FREQ) * 2.0 * Math.PI) * 127.0)}, 0, 1);
                     }
                     // only pause if not the last sign of a character
-                    if (j + 1 < signs.length) sleep(bos, DOT);
+                    if (j + 1 < signs.length) addSpace(bos, DOT);
                 }
-                sleep(bos, SPACE_LETTER);
+                addSpace(bos, SPACE_LETTER);
             }
         }
         byte[] b = bos.toByteArray();
@@ -99,7 +111,7 @@ public class MorseUtils {
         return fileOut;
     }
 
-    private static void sleep(final ByteArrayOutputStream bos, final Integer factor) {
+    private static void addSpace(final ByteArrayOutputStream bos, final int factor) {
         int len = factor * 8;
         byte[] b = new byte[len];
         Arrays.fill(b, (byte)0);

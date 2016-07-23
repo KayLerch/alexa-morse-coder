@@ -13,17 +13,21 @@ public class MorseCode {
     private String phonetic;
     private String literal;
     private String mp3Url;
-    private Integer dotLength;
+    private Integer wpm;
+    private Integer wpmSpaces;
+    private Boolean farnsworth;
 
     public MorseCode() {
     }
 
-    public MorseCode(final String code, final String mp3Url, final String literal, final String phonetic, final Integer dotLength) {
+    public MorseCode(final String code, final String mp3Url, final String literal, final String phonetic, final Integer wpm, final Integer wpmSpaces) {
         this.code = code;
         this.mp3Url = mp3Url;
         this.literal = literal;
         this.phonetic = phonetic;
-        this.dotLength = dotLength;
+        this.wpm = wpm;
+        this.wpmSpaces = wpmSpaces;
+        this.farnsworth = wpmSpaces != wpm;
     }
 
     public static MorseCode fromJsonString(String json) throws IOException {
@@ -40,12 +44,28 @@ public class MorseCode {
         this.code = code;
     }
 
-    public Integer getDotLength() {
-        return dotLength;
+    public Integer getWpm() {
+        return wpm;
     }
 
-    public void setDotLength(Integer dotLength) {
-        this.dotLength = dotLength;
+    public void setWpm(Integer wpm) {
+        this.wpm = wpm;
+    }
+
+    public Boolean getFarnsworth() {
+        return farnsworth;
+    }
+
+    public void setFarnsworth(Boolean farnsworth) {
+        this.farnsworth = farnsworth;
+    }
+
+    public Integer getWpmSpaces() {
+        return wpmSpaces;
+    }
+
+    public void setWpmSpaces(Integer wpmSpaces) {
+        this.wpmSpaces = wpmSpaces;
     }
 
     public String getLiteral() {
@@ -73,6 +93,6 @@ public class MorseCode {
     }
 
     public static MorseCode getEmpty() {
-        return new MorseCode(null, null, null, null, null);
+        return new MorseCode(null, null, null, null, null, null);
     }
 }
