@@ -16,7 +16,6 @@ public class SessionManager {
         return newCode;
     }
 
-
     static void setExercisedCode(final Session session, final MorseCode code) {
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordLiteral, code.getLiteral());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordCode, code.getCode());

@@ -1,11 +1,24 @@
 {
   "intents": [
     {
-      "intent": "Setup",
+      "intent": "CfgSpeed",
       "slots": [
         {
-          "name": "SetupCommand",
-          "type": "SetupCommands"
+          "name": "CfgSpeedCommand",
+          "type": "CfgSpeedCommands"
+        },
+        {
+          "name": "CfpWpm",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "CfgDeviceIntegration",
+      "slots": [
+        {
+          "name": "CfgDevIntCommand",
+          "type": "CfgDevIntCommands"
         }
       ]
     },
