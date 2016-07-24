@@ -4,8 +4,8 @@
       "intent": "CfgSpeed",
       "slots": [
         {
-          "name": "CfgSpeedCommand",
-          "type": "CfgSpeedCommands"
+          "name": "CfgCommandUpDown",
+          "type": "CfgCommandsUpDown"
         },
         {
           "name": "CfpWpm",
@@ -17,8 +17,17 @@
       "intent": "CfgDeviceIntegration",
       "slots": [
         {
-          "name": "CfgDevIntCommand",
-          "type": "CfgDevIntCommands"
+          "name": "CfgCommandOnOff",
+          "type": "CfgCommandsOnOff"
+        }
+      ]
+    },
+    {
+      "intent": "CfgFarnsworth",
+      "slots": [
+        {
+          "name": "CfgCommandOnOff",
+          "type": "CfgCommandsOnOff"
         }
       ]
     },

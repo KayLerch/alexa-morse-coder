@@ -23,10 +23,10 @@ public class SkillConfig {
     private static final String defaultPropertiesFile = "app.properties";
     private static final String customPropertiesFile = "my.app.properties";
     private static final String slotExerciseWordsFilePattern = "alexa-skill-slot-exercisewords-char";
-    private static final String slotCfgDeviceIntegrationOffFile = "alexa-skill-slot-cfgdevintcommand-off";
-    private static final String slotCfgDeviceIntegrationOnFile = "alexa-skill-slot-cfgdevintcommand-on";
-    private static final String slotCfgSpeedCommandUpFile = "alexa-skill-slot-cfgspeedcommand-up";
-    private static final String slotCfgSpeedCommandDownFile = "alexa-skill-slot-cfgspeedcommand-down";
+    private static final String slotCfgCommandsOffFile = "alexa-skill-slot-cfgcommands-off";
+    private static final String slotCfgCommandsOnFile = "alexa-skill-slot-cfgcommands-on";
+    private static final String slotCfgCommandsUpFile = "alexa-skill-slot-cfgcommands-up";
+    private static final String slotCfgCommandsDownFile = "alexa-skill-slot-cfgcommands-down";
 
     // some constants not worth having them in a properties-files
     public static final String SessionAttributeExercisedWordLiteral = "exercisedWordLiteral";
@@ -84,10 +84,10 @@ public class SkillConfig {
     }
 
     private static final Map<Integer, List<String>> exerciseWords = getExerciseWords(slotExerciseWordsFilePattern);
-    public static final List<String> wpmUpWords = getWordsFromResource(slotCfgSpeedCommandUpFile);
-    public static final List<String> wpmDownWords = getWordsFromResource(slotCfgSpeedCommandDownFile);
-    public static final List<String> devIntOnWords = getWordsFromResource(slotCfgDeviceIntegrationOnFile);
-    public static final List<String> devIntOffWords = getWordsFromResource(slotCfgDeviceIntegrationOffFile);
+    public static final List<String> cfgUpWords = getWordsFromResource(slotCfgCommandsUpFile);
+    public static final List<String> cfgDownWords = getWordsFromResource(slotCfgCommandsDownFile);
+    public static final List<String> cfgOnWords = getWordsFromResource(slotCfgCommandsOnFile);
+    public static final List<String> cfgOffWords = getWordsFromResource(slotCfgCommandsOffFile);
 
     private static Map<Integer, List<String>> getExerciseWords(final String slotExerciseWordsFilePattern) {
         final Map<Integer, List<String>> words = new HashMap<>();
@@ -177,6 +177,13 @@ public class SkillConfig {
     }
 
     /**
+     * Name of the intent handling the farnsworth setup
+     */
+    public static String getAlexaIntentCfgFarnsworth() {
+        return properties.getProperty("AlexaIntentCfgFarnsworth");
+    }
+
+    /**
      * Name of the slot which holds a first name to either be spelled or encoded to morse code
      */
     public static String getAlexaSlotName() {
@@ -195,6 +202,13 @@ public class SkillConfig {
      */
     public static String getAlexaSlotCfgDevIntCommand() {
         return properties.getProperty("AlexaSlotCfgDevIntCommand");
+    }
+
+    /**
+     * Name of the slot which holds the action in the farnsworth setup command
+     */
+    public static String getAlexaSlotCfgFarnsworthCommand() {
+        return properties.getProperty("AlexaSlotCfgFarnsworthCommand");
     }
 
     /**

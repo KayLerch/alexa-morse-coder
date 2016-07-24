@@ -1,18 +1,22 @@
-CfgSpeed Slow {CfgSpeedCommand}
-CfgSpeed Speed {CfgSpeedCommand}
-CfgSpeed {CfgSpeedCommand} speed
-CfgSpeed {CfgSpeedCommand} words per minute
-CfgSpeed {CfgSpeedCommand} playback speed
-CfgSpeed Play {CfgSpeedCommand}
+CfgSpeed Slow {CfgCommandUpDown}
+CfgSpeed Speed {CfgCommandUpDown}
+CfgSpeed {CfgCommandUpDown} speed
+CfgSpeed {CfgCommandUpDown} words per minute
+CfgSpeed {CfgCommandUpDown} playback speed
+CfgSpeed Play {CfgCommandUpDown}
 CfgSpeed Set speed to {CfpWpm}
 CfgSpeed Set speed to {CfpWpm} words per minute
 CfgSpeed Set playback speed to {CfpWpm}
 CfgSpeed Set playback speed to {CfpWpm} words per minute
-CfgSpeed {CfgSpeedCommand} speed to {CfpWpm} words per minute
-CfgSpeed {CfgSpeedCommand} playback speed to {CfpWpm} words per minute
-CfgSpeed {CfgSpeedCommand} words per minute to {CfpWpm}
-CfgDeviceIntegration {CfgDevIntCommand} device integration
-CfgDeviceIntegration device integration {CfgDevIntCommand}
+CfgSpeed {CfgCommandUpDown} speed to {CfpWpm} words per minute
+CfgSpeed {CfgCommandUpDown} playback speed to {CfpWpm} words per minute
+CfgSpeed {CfgCommandUpDown} words per minute to {CfpWpm}
+CfgDeviceIntegration {CfgCommandOnOff} device integration
+CfgDeviceIntegration set device integration {CfgCommandOnOff}
+CfgDeviceIntegration set device integration to {CfgCommandOnOff}
+CfgFarnsworth {CfgCommandOnOff} farnsworth
+CfgFarnsworth set farnsworth {CfgCommandOnOff}
+CfgFarnsworth set farnsworth to {CfgCommandOnOff}
 Encode play back {Name}
 Encode play back name {Name}
 Encode play back the name {Name}

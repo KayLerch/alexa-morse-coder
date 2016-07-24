@@ -20,6 +20,7 @@ public class MorseSpeechlet extends AbstractSpeechlet {
         intentHandlers = new ArrayList<>();
         intentHandlers.add(new CfgSpeedIntentHandler());
         intentHandlers.add(new CfgDeviceIntegrationIntentHandler());
+        intentHandlers.add(new CfgFarnsworthIntentHandler());
         intentHandlers.add(new EncodeIntentHandler());
         intentHandlers.add(new ExerciseIntentHandler());
         intentHandlers.add(new CancelIntentHandler());

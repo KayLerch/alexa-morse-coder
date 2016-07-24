@@ -51,6 +51,20 @@ public class SessionManager {
         return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpmSpaces) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces).toString()) : SkillConfig.getWpmLevelDefault();
     }
 
+    static Integer enableFarnsworth(final Session session) {
+        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, Boolean.valueOf(true));
+        final Integer wpmSpaces = getWpm(session) - SkillConfig.getFarnsworthWpmReduction();
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces, wpmSpaces);
+        return wpmSpaces;
+    }
+
+    static Integer disableFarnsworth(final Session session) {
+        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, Boolean.valueOf(false));
+        final Integer wpmSpaces = getWpm(session);
+        session.setAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces, wpmSpaces);
+        return wpmSpaces;
+    }
+
     static Boolean setWpm(final Session session, final Integer desiredWpm) {
         final Integer max = SkillConfig.getWpmLevelMax();
         final Integer min = SkillConfig.getWpmLevelMin();
@@ -235,16 +249,24 @@ public class SessionManager {
         final String SlotName = SkillConfig.getAlexaSlotCfgSpeedCommand();
         final String command = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
 
-        return SkillConfig.wpmUpWords.contains(command) ? SkillConfig.SETUP_MODE.UP :
-                SkillConfig.wpmDownWords.contains(command) ? SkillConfig.SETUP_MODE.DOWN : SkillConfig.SETUP_MODE.NAN;
+        return SkillConfig.cfgUpWords.contains(command) ? SkillConfig.SETUP_MODE.UP :
+                SkillConfig.cfgDownWords.contains(command) ? SkillConfig.SETUP_MODE.DOWN : SkillConfig.SETUP_MODE.NAN;
     }
 
     public static SkillConfig.SETUP_MODE getIntegrationSetupMode(final Intent intent, final Session session) {
         final String SlotName = SkillConfig.getAlexaSlotCfgDevIntCommand();
         final String command = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
 
-        return SkillConfig.devIntOnWords.contains(command) ? SkillConfig.SETUP_MODE.ON :
-                SkillConfig.devIntOffWords.contains(command) ? SkillConfig.SETUP_MODE.OFF : SkillConfig.SETUP_MODE.NAN;
+        return SkillConfig.cfgOnWords.contains(command) ? SkillConfig.SETUP_MODE.ON :
+                SkillConfig.cfgOffWords.contains(command) ? SkillConfig.SETUP_MODE.OFF : SkillConfig.SETUP_MODE.NAN;
+    }
+
+    public static SkillConfig.SETUP_MODE getFarnsworthSetupMode(final Intent intent, final Session session) {
+        final String SlotName = SkillConfig.getAlexaSlotCfgFarnsworthCommand();
+        final String command = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
+
+        return SkillConfig.cfgOnWords.contains(command) ? SkillConfig.SETUP_MODE.ON :
+                SkillConfig.cfgOffWords.contains(command) ? SkillConfig.SETUP_MODE.OFF : SkillConfig.SETUP_MODE.NAN;
     }
 
     /**

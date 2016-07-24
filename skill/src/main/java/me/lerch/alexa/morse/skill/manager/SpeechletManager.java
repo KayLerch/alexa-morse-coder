@@ -240,8 +240,26 @@ public class SpeechletManager {
         return response;
     }
 
+    public static SpeechletResponse getFarnsworthOnResponse(final Session session) {
+        final Integer wpmSpaces = SessionManager.enableFarnsworth(session);
+        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        outputSpeech.setSsml("<speak>From now on playback speed of pauses between letters and words is reduced to " + String.valueOf(wpmSpaces) + " word per minute.</speak>");
+        SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
+        response.setShouldEndSession(false);
+        return response;
+    }
+
+    public static SpeechletResponse getFarnsworthOffResponse(final Session session) {
+        final Integer wpmSpaces = SessionManager.disableFarnsworth(session);
+        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        outputSpeech.setSsml("<speak>Playback speed of pauses between letters and words is set back to normal.</speak>");
+        SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
+        response.setShouldEndSession(false);
+        return response;
+    }
+
     public static SpeechletResponse getDeviceIntegrationOnResponse(final Session session) {
-        String thingName = IotDeviceManager.createThing(session);
+        final String thingName = IotDeviceManager.createThing(session);
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>From now on, whenever this skill plays back a Morse code, it propagates data to a device shadow whose name you can find in your Alexa app.</speak>");
         final Card card = CardImageManager.getIotSetupCard(thingName);
