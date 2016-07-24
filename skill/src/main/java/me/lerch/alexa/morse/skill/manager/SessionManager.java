@@ -52,20 +52,26 @@ public class SessionManager {
         return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpmSpaces) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces).toString()) : SkillConfig.getWpmLevelDefault();
     }
 
-    static Integer increaseWpm(final Session session) {
+    static Boolean setWpm(final Session session, final Integer desiredWpm) {
         final Integer max = SkillConfig.getWpmLevelMax();
-        final Integer speed = getWpm(session);
-        final Integer newSpeed = speed + SkillConfig.getWpmLevelStep();
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, newSpeed <= max ? newSpeed : max);
-        return newSpeed;
+        final Integer min = SkillConfig.getWpmLevelMin();
+        if (desiredWpm >= min && desiredWpm <= max) {
+            session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, desiredWpm);
+            return true;
+        }
+        return false;
+    }
+
+    static Integer increaseWpm(final Session session) {
+        final Integer wpm = getWpm(session);
+        final Integer desiredWpm = wpm + SkillConfig.getWpmLevelStep();
+        return setWpm(session, desiredWpm) ? desiredWpm : wpm;
     }
 
     static Integer decreaseWpm(final Session session) {
-        final Integer min = SkillConfig.getWpmLevelMin();
-        final Integer speed = getWpm(session);
-        final Integer newSpeed = speed - SkillConfig.getWpmLevelStep();
-        session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, newSpeed >= min ? newSpeed : min);
-        return newSpeed;
+        final Integer wpm = getWpm(session);
+        final Integer desiredWpm = wpm - SkillConfig.getWpmLevelStep();
+        return setWpm(session, desiredWpm) ? desiredWpm : wpm;
     }
 
     /**
@@ -220,14 +226,26 @@ public class SessionManager {
         }
     }
 
-    public static SkillConfig.SETUP_MODE getSetupMode(final Intent intent, final Session session) {
-        final String SlotName = SkillConfig.getAlexaSlotIoTSetupCommand();
+    public static Integer getDesiredWpm(final Intent intent, final Session session) {
+        final String SlotName = SkillConfig.getAlexaSlotCfgWpm();
+        final String wpm = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
+        return wpm != null ? Integer.valueOf(wpm) : null;
+    }
+
+    public static SkillConfig.SETUP_MODE getWpmSetupMode(final Intent intent, final Session session) {
+        final String SlotName = SkillConfig.getAlexaSlotCfgSpeedCommand();
         final String command = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
 
-        return SkillConfig.setupUpWords.contains(command) ? SkillConfig.SETUP_MODE.UP :
-                SkillConfig.setupDownWords.contains(command) ? SkillConfig.SETUP_MODE.DOWN :
-                        SkillConfig.setupEnableWords.contains(command) ? SkillConfig.SETUP_MODE.ON :
-                                SkillConfig.setupDisableWords.contains(command) ? SkillConfig.SETUP_MODE.OFF : SkillConfig.SETUP_MODE.NAN;
+        return SkillConfig.wpmUpWords.contains(command) ? SkillConfig.SETUP_MODE.UP :
+                SkillConfig.wpmDownWords.contains(command) ? SkillConfig.SETUP_MODE.DOWN : SkillConfig.SETUP_MODE.NAN;
+    }
+
+    public static SkillConfig.SETUP_MODE getIntegrationSetupMode(final Intent intent, final Session session) {
+        final String SlotName = SkillConfig.getAlexaSlotCfgDevIntCommand();
+        final String command = (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
+
+        return SkillConfig.devIntOnWords.contains(command) ? SkillConfig.SETUP_MODE.ON :
+                SkillConfig.devIntOffWords.contains(command) ? SkillConfig.SETUP_MODE.OFF : SkillConfig.SETUP_MODE.NAN;
     }
 
     /**
@@ -282,10 +300,6 @@ public class SessionManager {
 
     public static Boolean isAnswerToAnotherTry(final Intent intent, final Session session) {
         return isAnswerTo(intent, session, SkillConfig.YesNoQuestions.WantAnotherTry);
-    }
-
-    public static Boolean isAnswerToAnotherSpell(final Intent intent, final Session session) {
-        return isAnswerTo(intent, session, SkillConfig.YesNoQuestions.WantAnotherSpell);
     }
 
     public static Boolean isAnswerToAnotherEncode(final Intent intent, final Session session) {

@@ -1,11 +1,18 @@
-Setup {SetupCommand} speed
-Setup {SetupCommand} playback speed
-Setup Speed {SetupCommand}
-Setup Speed {SetupCommand} playback
-Setup Slow {SetupCommand}
-Setup Play {SetupCommand}
-Setup {SetupCommand} device integration
-Setup {SetupCommand} data progagation
+CfgSpeed Slow {CfgSpeedCommand}
+CfgSpeed Speed {CfgSpeedCommand}
+CfgSpeed {CfgSpeedCommand} speed
+CfgSpeed {CfgSpeedCommand} words per minute
+CfgSpeed {CfgSpeedCommand} playback speed
+CfgSpeed Play {CfgSpeedCommand}
+CfgSpeed Set speed to {CfpWpm}
+CfgSpeed Set speed to {CfpWpm} words per minute
+CfgSpeed Set playback speed to {CfpWpm}
+CfgSpeed Set playback speed to {CfpWpm} words per minute
+CfgSpeed {CfgSpeedCommand} speed to {CfpWpm} words per minute
+CfgSpeed {CfgSpeedCommand} playback speed to {CfpWpm} words per minute
+CfgSpeed {CfgSpeedCommand} words per minute to {CfpWpm}
+CfgDeviceIntegration {CfgDevIntCommand} device integration
+CfgDeviceIntegration device integration {CfgDevIntCommand}
 Encode play back {Name}
 Encode play back name {Name}
 Encode play back the name {Name}

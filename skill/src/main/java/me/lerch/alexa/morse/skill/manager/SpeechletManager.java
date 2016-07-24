@@ -56,8 +56,7 @@ public class SpeechletManager {
      */
     public static SpeechletResponse getHelpAboutAll(final Intent intent, final Session session) {
         String strContent = "This skill teaches you how to morse code. Let me encode " +
-                "common first names by saying something like <p>Encode Michael</p> or let me " +
-                "spell a name by saying <p>Spell James</p> Or just say <p>Start exercise</p>";
+                "common first names by saying something like <p>Encode Michael</p>Or just say <p>Start exercise</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
 
@@ -76,23 +75,6 @@ public class SpeechletManager {
     public static SpeechletResponse getHelpDuringExercise(final Intent intent, final Session session) {
         final String strContent = "You are asked for the decoded word. Say the word right away. " +
                 "Alternatively say <p>repeat</p> to listen to the code once again or say <p>next</p> to have another morse code.";
-        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml("<speak>" + strContent + "</speak>");
-
-        final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
-        response.setShouldEndSession(false);
-        return response;
-    }
-
-    /**
-     * This one handles the request of introducing to another spell out request
-     *
-     * @param intent  the intent given by the user
-     * @param session session data
-     * @return corresponding speechlet response to another spell out intro request
-     */
-    public static SpeechletResponse getSpellAskResponse(final Intent intent, final Session session) {
-        final String strContent = "Let me spell out a name for you in morse code. Say something like <p>Spell out Jeff</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
 
@@ -258,7 +240,7 @@ public class SpeechletManager {
         return response;
     }
 
-    public static SpeechletResponse getSetupEnableResponse(final Session session) {
+    public static SpeechletResponse getDeviceIntegrationOnResponse(final Session session) {
         String thingName = IotDeviceManager.createThing(session);
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>From now on, whenever this skill plays back a Morse code, it propagates data to a device shadow whose name you can find in your Alexa app.</speak>");
@@ -268,7 +250,7 @@ public class SpeechletManager {
         return response;
     }
 
-    public static SpeechletResponse getSetupDisableRespone(final Session session) {
+    public static SpeechletResponse getDeviceIntegrationOffResponse(final Session session) {
         IotDeviceManager.disableThing(session);
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>From now on, no more data will be propagated to your device shadow.</speak>");
@@ -277,35 +259,31 @@ public class SpeechletManager {
         return response;
     }
 
-    public static SpeechletResponse getSetupUpRespone(final Session session) throws IOException, URISyntaxException {
-        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        Integer wpm = SessionManager.increaseWpm(session);
-        String speech = "Playback speed is set to " + String.valueOf(wpm) + " words per minute.";
-
-        if (SessionManager.hasExercisePending(session)) {
-            final MorseCode code = SessionManager.refreshExercisedCode(session);
-            outputSpeech = getExerciseAskSpeech(code, speech + " Here is your last code.");
-        }
-        else {
-            outputSpeech.setSsml(speech + " Start exercise now?");
-            session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
-        }
-        final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
-        response.setShouldEndSession(false);
-        return response;
+    public static SpeechletResponse getWpmSetResponse(final Session session, Integer desiredWpm) throws IOException, URISyntaxException {
+        final String prefaceSpeech = SessionManager.setWpm(session, desiredWpm) ? "Playback speed is now set to " + String.valueOf(desiredWpm) + " words per minute." : "Sorry, this value is out of range.";
+        return getWpmResponse(session, prefaceSpeech);
     }
 
-    public static SpeechletResponse getSetupDownRespone(final Session session) throws IOException, URISyntaxException {
-        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        Integer wpm = SessionManager.decreaseWpm(session);
-        String speech = "Playback speed is set to " + String.valueOf(wpm) + " words per minute.";
+    public static SpeechletResponse getWpmUpResponse(final Session session) throws IOException, URISyntaxException {
+        final Integer wpm = SessionManager.increaseWpm(session);
+        final String prefaceSpeech = "Playback speed is enhanced to " + String.valueOf(wpm) + " words per minute.";
+        return getWpmResponse(session, prefaceSpeech);
+    }
 
+    public static SpeechletResponse getWpmDownResponse(final Session session) throws IOException, URISyntaxException {
+        final Integer wpm = SessionManager.decreaseWpm(session);
+        final String prefaceSpeech = "Playback speed is reduced to " + String.valueOf(wpm) + " words per minute.";
+        return getWpmResponse(session, prefaceSpeech);
+    }
+
+    private static SpeechletResponse getWpmResponse(final Session session, String prefaceSpeech) throws IOException, URISyntaxException {
+        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         if (SessionManager.hasExercisePending(session)) {
             final MorseCode code = SessionManager.refreshExercisedCode(session);
-            outputSpeech = getExerciseAskSpeech(code, speech + " Here is your last code.");
+            outputSpeech = getExerciseAskSpeech(code, prefaceSpeech + " Here is your last code.");
         }
         else {
-            outputSpeech.setSsml(speech + " Start exercise now?");
+            outputSpeech.setSsml(prefaceSpeech + " Start exercise now?");
             session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
         }
         final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);

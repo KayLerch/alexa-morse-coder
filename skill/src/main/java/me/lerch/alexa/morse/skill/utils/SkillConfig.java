@@ -12,7 +12,7 @@ import java.util.*;
 public class SkillConfig {
     public enum YesNoQuestions
     {
-        WantAnotherExercise, WantAnotherEncode, WantAnotherSpell, WantAnotherTry
+        WantAnotherExercise, WantAnotherEncode, WantAnotherTry
     }
 
     public enum SETUP_MODE {
@@ -23,10 +23,10 @@ public class SkillConfig {
     private static final String defaultPropertiesFile = "app.properties";
     private static final String customPropertiesFile = "my.app.properties";
     private static final String slotExerciseWordsFilePattern = "alexa-skill-slot-exercisewords-char";
-    private static final String slotSetupCommandsFileDisable = "alexa-skill-slot-setupcommand-disable";
-    private static final String slotSetupCommandsFileEnable = "alexa-skill-slot-setupcommand-enable";
-    private static final String slotSetupCommandsFileUp = "alexa-skill-slot-setupcommand-up";
-    private static final String slotSetupCommandsFileDown = "alexa-skill-slot-setupcommand-down";
+    private static final String slotCfgDeviceIntegrationOffFile = "alexa-skill-slot-cfgdevintcommand-off";
+    private static final String slotCfgDeviceIntegrationOnFile = "alexa-skill-slot-cfgdevintcommand-on";
+    private static final String slotCfgSpeedCommandUpFile = "alexa-skill-slot-cfgspeedcommand-up";
+    private static final String slotCfgSpeedCommandDownFile = "alexa-skill-slot-cfgspeedcommand-down";
 
     // some constants not worth having them in a properties-files
     public static final String SessionAttributeExercisedWordLiteral = "exercisedWordLiteral";
@@ -84,10 +84,10 @@ public class SkillConfig {
     }
 
     private static final Map<Integer, List<String>> exerciseWords = getExerciseWords(slotExerciseWordsFilePattern);
-    public static final List<String> setupUpWords = getWordsFromResource(slotSetupCommandsFileUp);
-    public static final List<String> setupDownWords = getWordsFromResource(slotSetupCommandsFileDown);
-    public static final List<String> setupEnableWords = getWordsFromResource(slotSetupCommandsFileEnable);
-    public static final List<String> setupDisableWords = getWordsFromResource(slotSetupCommandsFileDisable);
+    public static final List<String> wpmUpWords = getWordsFromResource(slotCfgSpeedCommandUpFile);
+    public static final List<String> wpmDownWords = getWordsFromResource(slotCfgSpeedCommandDownFile);
+    public static final List<String> devIntOnWords = getWordsFromResource(slotCfgDeviceIntegrationOnFile);
+    public static final List<String> devIntOffWords = getWordsFromResource(slotCfgDeviceIntegrationOffFile);
 
     private static Map<Integer, List<String>> getExerciseWords(final String slotExerciseWordsFilePattern) {
         final Map<Integer, List<String>> words = new HashMap<>();
@@ -163,10 +163,17 @@ public class SkillConfig {
     }
 
     /**
+     * Name of the intent handling the wpm setup
+     */
+    public static String getAlexaIntentCfgSpeed() {
+        return properties.getProperty("AlexaIntentCfgSpeed");
+    }
+
+    /**
      * Name of the intent handling the iot setup
      */
-    public static String getAlexaIntentIotSetup() {
-        return properties.getProperty("AlexaIntentIotSetup");
+    public static String getAlexaIntentCfgDevInt() {
+        return properties.getProperty("AlexaIntentCfgDevInt");
     }
 
     /**
@@ -177,10 +184,17 @@ public class SkillConfig {
     }
 
     /**
-     * Name of the slot which holds the action in the iot setup command
+     * Name of the slot which holds the action in the wpm setup command
      */
-    public static String getAlexaSlotIoTSetupCommand() {
-        return properties.getProperty("AlexaSlotIoTSetupCommand");
+    public static String getAlexaSlotCfgSpeedCommand() {
+        return properties.getProperty("AlexaSlotCfgSpeedCommand");
+    }
+
+    /**
+     * Name of the slot which holds the action in the wpm setup command
+     */
+    public static String getAlexaSlotCfgDevIntCommand() {
+        return properties.getProperty("AlexaSlotCfgDevIntCommand");
     }
 
     /**
@@ -190,6 +204,9 @@ public class SkillConfig {
         return properties.getProperty("AlexaSlotExerciseWord");
     }
 
+    public static String getAlexaSlotCfgWpm() {
+        return properties.getProperty("AlexaSlotCfgWpm");
+    }
 
     /**
      * Url of the S3-bucket where all audio-files of morse codes are stored in

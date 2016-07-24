@@ -34,17 +34,13 @@ public class NoIntentHandler extends AbstractIntentHandler {
                         SessionManager.isAnswerToAnotherEncode(intent, session) ?
                                 // this means leaving the app and say good bye
                                 SpeechletManager.getGoodBye(intent, session) :
-                                // "have another code spelled out?" was denied
-                                SessionManager.isAnswerToAnotherSpell(intent, session) ?
-                                        // this means leaving the app and say good bye
-                                        SpeechletManager.getGoodBye(intent, session) :
-                                        // none of the above questions was answered, so No-intent is not expected in current context
-                                        // before giving the user a help check if there is an ongoing exercise
-                                        SessionManager.hasExercisePending(session) ?
-                                                // if so, play back help information dedicated to the exercise
-                                                SpeechletManager.getHelpDuringExercise(intent, session) :
-                                                // otherwise: give general hints
-                                                SpeechletManager.getHelpAboutAll(intent, session);
+                                // none of the above questions was answered, so No-intent is not expected in current context
+                                // before giving the user a help check if there is an ongoing exercise
+                                SessionManager.hasExercisePending(session) ?
+                                        // if so, play back help information dedicated to the exercise
+                                        SpeechletManager.getHelpDuringExercise(intent, session) :
+                                        // otherwise: give general hints
+                                        SpeechletManager.getHelpAboutAll(intent, session);
 
         // reset session attribute if unchanged
         if (sessionQuestion != null && sessionQuestion.toString().equals(session.getAttribute(SkillConfig.SessionAttributeYesNoQuestion)))

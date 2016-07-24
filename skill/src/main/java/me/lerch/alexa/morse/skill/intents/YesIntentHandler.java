@@ -24,16 +24,14 @@ public class YesIntentHandler extends AbstractIntentHandler {
         SpeechletResponse response;
         try {
             response = SessionManager.isAnswerToAnotherEncode(intent, session) ?
-                            SpeechletManager.getEncodeAskResponse(intent, session) :
-                        SessionManager.isAnswerToAnotherSpell(intent, session) ?
-                                SpeechletManager.getSpellAskResponse(intent, session) :
-                            SessionManager.isAnswerToAnotherExercise(intent, session) ?
-                                    SpeechletManager.getExerciseAskResponse(intent, session) :
-                                SessionManager.isAnswerToAnotherTry(intent, session) ?
-                                        SpeechletManager.getExerciseRepeatResponse(intent, session) :
-                                            SessionManager.hasExercisePending(session) ?
-                                                SpeechletManager.getHelpDuringExercise(intent, session) :
-                                                    SpeechletManager.getHelpAboutAll(intent, session);
+                    SpeechletManager.getEncodeAskResponse(intent, session) :
+                    SessionManager.isAnswerToAnotherExercise(intent, session) ?
+                            SpeechletManager.getExerciseAskResponse(intent, session) :
+                            SessionManager.isAnswerToAnotherTry(intent, session) ?
+                                    SpeechletManager.getExerciseRepeatResponse(intent, session) :
+                                    SessionManager.hasExercisePending(session) ?
+                                            SpeechletManager.getHelpDuringExercise(intent, session) :
+                                            SpeechletManager.getHelpAboutAll(intent, session);
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();
