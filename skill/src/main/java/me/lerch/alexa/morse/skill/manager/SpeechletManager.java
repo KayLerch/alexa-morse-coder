@@ -56,7 +56,7 @@ public class SpeechletManager {
      */
     public static SpeechletResponse getHelpAboutAll(final Intent intent, final Session session) {
         String strContent = "This skill teaches you how to morse code. Let me encode " +
-                "common first names by saying something like <p>Encode Michael</p>Or just say <p>Start exercise</p>";
+                "any phrases by saying something like <p>Encode hello world</p>Or just say <p>Start exercise</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
 
@@ -91,7 +91,7 @@ public class SpeechletManager {
      * @return corresponding speechlet response to another encoding intro request
      */
     public static SpeechletResponse getEncodeAskResponse(final Intent intent, final Session session) {
-        final String strContent = "Let me encode a name for you to morse code. Say something like <p>Encode Michael</p>";
+        final String strContent = "Let me encode a phrase for you to morse code. Say something like <p>Encode hello world</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
 
@@ -240,20 +240,38 @@ public class SpeechletManager {
         return response;
     }
 
-    public static SpeechletResponse getFarnsworthOnResponse(final Session session) {
+    public static SpeechletResponse getFarnsworthOnResponse(final Session session) throws IOException, URISyntaxException {
         final Integer wpmSpaces = SessionManager.enableFarnsworth(session);
-        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml("<speak>From now on playback speed of pauses between letters and words is reduced to " + String.valueOf(wpmSpaces) + " word per minute.</speak>");
-        SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
+        final String prefaceSpeech = "From now on Farnsworth is enabled with " + String.valueOf(wpmSpaces) + " words per minute.";
+
+        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        if (SessionManager.hasExercisePending(session)) {
+            final MorseCode code = SessionManager.refreshExercisedCode(session);
+            outputSpeech = getExerciseAskSpeech(code, prefaceSpeech + " Here is your last code.");
+        }
+        else {
+            outputSpeech.setSsml(prefaceSpeech + " Start exercise now?");
+            session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
+        }
+        final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
         response.setShouldEndSession(false);
         return response;
     }
 
-    public static SpeechletResponse getFarnsworthOffResponse(final Session session) {
-        final Integer wpmSpaces = SessionManager.disableFarnsworth(session);
-        final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-        outputSpeech.setSsml("<speak>Playback speed of pauses between letters and words is set back to normal.</speak>");
-        SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
+    public static SpeechletResponse getFarnsworthOffResponse(final Session session) throws IOException, URISyntaxException {
+        SessionManager.disableFarnsworth(session);
+        final String prefaceSpeech = "Playback speed of spaces between letters and words is set back to normal.";
+
+        SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
+        if (SessionManager.hasExercisePending(session)) {
+            final MorseCode code = SessionManager.refreshExercisedCode(session);
+            outputSpeech = getExerciseAskSpeech(code, prefaceSpeech + " Here is your last code.");
+        }
+        else {
+            outputSpeech.setSsml(prefaceSpeech + " Start exercise now?");
+            session.setAttribute(SkillConfig.SessionAttributeYesNoQuestion, SkillConfig.YesNoQuestions.WantAnotherExercise);
+        }
+        final SpeechletResponse response = SpeechletResponse.newTellResponse(outputSpeech);
         response.setShouldEndSession(false);
         return response;
     }
@@ -347,7 +365,7 @@ public class SpeechletManager {
 
         final MorseCode code = MorseApiManager.encode(text, SessionManager.getWpm(session), SessionManager.getWpmSpaces(session));
 
-        final String strContent = "Morse code of " + text + " is as follows: " + SsmlUtils.getAudio(code.getMp3Url()) + "<p>Do you want me to encode another name?</p>";
+        final String strContent = "Morse code of " + text + " is as follows: " + SsmlUtils.getAudio(code.getMp3Url()) + "<p>Do you want me to encode another phrase?</p>";
         final SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
         outputSpeech.setSsml("<speak>" + strContent + "</speak>");
 

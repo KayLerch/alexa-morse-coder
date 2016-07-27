@@ -30,7 +30,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
                     // return the encoded name as audio
                     SpeechletManager.getEncodeResponse(intent, session) :
                     // otherwise: tell the user that the name is not accepted
-                    getErrorResponse("Only names with less than " + (SkillConfig.ExerciseWordMaxLengthForOutput + 1) + " characters are supported.");
+                    getErrorResponse("Only phrases with less than " + (SkillConfig.ExerciseWordMaxLengthForOutput + 1) + " characters are supported.");
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return getErrorResponse();

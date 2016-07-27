@@ -14,10 +14,11 @@ import java.awt.*;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URLEncoder;
 
 class CardImageManager {
     static Card getIotSetupCard(final String thingName) {
-        SimpleCard card = new SimpleCard();
+        final SimpleCard card = new SimpleCard();
         card.setTitle("Enabled device propagation");
         card.setContent("There is an MQTT-topic created for you so you are able to subscribe" +
                 " information of Morse codes played back to Alexa. Don't worry. This topic" +
@@ -62,6 +63,8 @@ class CardImageManager {
     }
 
     private static BufferedImage createImage(final String word, final boolean codeOnly) throws IOException {
+        // remove all non-letter characters as there is no letter card for it
+        final char[] letters = word.toLowerCase().replaceAll("[^a-z]", "").toCharArray();
         /*
         * --------- cols  (x)
         * |---> width
@@ -72,7 +75,7 @@ class CardImageManager {
          */
         final Integer widthLetter = 115;
         final Integer heightLetter = 132;
-        final Integer wordLength = word.length();
+        final Integer wordLength = letters.length;
 
         // find optimal number of columns
         final Integer cols =
@@ -90,8 +93,6 @@ class CardImageManager {
 
         final BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         final Graphics g = result.getGraphics();
-
-        final char[] letters = word.toCharArray();
 
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
@@ -113,7 +114,12 @@ class CardImageManager {
     }
 
     private static String getFileKey(final String word, final Boolean codeOnly) {
-        return (codeOnly ? SkillConfig.getS3BucketFolderImgCodes() : SkillConfig.getS3BucketFolderImg()) + "/" + word.toLowerCase() + ".png";
+        try {
+            return (codeOnly ? SkillConfig.getS3BucketFolderImgCodes() : SkillConfig.getS3BucketFolderImg()) + "/" + URLEncoder.encode(word.toLowerCase(), "UTF-8") + ".png";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static String getS3Url(final String word, final Boolean codeOnly) {

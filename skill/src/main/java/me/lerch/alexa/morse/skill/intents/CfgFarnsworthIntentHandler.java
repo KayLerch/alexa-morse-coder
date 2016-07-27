@@ -8,6 +8,9 @@ import me.lerch.alexa.morse.skill.manager.SpeechletManager;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /**
  * Handles an intent given while setting up farnsworth mode
  */
@@ -21,13 +24,18 @@ public class CfgFarnsworthIntentHandler extends AbstractIntentHandler {
 
     @Override
     public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
-        switch (SessionManager.getFarnsworthSetupMode(intent, session)) {
-            case ON:
-                return SpeechletManager.getFarnsworthOnResponse(session);
-            case OFF:
-                return SpeechletManager.getFarnsworthOffResponse(session);
-            default:
-                return getErrorResponse("Command is unknown.");
+        try {
+            switch (SessionManager.getFarnsworthSetupMode(intent, session)) {
+                case ON:
+                    return SpeechletManager.getFarnsworthOnResponse(session);
+                case OFF:
+                    return SpeechletManager.getFarnsworthOffResponse(session);
+                default:
+                    return getErrorResponse("Command is unknown.");
+            }
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+            return getErrorResponse();
         }
     }
 }

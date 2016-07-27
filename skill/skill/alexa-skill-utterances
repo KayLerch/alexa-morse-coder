@@ -1,13 +1,13 @@
-CfgSpeed Slow {CfgCommandUpDown}
-CfgSpeed Speed {CfgCommandUpDown}
+CfgSpeed slow {CfgCommandUpDown}
+CfgSpeed speed {CfgCommandUpDown}
 CfgSpeed {CfgCommandUpDown} speed
 CfgSpeed {CfgCommandUpDown} words per minute
 CfgSpeed {CfgCommandUpDown} playback speed
-CfgSpeed Play {CfgCommandUpDown}
-CfgSpeed Set speed to {CfpWpm}
-CfgSpeed Set speed to {CfpWpm} words per minute
-CfgSpeed Set playback speed to {CfpWpm}
-CfgSpeed Set playback speed to {CfpWpm} words per minute
+CfgSpeed play {CfgCommandUpDown}
+CfgSpeed set speed to {CfpWpm}
+CfgSpeed set speed to {CfpWpm} words per minute
+CfgSpeed set playback speed to {CfpWpm}
+CfgSpeed set playback speed to {CfpWpm} words per minute
 CfgSpeed {CfgCommandUpDown} speed to {CfpWpm} words per minute
 CfgSpeed {CfgCommandUpDown} playback speed to {CfpWpm} words per minute
 CfgSpeed {CfgCommandUpDown} words per minute to {CfpWpm}
@@ -17,18 +17,13 @@ CfgDeviceIntegration set device integration to {CfgCommandOnOff}
 CfgFarnsworth {CfgCommandOnOff} farnsworth
 CfgFarnsworth set farnsworth {CfgCommandOnOff}
 CfgFarnsworth set farnsworth to {CfgCommandOnOff}
-Encode play back {Name}
-Encode play back name {Name}
-Encode play back the name {Name}
-Encode encode {Name}
-Encode encode name {Name}
-Encode encode the name {Name}
-Encode morse {Name}
-Encode morse name {Name}
-Encode morse the name {Name}
-Encode translate {Name}
-Encode translate name {Name}
-Encode translate the name {Name}
+Encode play back {sample|Name}
+Encode encode {sample|Name}
+Encode encode {this is a sample with more words to be encoded|Name}
+Encode morse {sample|Name}
+Encode morse {this is a sample with more words to be encoded|Name}
+Encode translate {sample|Name}
+Encode translate {this is a sample with more words to be encoded|Name}
 Exercise exercise me
 Exercise train me
 Exercise teach me

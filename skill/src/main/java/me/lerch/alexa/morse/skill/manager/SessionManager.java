@@ -22,7 +22,6 @@ public class SessionManager {
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic, code.getPhonetic());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, code.getWpm());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces, code.getWpmSpaces());
-        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, code.getFarnsworth());
         session.setAttribute(SkillConfig.SessionAttributeExercisedWordAudio, code.getMp3Url());
     }
 
@@ -32,7 +31,7 @@ public class SessionManager {
         final String code = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordCode) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordCode).toString() : null;
         final String phonetic = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWordPhonetic) ? session.getAttribute(SkillConfig.SessionAttributeExercisedWordPhonetic).toString() : null;
         final Integer wpm = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpm) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpm).toString()) : null;
-        final Integer wpmSpaces = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpm) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpm).toString()) : null;
+        final Integer wpmSpaces = session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpmSpaces) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces).toString()) : null;
         return new MorseCode(code, audio, literal, phonetic, wpm, wpmSpaces);
     }
 
@@ -51,15 +50,21 @@ public class SessionManager {
         return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpmSpaces) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces).toString()) : SkillConfig.getWpmLevelDefault();
     }
 
+    static Boolean isFarnsworthEnabled(final Session session) {
+        return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedFarnsworth) &&
+                Boolean.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedFarnsworth).toString());
+    }
+
     static Integer enableFarnsworth(final Session session) {
-        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, Boolean.valueOf(true));
+        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, true);
         final Integer wpmSpaces = getWpm(session) - SkillConfig.getFarnsworthWpmReduction();
         session.setAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces, wpmSpaces);
         return wpmSpaces;
     }
 
     static Integer disableFarnsworth(final Session session) {
-        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, Boolean.valueOf(false));
+        session.setAttribute(SkillConfig.SessionAttributeExercisedFarnsworth, false);
+        // reset wpm of spaces to current wpm
         final Integer wpmSpaces = getWpm(session);
         session.setAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces, wpmSpaces);
         return wpmSpaces;
@@ -69,7 +74,11 @@ public class SessionManager {
         final Integer max = SkillConfig.getWpmLevelMax();
         final Integer min = SkillConfig.getWpmLevelMin();
         if (desiredWpm >= min && desiredWpm <= max) {
+            // set new wpm
             session.setAttribute(SkillConfig.SessionAttributeExercisedWpm, desiredWpm);
+            // according to Farnsworth enabled set wpm of spaces
+            final Integer desiredWpmSpaces = isFarnsworthEnabled(session) ? desiredWpm - SkillConfig.getFarnsworthWpmReduction() : desiredWpm;
+            session.setAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces, desiredWpmSpaces);
             return true;
         }
         return false;

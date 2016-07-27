@@ -53,7 +53,7 @@ public class SkillConfig {
     public static final String IntentNameBuiltinCancel = "AMAZON.CancelIntent";
     public static final String IntentNameBuiltinStop = "AMAZON.StopIntent";
     public static final String IntentNameBuiltinYes = "AMAZON.YesIntent";
-    public static final Integer ExerciseWordMaxLengthForOutput = 15;
+    public static final Integer ExerciseWordMaxLengthForOutput = 255;
     public static final Integer ExerciseWordMinLength = 3;
     public static final Integer ExerciseWordMaxLength = 8;
     public static final Integer ExerciseLevelDefault = 4;
