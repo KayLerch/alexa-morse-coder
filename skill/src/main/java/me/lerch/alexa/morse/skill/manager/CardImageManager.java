@@ -64,7 +64,7 @@ class CardImageManager {
 
     private static BufferedImage createImage(final String word, final boolean codeOnly) throws IOException {
         // remove all non-letter characters as there is no letter card for it
-        final char[] letters = word.toLowerCase().replaceAll("[^a-z]", "").toCharArray();
+        final char[] letters = word.toLowerCase().replaceAll("[^a-z_]", "").toCharArray();
         /*
         * --------- cols  (x)
         * |---> width
