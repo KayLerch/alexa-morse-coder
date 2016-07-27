@@ -15,7 +15,6 @@ public class MorseCode {
     private String mp3Url;
     private Integer wpm;
     private Integer wpmSpaces;
-    private Boolean farnsworth;
 
     public MorseCode() {
     }
@@ -27,7 +26,6 @@ public class MorseCode {
         this.phonetic = phonetic;
         this.wpm = wpm;
         this.wpmSpaces = wpmSpaces;
-        this.farnsworth = wpmSpaces != null && !wpmSpaces.equals(wpm);
     }
 
     public static MorseCode fromJsonString(String json) throws IOException {
@@ -50,14 +48,6 @@ public class MorseCode {
 
     public void setWpm(Integer wpm) {
         this.wpm = wpm;
-    }
-
-    public Boolean getFarnsworth() {
-        return farnsworth;
-    }
-
-    public void setFarnsworth(Boolean farnsworth) {
-        this.farnsworth = farnsworth;
     }
 
     public Integer getWpmSpaces() {
