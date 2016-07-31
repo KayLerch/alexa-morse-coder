@@ -4,6 +4,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import me.lerch.alexa.morse.skill.model.MorseCode;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
+import org.apache.commons.codec.language.DoubleMetaphone;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -50,7 +51,7 @@ public class SessionManager {
         return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedWpmSpaces) ? Integer.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedWpmSpaces).toString()) : SkillConfig.getWpmLevelDefault();
     }
 
-    static Boolean isFarnsworthEnabled(final Session session) {
+    private static Boolean isFarnsworthEnabled(final Session session) {
         return session.getAttributes().containsKey(SkillConfig.SessionAttributeExercisedFarnsworth) &&
                 Boolean.valueOf(session.getAttribute(SkillConfig.SessionAttributeExercisedFarnsworth).toString());
     }
@@ -306,8 +307,9 @@ public class SessionManager {
         final String intentWord =
                 (intent.getSlots().containsKey(SlotNameExerciseWord) ?
                         intent.getSlot(SlotNameExerciseWord).getValue() : null);
-        // remove "." to also accept spelled words
-        return intentWord != null && sessionWord != null && sessionWord.equalsIgnoreCase(intentWord.replace(".", ""));
+
+        // check for phonetic equality
+        return new DoubleMetaphone().isDoubleMetaphoneEqual(intentWord, sessionWord);
     }
 
     /**
