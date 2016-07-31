@@ -6,7 +6,6 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.manager.SessionManager;
 import me.lerch.alexa.morse.skill.manager.SpeechletManager;
-import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 /**
  * This implementation handles a user's help request.

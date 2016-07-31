@@ -29,25 +29,33 @@ public class MorseApiManager {
     }
 
     public static MorseCode encode(final String text, final Integer wpm, final Integer wpmFarnworth) throws IOException, URISyntaxException {
+        // get credentials for webservice from application config
         final String user = SkillConfig.getMorseCoderAPIuser();
         final String pass = SkillConfig.getMorseCoderAPIpass();
-        // set up client with credentials
-        final CredentialsProvider provider = new BasicCredentialsProvider();
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user, pass);
-        provider.setCredentials(AuthScope.ANY, credentials);
-        final HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
+
         // build uri
-        final URIBuilder uri = new URIBuilder(SkillConfig.getMorseCoderAPIencode());
-        uri.addParameter("text", text);
-        uri.addParameter("wpm", String.valueOf(wpm));
-        uri.addParameter("fw", String.valueOf(wpmFarnworth));
+        final URIBuilder uri = new URIBuilder(SkillConfig.getMorseCoderAPIencode())
+                .addParameter("text", text)
+                .addParameter("wpm", String.valueOf(wpm))
+                .addParameter("fw", String.valueOf(wpmFarnworth));
+
         // set up web request
         final HttpGet httpGet = new HttpGet(uri.build());
         httpGet.setHeader("Content-Type", "application/json");
+
+        // set up credentials
+        final CredentialsProvider provider = new BasicCredentialsProvider();
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user, pass);
+        provider.setCredentials(AuthScope.ANY, credentials);
+
         // send request to encode webservice
-        final HttpResponse response = client.execute(httpGet);
+        final HttpResponse response =
+                HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build().execute(httpGet);
+
+        // work on response
         final HttpEntity entity = response.getEntity();
         final String s = IOUtils.toString(entity.getContent(), "UTF-8");
+
         // parse model from returned json
         return MorseCode.fromJsonString(s);
     }

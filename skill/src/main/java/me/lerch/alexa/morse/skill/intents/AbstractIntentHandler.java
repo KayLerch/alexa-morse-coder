@@ -1,13 +1,11 @@
-package me.lerch.alexa.morse.skill.wrapper;
+package me.lerch.alexa.morse.skill.intents;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
+import me.lerch.alexa.morse.skill.utils.IIntentHandler;
 
-/**
- * Created by Kay on 26.04.2016.
- */
 public abstract class AbstractIntentHandler implements IIntentHandler {
 
     public abstract String getIntentName();
@@ -25,7 +23,7 @@ public abstract class AbstractIntentHandler implements IIntentHandler {
         else
             additionalInfo = "";
 
-        PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
+        final PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
         outputSpeech.setText("Sorry. " + additionalInfo + " Please try again.");
         return SpeechletResponse.newTellResponse(outputSpeech);
     }

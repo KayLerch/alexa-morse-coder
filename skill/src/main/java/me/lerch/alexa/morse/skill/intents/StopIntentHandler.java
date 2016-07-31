@@ -5,7 +5,6 @@ import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.manager.SpeechletManager;
-import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 public class StopIntentHandler extends AbstractIntentHandler {
     @Override

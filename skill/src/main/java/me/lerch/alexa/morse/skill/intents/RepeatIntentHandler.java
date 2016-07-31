@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
 import me.lerch.alexa.morse.skill.manager.SessionManager;
 import me.lerch.alexa.morse.skill.manager.SpeechletManager;
-import me.lerch.alexa.morse.skill.wrapper.AbstractIntentHandler;
 
 import java.io.UnsupportedEncodingException;
 
