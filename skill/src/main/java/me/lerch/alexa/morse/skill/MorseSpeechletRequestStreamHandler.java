@@ -2,9 +2,8 @@ package me.lerch.alexa.morse.skill;
 
 import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
 import me.lerch.alexa.morse.skill.intents.*;
-import me.lerch.alexa.morse.skill.manager.MorseApiManager;
+import me.lerch.alexa.morse.skill.model.MorseExercise;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
-import me.lerch.alexa.morse.skill.utils.SsmlUtils;
 import me.lerch.alexa.morse.skill.utils.SpeechletHandler;
 
 import java.io.IOException;
@@ -24,16 +23,17 @@ public class MorseSpeechletRequestStreamHandler extends SpeechletRequestStreamHa
         // adds the application-id according to what is configured in the app.properties
         supportedApplicationIds.add(SkillConfig.getAlexaAppId());
 
-        try {
-            final String hi = SsmlUtils.getAudio(MorseApiManager.encode("hi").getMp3Url());
-            welcomeText = String.format("%s welcome to Morse coder. Let me encode, spell or teach you some Morse code.", hi);
-        } catch (IOException | URISyntaxException e ) {
-            e.printStackTrace();
-        }
+        //try {
+            //final String hi = SsmlUtils.getAudio(MorseApiManager.encode("hi").getMp3Url());
+            final String hi = "<audio src=\"" + SkillConfig.getS3BucketUrl() + "hi-12-12.mp3\" />";
+            welcomeText = String.format("%s welcome to Morse coder. Let me encode or teach you some Morse code.", hi);
+        //} catch (IOException | URISyntaxException e ) {
+        //    e.printStackTrace();
+        //}
 
         speechletHandler = SpeechletHandler.create()
                 .withWelcomeText(welcomeText)
-                .withRepromptText("If you are lost, just ask me to help.")
+                .withRepromptText("If you are lost, ask me for help.")
                 .addIntentHandler(new CfgSpeedIntentHandler())
                 .addIntentHandler(new CfgDeviceIntegrationIntentHandler())
                 .addIntentHandler(new CfgFarnsworthIntentHandler())

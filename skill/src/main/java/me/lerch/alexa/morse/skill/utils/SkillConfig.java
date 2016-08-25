@@ -10,15 +10,6 @@ import java.util.*;
  * Encapsulates access to application-wide property values
  */
 public class SkillConfig {
-    public enum YesNoQuestions
-    {
-        WantAnotherExercise, WantAnotherEncode, WantAnotherTry
-    }
-
-    public enum SETUP_MODE {
-        UP, DOWN, ON, OFF, NAN
-    }
-
     private static Properties properties = new Properties();
     private static final String defaultPropertiesFile = "app.properties";
     private static final String customPropertiesFile = "my.app.properties";
@@ -29,22 +20,6 @@ public class SkillConfig {
     private static final String slotCfgCommandsDownFile = "alexa-skill-slot-cfgcommands-down";
 
     // some constants not worth having them in a properties-files
-    public static final String SessionAttributeExercisedWordLiteral = "exercisedWordLiteral";
-    public static final String SessionAttributeExercisedWordPhonetic = "exercisedWordPhonetic";
-    public static final String SessionAttributeExercisedWordCode = "exercisedWordCode";
-    public static final String SessionAttributeExercisedWordAudio = "exercisedWordAudio";
-    public static final String SessionAttributeExercisedWpm = "exercisedWpm";
-    public static final String SessionAttributeExercisedWpmSpaces = "exercisedWpmSpaces";
-    public static final String SessionAttributeExercisedFarnsworth = "exercisedFarnsworth";
-    public static final String SessionAttributeYesNoQuestion = "yesNoQuestion";
-    public static final String SessionAttributeExercisesTotal = "exercisesTotal";
-    public static final String SessionAttributeExercisesRetries = "exercisesRetries";
-    public static final String SessionAttributeExercisesCorrect = "exercisesCorrect";
-    public static final String SessionAttributeExerciseLevel = "exerciseLevel";
-    public static final String SessionAttributeExerciseScore = "exerciseScore";
-    public static final String ThingNamePrefix = "morse";
-    public static final String ThingAttributeName = "name";
-    public static final String ThingAttributeDisabled = "disabled";
     public static final String IntentNameBuiltinHelp = "AMAZON.HelpIntent";
     public static final String IntentNameBuiltinNext = "AMAZON.NextIntent";
     public static final String IntentNameBuiltinNo = "AMAZON.NoIntent";
@@ -56,7 +31,10 @@ public class SkillConfig {
     public static final Integer ExerciseWordMaxLengthForOutput = 255;
     public static final Integer ExerciseWordMinLength = 3;
     public static final Integer ExerciseWordMaxLength = 8;
-    public static final Integer ExerciseLevelDefault = 4;
+    public static final Integer ExerciseWordDefaultLength = 4;
+    public static final Integer ScoreDecreaseOnRetry = 1;
+    public static final Integer ScoreDecreaseOnSkipped = 3;
+    public static final Integer ScoreDecreaseOnFarnsworth = 3;
 
     /**
      * Static block does the bootstrapping of all configuration properties with

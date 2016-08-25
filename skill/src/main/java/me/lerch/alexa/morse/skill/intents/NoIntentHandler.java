@@ -1,49 +1,65 @@
 package me.lerch.alexa.morse.skill.intents;
 
 import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import me.lerch.alexa.morse.skill.model.MorseExercise;
+import me.lerch.alexa.morse.skill.model.MorseUser;
+import me.lerch.alexa.morse.skill.utils.ResponsePhrases;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
-import me.lerch.alexa.morse.skill.manager.SessionManager;
-import me.lerch.alexa.morse.skill.manager.SpeechletManager;
+import me.lerch.alexa.state.utils.AlexaStateException;
+
+import java.util.Optional;
+
+import static me.lerch.alexa.morse.skill.utils.SkillConfig.ScoreDecreaseOnSkipped;
 
 /**
  * Handles all No intents in general
  */
 public class NoIntentHandler extends AbstractIntentHandler {
+    private static final String intentName = SkillConfig.IntentNameBuiltinNo;
+
     @Override
     public String getIntentName() {
-        return SkillConfig.IntentNameBuiltinNo;
+        return intentName;
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
-        // keep in mind what question was denied
-        final Object sessionQuestion = session.getAttribute(SkillConfig.SessionAttributeYesNoQuestion);
+    public SpeechletResponse handleIntentRequest(final Intent intent) {
 
-        // "have another try?" on the same morse code was denied
-        SpeechletResponse response = SessionManager.isAnswerToAnotherTry(intent, session) ?
-                // so finish the current exercise and play back the correct answer
-                SpeechletManager.getExerciseFinalFalseResponse(intent, session) :
-                // "have another exercise?" with a new code was denied
-                SessionManager.isAnswerToAnotherExercise(intent, session) ?
-                        // this means leaving the app and say good bye
-                        SpeechletManager.getGoodBye(intent, session) :
-                        // "have another encoding?" was denied
-                        SessionManager.isAnswerToAnotherEncode(intent, session) ?
-                                // this means leaving the app and say good bye
-                                SpeechletManager.getGoodBye(intent, session) :
-                                // none of the above questions was answered, so No-intent is not expected in current context
-                                // before giving the user a help check if there is an ongoing exercise
-                                SessionManager.hasExercisePending(session) ?
-                                        // if so, play back help information dedicated to the exercise
-                                        SpeechletManager.getHelpDuringExercise(intent, session) :
-                                        // otherwise: give general hints
-                                        SpeechletManager.getHelpAboutAll(intent, session);
+        try {
+            final MorseUser user = getMorseUser();
+            final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
+            SpeechletResponse response = new SpeechletResponse();
 
-        // reset session attribute if unchanged
-        if (sessionQuestion != null && sessionQuestion.toString().equals(session.getAttribute(SkillConfig.SessionAttributeYesNoQuestion)))
-            session.removeAttribute(SkillConfig.SessionAttributeYesNoQuestion);
-        return response;
+            // Answer was given for having another try in current exercise
+            if (user.getIsAskedForAnotherTry() && exercise.isPresent()) {
+                // redirect to exercise intent handler (which should treat this as a wrong answer)
+                return new ExerciseIntentHandler().handleIntentRequest(intent);
+            }
+            // Answer was given for having another exercise
+            else if (user.getIsAskedForNewExercise()) {
+                // decrease score of user and say good bye
+                DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(ScoreDecreaseOnSkipped));
+                return getGoodBye();
+            }
+            // Answer was given for having another encode
+            else if (user.getIsAskedForAnotherEncode()) {
+                // ask for staring an exercise
+                SessionHandler.writeModel(user.withIsAskedForNewExercise(true));
+                return getNewExerciseAskSpeech("Got you.");
+            }
+            // if none of these question were asked, return general help
+            else {
+                final String help = exercise.isPresent() ? ResponsePhrases.HelpOnExercise : ResponsePhrases.HelpInGeneral;
+                response = ask().withSsml("I am not sure what question you answered. " + help).build();
+            }
+            // reset memory of question asked
+            SessionHandler.writeModel(user.withNothingAsked());
+            return response;
+        }
+        catch(AlexaStateException e) {
+            log.error("Error on handling No intent.", e);
+            return getErrorResponse();
+        }
     }
 }

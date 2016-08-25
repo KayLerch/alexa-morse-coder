@@ -82,7 +82,9 @@ public class SpeechletHandler implements Speechlet {
         Optional<IIntentHandler> intentHandler = intentHandlers.stream()
                 .filter(x -> x.getIntentName().equals(intentName))
                 .findFirst();
-        return intentHandler.isPresent() ? intentHandler.get().handleIntentRequest(intent, session) : getUnknownIntentResponse(false);
+        return intentHandler.isPresent() ?
+                intentHandler.get().withSession(session).handleIntentRequest(intent) :
+                getUnknownIntentResponse(false);
     }
 
     @Override

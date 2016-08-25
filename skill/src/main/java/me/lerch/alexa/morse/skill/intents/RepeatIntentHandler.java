@@ -4,46 +4,45 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import me.lerch.alexa.morse.skill.model.MorseExercise;
+import me.lerch.alexa.morse.skill.model.MorseUser;
 import me.lerch.alexa.morse.skill.utils.SkillConfig;
-import me.lerch.alexa.morse.skill.manager.SessionManager;
-import me.lerch.alexa.morse.skill.manager.SpeechletManager;
+import me.lerch.alexa.state.handler.AWSDynamoStateHandler;
+import me.lerch.alexa.state.handler.AlexaSessionStateHandler;
+import me.lerch.alexa.state.handler.AlexaStateHandler;
+import me.lerch.alexa.state.utils.AlexaStateException;
 
-import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 
 /**
  * This intent handler reacts on a repeat request
  */
 public class RepeatIntentHandler extends AbstractIntentHandler {
+    private static final String intentName = SkillConfig.IntentNameBuiltinRepeat;
+
     @Override
     public String getIntentName() {
-        return SkillConfig.IntentNameBuiltinRepeat;
+        return intentName;
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent, final Session session) {
-        // if there is an exercise ongoing ...
+    public SpeechletResponse handleIntentRequest(final Intent intent) {
         try {
-            return SessionManager.hasExercisePending(session) ?
-                    // repeat the morse code of the word given for the current exercise
-                    SpeechletManager.getExerciseRepeatResponse(intent, session) :
-                    // otherwise there's nothing to repeat
-                    getNothingToRepeatError();
-        } catch (UnsupportedEncodingException | JsonProcessingException e) {
-            e.printStackTrace();
+            final MorseUser user = getMorseUser();
+            // look for ongoing exercise
+            final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
+            // exercise ongoing?
+            if (exercise.isPresent()) {
+                return getExerciseSpeech(exercise.get());
+            }
+            else {
+                // nothing to repeat, ask for new exercise
+                SessionHandler.writeModel(user.withIsAskedForNewExercise(true));
+                return getNewExerciseAskSpeech("There's nothing for me to repeat.");
+            }
+        } catch (AlexaStateException e) {
+            log.error("Error handling Repeat intent.", e);
             return getErrorResponse();
         }
-    }
-
-    /**
-     * @return just an error response to the fact that there is nothing to repeat outside
-     * the context of an exercise
-     */
-    private SpeechletResponse getNothingToRepeatError() {
-        final PlainTextOutputSpeech plainSpeech = new PlainTextOutputSpeech();
-        plainSpeech.setText("Sorry. There is nothing to repeat. Say <p>start over</p> to get another morse code.");
-        final SpeechletResponse response = SpeechletResponse.newTellResponse(plainSpeech);
-        response.setShouldEndSession(false);
-        return response;
     }
 }

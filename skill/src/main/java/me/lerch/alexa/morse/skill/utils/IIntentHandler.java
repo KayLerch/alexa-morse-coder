@@ -6,5 +6,6 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 
 public interface IIntentHandler {
     String getIntentName();
-    SpeechletResponse handleIntentRequest(Intent intent, Session session);
+    IIntentHandler withSession(Session session);
+    SpeechletResponse handleIntentRequest(Intent intent);
 }

@@ -1,68 +1,27 @@
-package me.lerch.alexa.morse.skill.manager;
+package me.lerch.alexa.morse.skill.utils;
 
 import com.amazon.speech.ui.*;
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import me.lerch.alexa.morse.skill.model.MorseCode;
-import me.lerch.alexa.morse.skill.utils.SkillConfig;
-import sun.java2d.pipe.SpanShapeRenderer;
+import me.lerch.alexa.morse.skill.model.MorseExercise;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLEncoder;
 
-class CardImageManager {
-    static Card getIotSetupCard(final String thingName) {
-        final SimpleCard card = new SimpleCard();
-        card.setTitle("Enabled device propagation");
-        card.setContent("There is an MQTT-topic created for you so you are able to subscribe" +
-                " information of Morse codes played back to Alexa. Don't worry. This topic" +
-                " is dedicated to your Amazon account so you are only provided with Morse codes" +
-                " requested with your Alexa devices.<br>" +
-                " From your application subscribe to MQTT over Websockets using:<br>" +
-                " Endpoint: " + SkillConfig.getIOTendpoint() + "<br>" +
-                " Topic: " + SkillConfig.getIOTtopicPrefix() + thingName + SkillConfig.getIOTtopicSuffix());
-        return card;
-    }
+public class MorseCodeImage {
 
-    /**
-     * This one returns a card with an image illustrating the given text as morse code
-     * @param code morse code object with all representations of the encoded text
-     * @param codeOnly set true if you don't want to show the word but only its morse code
-     * @return a card to be added to a speechlet response
-     */
-    static Card getExerciseCard(final MorseCode code, final Boolean codeOnly) {
-        String imgUri = null;
-        try {
-            imgUri = getImage(code.getLiteral().trim(), codeOnly);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        final StandardCard card = new StandardCard();
-        if (imgUri != null) {
-            com.amazon.speech.ui.Image img = new com.amazon.speech.ui.Image();
-            img.setSmallImageUrl(imgUri);
-            img.setLargeImageUrl(imgUri);
-            card.setImage(img);
-        }
-        card.setTitle("Morse Code: " + (codeOnly ? "" : code.getLiteral()));
-        card.setText(code.getPhonetic());
-        return card;
-    }
-
-    private static String getImage(final String word, final boolean codeOnly) throws IOException {
+    public static String getImage(final String word, final boolean codeOnly) throws IOException {
         // check if image already existant in S3 bucket
         return isImageAlreadyExisting(word, codeOnly) ? getS3Url(word, codeOnly) :
                 // otherwise generate and upload the image based on the provided word
                 uploadFileToS3(createImage(word, codeOnly), word, codeOnly);
     }
 
-    private static BufferedImage createImage(final String word, final boolean codeOnly) throws IOException {
+    public static BufferedImage createImage(final String word, final boolean codeOnly) throws IOException {
         // remove all non-letter characters as there is no letter card for it
         final char[] letters = word.toLowerCase().replaceAll("[^a-z_]", "").toCharArray();
         /*
@@ -99,7 +58,7 @@ class CardImageManager {
                 final int idx = x + (y * cols);
                 // if no more letters fill up the row with blanks
                 final String letter = idx < letters.length ? String.valueOf(letters[idx]) : "_";
-                final InputStream imgStream = CardImageManager.class.getClassLoader().getResourceAsStream("img/" + (codeOnly ? "codeonly/" : "") + letter.toLowerCase() + ".png");
+                final InputStream imgStream = MorseCodeImage.class.getClassLoader().getResourceAsStream("img/" + (codeOnly ? "codeonly/" : "") + letter.toLowerCase() + ".png");
                 final BufferedImage bi = ImageIO.read(imgStream);
                 g.drawImage(bi, x * widthLetter, y * heightLetter, null);
                 imgStream.close();
