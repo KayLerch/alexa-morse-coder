@@ -1,11 +1,11 @@
-package me.lerch.alexa.service;
+package io.klerch.morse.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import me.lerch.alexa.model.MorseCode;
-import me.lerch.alexa.utils.MorseUtils;
-import me.lerch.alexa.utils.Mp3Utils;
+import io.klerch.morse.model.MorseCode;
+import io.klerch.morse.utils.MorseUtils;
+import io.klerch.morse.utils.Mp3Utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

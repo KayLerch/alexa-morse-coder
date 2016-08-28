@@ -1,4 +1,4 @@
-package me.lerch.alexa.model;
+package io.klerch.morse.model;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.DeserializationFeature;

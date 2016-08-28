@@ -1,8 +1,7 @@
-package me.lerch.alexa;
+package io.klerch.morse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.*;
 
 @SpringBootApplication
 public class Application {

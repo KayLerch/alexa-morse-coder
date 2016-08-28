@@ -1,6 +1,6 @@
-package me.lerch.alexa.config;
+package io.klerch.morse.config;
 
-import me.lerch.alexa.service.EncodeService;
+import io.klerch.morse.service.EncodeService;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 

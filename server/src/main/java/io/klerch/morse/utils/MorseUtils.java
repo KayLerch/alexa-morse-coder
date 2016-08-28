@@ -1,4 +1,4 @@
-package me.lerch.alexa.utils;
+package io.klerch.morse.utils;
 
 import com.google.common.collect.ImmutableMap;
 

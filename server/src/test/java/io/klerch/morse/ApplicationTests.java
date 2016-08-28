@@ -1,4 +1,4 @@
-package me.lerch.alexa;
+package io.klerch.morse;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
