@@ -4,15 +4,33 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.lerch.alexa</groupId>
-    <artifactId>morse.skill</artifactId>
+    <groupId>io.klerch</groupId>
+    <artifactId>alexa-skills-morse</artifactId>
     <version>2.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>me.lerch.repo</id>
+            <url>s3://io.klerch.maven.repo/snapshot</url>
+        </snapshotRepository>
+        <repository>
+            <id>me.lerch.repo</id>
+            <url>s3://io.klerch.maven.repo/release</url>
+        </repository>
+    </distributionManagement>
+
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.kuali.maven.wagons</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>1.2.1</version>
+            </extension>
+        </extensions>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -22,40 +40,46 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.5.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
             </plugin>
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-core</artifactId>
             <version>1.1.0</version>
         </dependency>
         <dependency>
-            <groupId>me.lerch</groupId>
+            <groupId>io.klerch</groupId>
             <artifactId>alexa-skills-kit-states-java</artifactId>
-            <version>0.2.3</version>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -72,6 +96,11 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-iot</artifactId>
             <version>1.11.26</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-log4j</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>
