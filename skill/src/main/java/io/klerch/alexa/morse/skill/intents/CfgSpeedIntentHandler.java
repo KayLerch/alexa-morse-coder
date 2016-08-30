@@ -34,17 +34,17 @@ public class CfgSpeedIntentHandler extends AbstractIntentHandler {
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
 
             // if user desires an absolute value for wpm
-            if (user.withNewWpm(desiredWpm).isPresent()) {
+            if (desiredWpm != null && user.withNewWpm(desiredWpm).isPresent()) {
                 speech = "Speed is now set to " + user.getWpm() + " words per minute. ";
                 wpmChanged = true;
             }
             // on speed increased
-            else if (mode.equals(MorseUser.SETUP_MODE.UP) && user.withWpmIncreased().isPresent()) {
+            else if (MorseUser.SETUP_MODE.UP.equals(mode) && user.withWpmIncreased().isPresent()) {
                 speech = "Speed is now increased to " + user.getWpm() + " words per minute. ";
                 wpmChanged = true;
             }
             // on speed decreased
-            else if (mode.equals(MorseUser.SETUP_MODE.DOWN) && user.withWpmDecreased().isPresent()) {
+            else if (MorseUser.SETUP_MODE.DOWN.equals(mode) && user.withWpmDecreased().isPresent()) {
                 speech = "Speed is now decreased to " + user.getWpm() + " words per minute. ";
                 wpmChanged = true;
             }
