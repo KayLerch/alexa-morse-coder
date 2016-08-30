@@ -6,33 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.Validate;
 
 public class AlexaSpeechletResponse extends SpeechletResponse {
-
-    /**
-     * for demonstration purpose only. Please remove this method when using this class
-     */
-    private void samples() {
-        // an ask-response keeps open the session
-        final SpeechletResponse response = AlexaSpeechletResponse
-                .ask()
-                .withSsml("Some <p>SSML</p>")
-                .withRepromptText("Some reprompt text.")
-                .withSimpleCardContent("Some card content.")
-                .withSimpleCardTitle("A card's title")
-                .build();
-        // a tell-response will close the session
-        final SpeechletResponse response2 = AlexaSpeechletResponse
-                .tell()
-                .withText("Some text")
-                .withStandardCardText("Some text")
-                .withStandardCardLargeImageUrl("http://whatever/img.jpg")
-                .build();
-        // if you want to be explicit, do this
-        final SpeechletResponse response3 = AlexaSpeechletResponse
-                .withShouldEndSession(true)
-                .withText("Session ends.")
-                .build();
-    }
-
     private AlexaSpeechletResponse(final AlexaSpeechletBuilder builder) {
         setOutputSpeech(builder.outputSpeech);
         setShouldEndSession(builder.shouldEndSession);
@@ -78,6 +51,11 @@ public class AlexaSpeechletResponse extends SpeechletResponse {
 
         private AlexaSpeechletBuilder(final boolean shouldEndSession) {
             this.shouldEndSession = shouldEndSession;
+        }
+
+        public AlexaSpeechletBuilder withOutputSpeech(final OutputSpeech outputSpeech) {
+            this.outputSpeech = outputSpeech;
+            return this;
         }
 
         public AlexaSpeechletBuilder withReprompt(final Reprompt reprompt) {

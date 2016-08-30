@@ -35,7 +35,7 @@ public class CfgSpeedIntentHandler extends AbstractIntentHandler {
 
             // if user desires an absolute value for wpm
             if (user.withNewWpm(desiredWpm).isPresent()) {
-                speech = "Speed is now set to " + user.getWpm() + " word per minute. ";
+                speech = "Speed is now set to " + user.getWpm() + " words per minute. ";
                 wpmChanged = true;
             }
             // on speed increased

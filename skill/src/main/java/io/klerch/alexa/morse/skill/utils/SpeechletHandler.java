@@ -31,6 +31,22 @@ public class SpeechletHandler implements Speechlet {
         this.repromptText = builder.repromptText;
     }
 
+    public String getWelcomeText() {
+        return this.welcomeText;
+    }
+
+    public String getUnknownIntentText() {
+        return this.unknownIntentText;
+    }
+
+    public String getRepromptText() {
+        return this.repromptText;
+    }
+
+    public List<IIntentHandler> getIntentHandlers() {
+        return this.intentHandlers;
+    }
+
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
 

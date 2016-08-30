@@ -5,6 +5,7 @@ import io.klerch.alexa.state.model.AlexaScope;
 import io.klerch.alexa.state.model.AlexaStateIgnore;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
+import org.apache.commons.lang3.Validate;
 
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ public class MorseUser extends AlexaStateModel {
     public enum SETUP_MODE {
         UP, DOWN, ON, OFF, NAN
     }
+
     @AlexaStateSave(Scope = AlexaScope.USER)
     private String name;
     @AlexaStateSave(Scope = AlexaScope.USER)
@@ -34,18 +36,25 @@ public class MorseUser extends AlexaStateModel {
     public MorseUser() {
     }
 
-    public String getName() { return this.name; }
+    public String getName() {
+        return this.name;
+    }
 
-    public void setName(final String name) { this.name = name; }
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-    public MorseUser withName(final String name) { setName(name); return this; }
+    public MorseUser withName(final String name) {
+        setName(name);
+        return this;
+    }
 
     public Integer getPersonalScore() {
         return this.personalScore;
     }
 
     public void setPersonalScore(final Integer personalScore) {
-        this.personalScore = personalScore;
+        this.personalScore = personalScore != null && personalScore >= 0 ? personalScore : 0;
     }
 
     public void increasePersonalScore(final Integer score) {
@@ -53,8 +62,7 @@ public class MorseUser extends AlexaStateModel {
     }
 
     public void decreasePersonalScore(final Integer score) {
-        // ensure minimum score is 0
-        this.personalScore -= (score > this.personalScore ? this.personalScore : score);
+        setPersonalScore(this.personalScore - score);
     }
 
     public MorseUser withPersonalScore(final Integer personalScore) {
@@ -76,37 +84,37 @@ public class MorseUser extends AlexaStateModel {
         return wpm;
     }
 
-    public void setWpm(final Integer wpm) {
-        this.wpm = wpm;
+    public void setWpm(final Integer desiredWpm) {
+        Validate.notNull(desiredWpm, "Setting null on WPM is not allowed.");
+        if (desiredWpm > SkillConfig.getWpmLevelMax()) {
+            this.wpm = SkillConfig.getWpmLevelMax();
+        } else if (desiredWpm < SkillConfig.getWpmLevelMin()) {
+            this.wpm = SkillConfig.getWpmLevelMin();
+        } else {
+            this.wpm = desiredWpm;
+        }
         if (farnsworthEnabled)
             this.wpmSpaces = wpm - SkillConfig.getFarnsworthWpmReduction();
         else
             this.wpmSpaces = wpm;
     }
 
-    private MorseUser withWpm(final Integer wpm) {
-        setWpm(wpm);
-        return this;
-    }
-
     public Optional<MorseUser> withWpmIncreased() {
         // increase wpm
         final Integer desiredWpm = wpm + SkillConfig.getWpmLevelStep();
-        // check if desired wpm is not out of bounds
-        if (desiredWpm <= SkillConfig.getWpmLevelMax()) {
-            return Optional.of(withWpm(desiredWpm));
-        }
-        return Optional.empty();
+        return withNewWpm(desiredWpm);
     }
 
     public Optional<MorseUser> withWpmDecreased() {
         // decrease wpm
         final Integer desiredWpm = wpm - SkillConfig.getWpmLevelStep();
-        // check if desired wpm is not out of bounds
-        if (desiredWpm >= SkillConfig.getWpmLevelMin()) {
-            return Optional.of(withWpm(desiredWpm));
-        }
-        return Optional.empty();
+        return withNewWpm(desiredWpm);
+    }
+
+    public Optional<MorseUser> withNewWpm(final Integer desiredWpm) {
+        final Integer oldWpm = getWpm();
+        setWpm(desiredWpm);
+        return oldWpm.equals(wpm) ? Optional.empty() : Optional.of(this);
     }
 
     public Integer getWpmSpaces() {
@@ -177,15 +185,9 @@ public class MorseUser extends AlexaStateModel {
         return Optional.empty();
     }
 
-    public Optional<MorseUser> withNewWpm(final Integer wpm) {
-        if (wpm != null && !wpm.equals(this.wpm)) {
-            setWpm(wpm);
-            return Optional.of(this);
-        }
-        return Optional.empty();
+    public boolean getIsAskedForNewExercise() {
+        return this.isAskedForNewExercise;
     }
-
-    public boolean getIsAskedForNewExercise() { return this.isAskedForNewExercise; }
 
     public void setIsAskedForNewExercise(final boolean isAskedForNewExercise) {
         if (isAskedForNewExercise) withNothingAsked();
@@ -197,7 +199,9 @@ public class MorseUser extends AlexaStateModel {
         return this;
     }
 
-    public boolean getIsAskedForAnotherEncode() { return this.isAskedForAnotherEncode; }
+    public boolean getIsAskedForAnotherEncode() {
+        return this.isAskedForAnotherEncode;
+    }
 
     public void setIsAskedForAnotherEncode(final boolean isAskedForAnotherEncode) {
         if (isAskedForAnotherEncode) withNothingAsked();
@@ -209,7 +213,9 @@ public class MorseUser extends AlexaStateModel {
         return this;
     }
 
-    public boolean getIsAskedForAnotherTry() { return this.isAskedForAnotherTry; }
+    public boolean getIsAskedForAnotherTry() {
+        return this.isAskedForAnotherTry;
+    }
 
     public void setIsAskedForAnotherTry(final boolean isAskedForAnotherTry) {
         if (isAskedForAnotherTry) withNothingAsked();

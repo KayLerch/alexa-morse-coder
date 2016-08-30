@@ -11,15 +11,24 @@ import java.io.*;
 import java.net.URLEncoder;
 
 public class MorseCodeImage {
+    private final AmazonS3Client s3Client;
 
-    public static String getImage(final String word, final boolean codeOnly) throws IOException {
+    public MorseCodeImage() {
+        this(new AmazonS3Client());
+    }
+
+    public MorseCodeImage(final AmazonS3Client s3Client) {
+        this.s3Client = s3Client;
+    }
+
+    public String getImage(final String word, final boolean codeOnly) throws IOException {
         // check if image already existant in S3 bucket
         return isImageAlreadyExisting(word, codeOnly) ? getS3Url(word, codeOnly) :
                 // otherwise generate and upload the image based on the provided word
                 uploadFileToS3(createImage(word, codeOnly), word, codeOnly);
     }
 
-    public static BufferedImage createImage(final String word, final boolean codeOnly) throws IOException {
+    private BufferedImage createImage(final String word, final boolean codeOnly) throws IOException {
         // remove all non-letter characters as there is no letter card for it
         final char[] letters = word.toLowerCase().replaceAll("[^a-z_]", "").toCharArray();
         /*
@@ -65,12 +74,11 @@ public class MorseCodeImage {
         return result;
     }
 
-    private static Boolean isImageAlreadyExisting(final String word, final Boolean codeOnly) {
-        final AmazonS3Client s3Client = new AmazonS3Client();
+    private Boolean isImageAlreadyExisting(final String word, final Boolean codeOnly) {
         return s3Client.doesObjectExist(SkillConfig.getS3BucketName(), getFileKey(word, codeOnly));
     }
 
-    private static String getFileKey(final String word, final Boolean codeOnly) {
+    private String getFileKey(final String word, final Boolean codeOnly) {
         try {
             return (codeOnly ? SkillConfig.getS3BucketFolderImgCodes() : SkillConfig.getS3BucketFolderImg()) + "/" + URLEncoder.encode(word.toLowerCase(), "UTF-8") + ".png";
         } catch (UnsupportedEncodingException e) {
@@ -79,11 +87,11 @@ public class MorseCodeImage {
         }
     }
 
-    private static String getS3Url(final String word, final Boolean codeOnly) {
+    String getS3Url(final String word, final Boolean codeOnly) {
         return SkillConfig.getS3BucketUrl() + getFileKey(word, codeOnly);
     }
 
-    private static String uploadFileToS3(final BufferedImage image, final String word, final Boolean codeOnly) throws IOException {
+    private String uploadFileToS3(final BufferedImage image, final String word, final Boolean codeOnly) throws IOException {
         ByteArrayInputStream bis = null;
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
@@ -93,7 +101,6 @@ public class MorseCodeImage {
             final byte[] bImageData = bos.toByteArray();
             bis = new ByteArrayInputStream(bImageData);
             // upload to s3 bucket
-            final AmazonS3Client s3Client = new AmazonS3Client();
             final PutObjectRequest s3Put = new PutObjectRequest(bucket, fileKey, bis, null).withCannedAcl(CannedAccessControlList.PublicRead);
             s3Client.putObject(s3Put);
             return getS3Url(word, codeOnly);

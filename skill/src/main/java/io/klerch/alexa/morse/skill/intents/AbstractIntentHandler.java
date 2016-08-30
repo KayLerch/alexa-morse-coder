@@ -127,7 +127,7 @@ public abstract class AbstractIntentHandler implements IIntentHandler {
     StandardCard getExerciseCard(final MorseExercise exercise, final Boolean codeOnly) {
         String imgUri = null;
         try {
-            imgUri = MorseCodeImage.getImage(exercise.getLiteral().trim(), codeOnly);
+            imgUri = new MorseCodeImage().getImage(exercise.getLiteral().trim(), codeOnly);
         } catch (IOException e) {
             e.printStackTrace();
         }

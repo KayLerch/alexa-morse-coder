@@ -38,7 +38,7 @@ public class NextIntentHandler extends AbstractIntentHandler {
             }
             // generate new exercise
             final MorseExercise exerciseNew = SessionHandler.createModel(MorseExercise.class);
-            exerciseNew.withNewEncoding(user).saveState();
+            exerciseNew.withRandomLiteral().withNewEncoding(user).saveState();
             // play back new code
             return getExerciseSpeech(exerciseNew, preface);
         }
