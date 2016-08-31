@@ -5,8 +5,9 @@ import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.*;
 import io.klerch.alexa.morse.skill.model.MorseRecord;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.utils.AlexaSpeechletResponse;
-import io.klerch.alexa.morse.skill.utils.IIntentHandler;
+import io.klerch.alexa.morse.skill.utils.IntentHandler;
 import io.klerch.alexa.morse.skill.utils.MorseCodeImage;
 import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
@@ -19,19 +20,19 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
-public abstract class AbstractIntentHandler implements IIntentHandler {
+public abstract class AbstractIntentHandler implements IntentHandler {
     final Logger log = Logger.getLogger(AbstractIntentHandler.class);
 
     public abstract String getIntentName();
 
-    public abstract SpeechletResponse handleIntentRequest(Intent intent);
+    public abstract SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent);
 
     Session Session;
     AlexaSessionStateHandler SessionHandler;
     AWSDynamoStateHandler DynamoDbHandler;
     AWSIotStateHandler IotHandler;
 
-    public IIntentHandler withSession(final Session session) {
+    public IntentHandler withSession(final Session session) {
         this.Session = session;
         SessionHandler = new AlexaSessionStateHandler(session);
         DynamoDbHandler = new AWSDynamoStateHandler(session);
@@ -39,8 +40,9 @@ public abstract class AbstractIntentHandler implements IIntentHandler {
         return this;
     }
 
-    MorseUser getMorseUser() throws AlexaStateException {
-        return SessionHandler.readModel(MorseUser.class).orElse(DynamoDbHandler.readModel(MorseUser.class).orElse(DynamoDbHandler.createModel(MorseUser.class)));
+    MorseUser getMorseUser(final MorseSession morseSession) throws AlexaStateException {
+        final String id = morseSession.getName();
+        return SessionHandler.readModel(MorseUser.class, id).orElse(DynamoDbHandler.readModel(MorseUser.class, id).orElse(DynamoDbHandler.createModel(MorseUser.class, id)));
     }
 
     MorseRecord getMorseRecord() throws AlexaStateException {
@@ -64,7 +66,10 @@ public abstract class AbstractIntentHandler implements IIntentHandler {
         return tell().withText((preface != null ? preface : "") + ". Please try again. ").build();
     }
 
-    SpeechletResponse getExerciseSpeech(final MorseExercise exercise, final String preface, final SimpleCard card) {
+    SpeechletResponse getExerciseSpeech(final MorseExercise exercise, final String preface, final SimpleCard card) throws AlexaStateException {
+        // remember having replayed this
+        SessionHandler.writeModel(exercise.withNewTimestamp());
+
         final String audioSsml = exercise.getAudioSsml();
         final String speech = "<p>" + (preface != null ? preface : ResponsePhrases.getListenUp()) + "</p>" +
                 audioSsml + "<p>" + ResponsePhrases.getWhatsTheAnswer() + "</p>";
@@ -77,11 +82,11 @@ public abstract class AbstractIntentHandler implements IIntentHandler {
         return ask().withCard(imageCard).withSsml(speech).withRepromptSsml(repromptSpeech).build();
     }
 
-    SpeechletResponse getExerciseSpeech(final MorseExercise code, final String preface) {
-        return getExerciseSpeech(code, preface, null);
+    SpeechletResponse getExerciseSpeech(final MorseExercise exercise, final String preface) throws AlexaStateException {
+        return getExerciseSpeech(exercise, preface, null);
     }
 
-    SpeechletResponse getExerciseSpeech(final MorseExercise code) {
+    SpeechletResponse getExerciseSpeech(final MorseExercise code) throws AlexaStateException {
         return getExerciseSpeech(code, null, null);
     }
 

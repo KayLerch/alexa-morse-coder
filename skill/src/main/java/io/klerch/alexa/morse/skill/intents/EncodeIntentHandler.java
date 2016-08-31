@@ -4,6 +4,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.Card;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.state.utils.AlexaStateException;
@@ -23,7 +24,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         // get word to encode
         final String phrase = getEncodePhrase(intent);
         // check if phrase is too long
@@ -32,7 +33,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
         }
         // validate the user input
         try {
-            final MorseUser user = getMorseUser();
+            final MorseUser user = getMorseUser(morseSession);
             // use exercise for just encoding a single word
             final MorseExercise encoding = SessionHandler
                     .createModel(MorseExercise.class, "Encode")
@@ -43,7 +44,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
             // get image card with letters of encoded phrase
             final Card card = getExerciseCard(encoding, false);
             // remember having ask for another encoding
-            SessionHandler.writeModel(user.withIsAskedForAnotherEncode(true));
+            morseSession.withIsAskedForAnotherEncode(true).saveState();
             return ask().withCard(card).withSsml(speech).build();
         }
         catch (IOException | URISyntaxException | AlexaStateException e) {
@@ -53,7 +54,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
     }
 
     private String getEncodePhrase(final Intent intent) {
-        final String SlotName = SkillConfig.getAlexaSlotName();
+        final String SlotName = SkillConfig.getAlexaSlotEncodePhrase();
         return (intent.getSlots().containsKey(SlotName) ? intent.getSlot(SlotName).getValue() : null);
     }
 }

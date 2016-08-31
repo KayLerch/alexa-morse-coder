@@ -144,26 +144,5 @@ public class MorseExerciseTest {
         Assert.assertEquals(exercise, exercise2);
         Assert.assertNotNull(exercise2.getLiteral());
         Assert.assertNotEquals(literal, exercise2.getLiteral());
-        Assert.assertEquals(literal.length(), exercise2.getLiteral().length());
-    }
-
-    @org.junit.Test
-    public void withRandomLiteralWithLength() throws Exception {
-        checkRandomLength(SkillConfig.ExerciseWordMinLength);
-        checkRandomLength(SkillConfig.ExerciseWordMaxLength);
-        checkRandomLength(SkillConfig.ExerciseWordDefaultLength);
-        checkRandomLength(SkillConfig.ExerciseWordMinLength - 1, SkillConfig.ExerciseWordMinLength);
-        checkRandomLength(SkillConfig.ExerciseWordMaxLength + 1, SkillConfig.ExerciseWordMaxLength);
-    }
-
-    private void checkRandomLength(int length) {
-        checkRandomLength(length, length);
-    }
-
-    private void checkRandomLength(int length, int expected) {
-        final MorseExercise exercise2 = exercise.withRandomLiteral(length);
-        Assert.assertEquals(exercise, exercise2);
-        Assert.assertNotNull(exercise2.getLiteral());
-        Assert.assertEquals(exercise2.getLiteral().length(), expected);
     }
 }

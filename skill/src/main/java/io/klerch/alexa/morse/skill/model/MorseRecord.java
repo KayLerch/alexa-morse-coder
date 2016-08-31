@@ -13,7 +13,7 @@ public class MorseRecord extends AlexaStateModel {
     @AlexaStateSave(Scope = AlexaScope.APPLICATION)
     private Integer overallHighscore = 0;
     @AlexaStateSave(Scope = AlexaScope.APPLICATION)
-    private List<String> overallHighscorer = new ArrayList<>();
+    private String overallHighscorer = "Alexa";
 
     public Integer getOverallHighscore() {
         return this.overallHighscore;
@@ -25,25 +25,18 @@ public class MorseRecord extends AlexaStateModel {
         }
     }
 
-    public List<String> getOverallHighscorer() {
+    public String getOverallHighscorer() {
         return this.overallHighscorer;
     }
 
-    public void setOverallHighscorer(final List<String> overallHighscorer) {
+    public void setOverallHighscorer(final String overallHighscorer) {
         this.overallHighscorer = overallHighscorer;
     }
 
     public Optional<MorseRecord> withNewOverallHighscore(final MorseUser user) {
-        final String userName = user.getName();
-        if (user.getPersonalScore() > this.overallHighscore) {
+        if (user.getPersonalScore() >= this.overallHighscore) {
             setOverallHighscore(user.getPersonalScore());
-            overallHighscorer = Arrays.asList(userName);
-            return Optional.of(this);
-        }
-        else if (user.getPersonalScore().equals(this.overallHighscore)) {
-            // add user's name to the list of highscorers in case he's not already in this
-            if (!overallHighscorer.contains(userName))
-                overallHighscorer.add(userName);
+            setOverallHighscorer(user.getName());
             return Optional.of(this);
         }
         return Optional.empty();

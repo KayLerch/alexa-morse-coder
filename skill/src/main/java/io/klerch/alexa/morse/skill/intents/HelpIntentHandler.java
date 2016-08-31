@@ -3,6 +3,7 @@ package io.klerch.alexa.morse.skill.intents;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.state.utils.AlexaStateException;
@@ -21,17 +22,17 @@ public class HelpIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         try {
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             // return help text depending on exercise ongoing
             if (SessionHandler.readModel(MorseExercise.class).isPresent()) {
-                return getExerciseSpeech(exercise.get(), ResponsePhrases.HelpOnExercise + "This is your last code.");
+                return getExerciseSpeech(exercise.get(), ResponsePhrases.HelpOnExercise + " This is your last code.");
             }
             else {
                 // remember having asked for new exercise
-                getMorseUser().withIsAskedForNewExercise(true).withHandler(SessionHandler).saveState();
-                return ask().withSsml(ResponsePhrases.HelpInGeneral + ResponsePhrases.getAskStartExercise()).build();
+                morseSession.withIsAskedForNewExercise(true).saveState();
+                return ask().withSsml(ResponsePhrases.HelpInGeneral + " " + ResponsePhrases.getAskStartExercise()).build();
             }
         } catch (AlexaStateException e) {
             log.error("Error handling help intent.", e);

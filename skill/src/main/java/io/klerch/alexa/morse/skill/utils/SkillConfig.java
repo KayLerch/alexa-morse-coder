@@ -29,8 +29,8 @@ public class SkillConfig {
     public static final String IntentNameBuiltinStop = "AMAZON.StopIntent";
     public static final String IntentNameBuiltinYes = "AMAZON.YesIntent";
     public static final Integer ExerciseWordMaxLengthForOutput = 255;
-    public static final Integer ExerciseWordMinLength = 3;
-    public static final Integer ExerciseWordMaxLength = 8;
+    public static final Integer ExerciseWordMinLength = 4;
+    public static final Integer ExerciseWordMaxLength = 7;
     public static final Integer ExerciseWordDefaultLength = 4;
     public static final Integer ScoreDecreaseOnRetry = 1;
     public static final Integer ScoreDecreaseOnSkipped = 3;
@@ -148,6 +148,20 @@ public class SkillConfig {
     }
 
     /**
+     * Name of the intent handling the introduction
+     */
+    public static String getAlexaIntentIntroduction() {
+        return properties.getProperty("AlexaIntentIntroduction");
+    }
+
+    /**
+     * Name of the participant
+     */
+    public static String getAlexaSlotIntroductionName() {
+        return properties.getProperty("AlexaSlotIntroductionName");
+    }
+
+    /**
      * Name of the intent handling the iot setup
      */
     public static String getAlexaIntentCfgDevInt() {
@@ -164,8 +178,8 @@ public class SkillConfig {
     /**
      * Name of the slot which holds a first name to either be spelled or encoded to morse code
      */
-    public static String getAlexaSlotName() {
-        return properties.getProperty("AlexaSlotName");
+    public static String getAlexaSlotEncodePhrase() {
+        return properties.getProperty("AlexaSlotEncodePhrase");
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Requesthandler for the Lambda-function which is the endpoint of Alexas Morse-skill
+ * RequestHandler for the Lambda-function which sits at the frontdoor of Alexa's Morse-skill
  */
 public class MorseSpeechletRequestStreamHandler extends SpeechletRequestStreamHandler {
     private static final Set<String> supportedApplicationIds = new HashSet<>();
@@ -20,14 +20,10 @@ public class MorseSpeechletRequestStreamHandler extends SpeechletRequestStreamHa
         // adds the application-id according to what is configured in the app.properties
         supportedApplicationIds.add(SkillConfig.getAlexaAppId());
 
-        //try {
-            //final String hi = SsmlUtils.getAudio(MorseApiManager.encode("hi").getMp3Url());
-            final String hi = "<audio src=\"" + SkillConfig.getS3BucketUrl() + "hi-12-12.mp3\" />";
-            welcomeText = String.format("%s welcome to Morse coder. Let me encode or teach you some Morse code.", hi);
-        //} catch (IOException | URISyntaxException e ) {
-        //    e.printStackTrace();
-        //}
+        final String hi = "<audio src=\"" + SkillConfig.getS3BucketUrl() + "hi-12-12.mp3\" />";
+        welcomeText = String.format("%s welcome to Morse coder. Let me encode or teach you some Morse code.", hi);
 
+        // hand over all the intent handlers to the speechlet handler
         speechletHandler = SpeechletHandler.create()
                 .withWelcomeText(welcomeText)
                 .withRepromptText("If you are lost, ask me for help.")
@@ -48,7 +44,7 @@ public class MorseSpeechletRequestStreamHandler extends SpeechletRequestStreamHa
     }
 
     /**
-     * Constructor routes to its parent equivilant handing over the speechlet and
+     * Constructor routes to its parent giving it the speechlet and
      * all supported application-ids
      */
     public MorseSpeechletRequestStreamHandler() {

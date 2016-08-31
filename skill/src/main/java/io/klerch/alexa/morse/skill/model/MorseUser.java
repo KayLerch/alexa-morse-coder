@@ -9,29 +9,19 @@ import org.apache.commons.lang3.Validate;
 
 import java.util.Optional;
 
+@AlexaStateSave(Scope = AlexaScope.USER)
 public class MorseUser extends AlexaStateModel {
     public enum SETUP_MODE {
         UP, DOWN, ON, OFF, NAN
     }
 
-    @AlexaStateSave(Scope = AlexaScope.USER)
     private String name;
-    @AlexaStateSave(Scope = AlexaScope.USER)
     private Integer personalScore = 0;
-    @AlexaStateSave(Scope = AlexaScope.USER)
     private Integer wpm = SkillConfig.getWpmLevelDefault();
     @AlexaStateIgnore
     private Integer wpmSpaces = SkillConfig.getWpmLevelDefault();
-    @AlexaStateSave(Scope = AlexaScope.USER)
     private boolean deviceIntegrationEnabled;
-    @AlexaStateSave(Scope = AlexaScope.USER)
     private boolean farnsworthEnabled;
-    @AlexaStateSave(Scope = AlexaScope.SESSION)
-    private boolean isAskedForNewExercise;
-    @AlexaStateSave(Scope = AlexaScope.SESSION)
-    private boolean isAskedForAnotherEncode;
-    @AlexaStateSave(Scope = AlexaScope.SESSION)
-    private boolean isAskedForAnotherTry;
 
     public MorseUser() {
     }
@@ -183,54 +173,5 @@ public class MorseUser extends AlexaStateModel {
         }
         // return nothing to indicate the caller nothing changed
         return Optional.empty();
-    }
-
-    public boolean getIsAskedForNewExercise() {
-        return this.isAskedForNewExercise;
-    }
-
-    public void setIsAskedForNewExercise(final boolean isAskedForNewExercise) {
-        if (isAskedForNewExercise) withNothingAsked();
-        this.isAskedForNewExercise = isAskedForNewExercise;
-    }
-
-    public MorseUser withIsAskedForNewExercise(final boolean isAskedForNewExercise) {
-        setIsAskedForNewExercise(isAskedForNewExercise);
-        return this;
-    }
-
-    public boolean getIsAskedForAnotherEncode() {
-        return this.isAskedForAnotherEncode;
-    }
-
-    public void setIsAskedForAnotherEncode(final boolean isAskedForAnotherEncode) {
-        if (isAskedForAnotherEncode) withNothingAsked();
-        this.isAskedForAnotherEncode = isAskedForAnotherEncode;
-    }
-
-    public MorseUser withIsAskedForAnotherEncode(final boolean isAskedForAnotherEncode) {
-        setIsAskedForAnotherEncode(isAskedForAnotherEncode);
-        return this;
-    }
-
-    public boolean getIsAskedForAnotherTry() {
-        return this.isAskedForAnotherTry;
-    }
-
-    public void setIsAskedForAnotherTry(final boolean isAskedForAnotherTry) {
-        if (isAskedForAnotherTry) withNothingAsked();
-        this.isAskedForAnotherTry = isAskedForAnotherTry;
-    }
-
-    public MorseUser withIsAskedForAnotherTry(final boolean isAskedForAnotherTry) {
-        setIsAskedForAnotherTry(isAskedForAnotherTry);
-        return this;
-    }
-
-    public MorseUser withNothingAsked() {
-        this.isAskedForAnotherEncode = false;
-        this.isAskedForNewExercise = false;
-        this.isAskedForAnotherTry = false;
-        return this;
     }
 }

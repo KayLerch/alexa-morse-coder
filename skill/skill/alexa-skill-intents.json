@@ -35,7 +35,7 @@
       "intent": "Encode",
       "slots": [
         {
-          "name": "Name",
+          "name": "EncodePhrase",
           "type": "AMAZON.LITERAL"
         }
       ]
@@ -46,6 +46,15 @@
         {
           "name": "ExerciseWord",
           "type": "ExerciseWords"
+        }
+      ]
+    },
+    {
+      "intent": "Introduction",
+      "slots": [
+        {
+          "name": "Name",
+          "type": "AMAZON.US_FIRST_NAME"
         }
       ]
     },

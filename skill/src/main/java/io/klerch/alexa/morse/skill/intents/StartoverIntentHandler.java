@@ -3,6 +3,7 @@ package io.klerch.alexa.morse.skill.intents;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.state.utils.AlexaStateException;
@@ -20,9 +21,9 @@ public class StartoverIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         try {
-            final MorseUser user = getMorseUser();
+            final MorseUser user = getMorseUser(morseSession);
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
 
             if (exercise.isPresent()) {

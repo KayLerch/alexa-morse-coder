@@ -3,14 +3,16 @@ package io.klerch.alexa.morse.skill.utils;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.*;
 import com.amazon.speech.ui.SsmlOutputSpeech;
-import com.amazonaws.services.dynamodbv2.xspec.SS;
-import io.klerch.alexa.morse.skill.intents.CancelIntentHandler;
-import io.klerch.alexa.morse.skill.intents.StartoverIntentHandler;
-import io.klerch.alexa.morse.skill.intents.StopIntentHandler;
+import io.klerch.alexa.morse.skill.intents.*;
+import io.klerch.alexa.morse.skill.model.MorseSession;
+import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
+import io.klerch.alexa.state.utils.AlexaStateException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.Date;
 
@@ -32,9 +34,9 @@ public class SpeechletHandlerTest {
 
     @Test
     public void create() throws Exception {
-        final IIntentHandler intentHandler = new CancelIntentHandler();
-        final IIntentHandler intentHandler2 = new StopIntentHandler();
-        final IIntentHandler intentHandler3 = new StartoverIntentHandler();
+        final IntentHandler intentHandler = new CancelIntentHandler();
+        final IntentHandler intentHandler2 = new StopIntentHandler();
+        final IntentHandler intentHandler3 = new StartoverIntentHandler();
 
         final SpeechletHandler handler = SpeechletHandler.create()
                 .withRepromptText(repromptText)
@@ -66,42 +68,76 @@ public class SpeechletHandlerTest {
         // not worth testing cause of empty implementation
     }
 
-    @Test
-    public void onIntentExistentHandler() throws Exception {
-        final Intent intent = Intent.builder().withName(SkillConfig.IntentNameBuiltinCancel).build();
+    private <THandler extends AbstractIntentHandler>
+    void onIntentExistentHandler(final String intentName, final Class<THandler> handlerClass) throws SpeechletException, AlexaStateException {
+        onIntentExistentHandler(intentName, handlerClass, true);
+    }
+
+    private <THandler extends AbstractIntentHandler> void onIntentExistentHandler(final String intentName, final Class<THandler> handlerClass, final boolean expectHandler) throws SpeechletException, AlexaStateException {
+        final Intent intent = Intent.builder().withName(intentName).build();
         final IntentRequest intentRequest = IntentRequest.builder().withIntent(intent).withRequestId("12345").withTimestamp(new Date()).build();
 
-        final CancelIntentHandler cancelHandler = Mockito.spy(CancelIntentHandler.class);
         final SpeechletResponse dummyResponse = AlexaSpeechletResponse.ask().withText("test").build();
-        Mockito.doReturn(dummyResponse).when(cancelHandler).handleIntentRequest(intent);
-
+        final THandler intentHandler = Mockito.mock(handlerClass, new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                if (invocationOnMock.getMethod().getName().equals("handleIntentRequest")) {
+                    return dummyResponse;
+                }
+                else if (invocationOnMock.getMethod().getName().equals("getIntentName")) {
+                    return intentName;
+                }
+                return null;
+            }
+        });
         final SpeechletHandler handler = SpeechletHandler.create()
-                .withRepromptText(repromptText)
+                .addIntentHandler(intentHandler)
                 .withUnknownIntentText(unknownIntentText)
-                .withWelcomeText(welcomeText)
-                .addIntentHandler(cancelHandler)
                 .build();
+
+        assertTrue(handler.getIntentHandlers().contains(intentHandler));
+
+        // give it a username to avoid returning the intervene-response for asking for a user's name
+        new AlexaSessionStateHandler(session).createModel(MorseSession.class).withName("name").saveState();
+
         final SpeechletResponse response = handler.onIntent(intentRequest, session);
+
         assertNotNull(response);
         assertNotNull(response.getOutputSpeech());
-        assertEquals(response, dummyResponse);
+        if (expectHandler) {
+            assertEquals(response, dummyResponse);
+        }
+        else {
+            assertNotEquals(response, dummyResponse);
+            assertTrue(response.getOutputSpeech() instanceof SsmlOutputSpeech);
+            // look for unknown intent text
+            assertTrue(((SsmlOutputSpeech)response.getOutputSpeech()).getSsml().contains(unknownIntentText));
+        }
     }
 
     @Test
-    public void onIntentUnknownHandler() throws Exception {
-        final Intent intent = Intent.builder().withName(SkillConfig.IntentNameBuiltinCancel).build();
-        final IntentRequest intentRequest = IntentRequest.builder().withIntent(intent).withRequestId("12345").withTimestamp(new Date()).build();
+    @Ignore
+    public void onIntentExistentHandler() throws Exception {
+        // test if intents kick off their corresponding handlers
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinCancel, CancelIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinHelp, HelpIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinNext, NextIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinNo, NoIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinRepeat, RepeatIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinStartover, StartoverIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinStop, StopIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinYes, YesIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.getAlexaIntentCfgFarnsworth(), CfgFarnsworthIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.getAlexaIntentCfgSpeed(), CfgSpeedIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.getAlexaIntentEncode(), EncodeIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.getAlexaIntentCfgDevInt(), CfgDeviceIntegrationIntentHandler.class);
+        onIntentExistentHandler(SkillConfig.getAlexaIntentExercise(), ExerciseIntentHandler.class);
+    }
 
-        final SpeechletHandler handler = SpeechletHandler.create()
-                .withUnknownIntentText(unknownIntentText)
-                .addIntentHandler(new StopIntentHandler())
-                .build();
-        final SpeechletResponse response = handler.onIntent(intentRequest, session);
-        assertNotNull(response);
-        assertNotNull(response.getOutputSpeech());
-        assertTrue(response.getOutputSpeech() instanceof SsmlOutputSpeech);
-        // look for unknown intent text
-        assertTrue(((SsmlOutputSpeech)response.getOutputSpeech()).getSsml().contains(unknownIntentText));
+    @Test
+    @Ignore
+    public void onUnknownIntentHandler() throws Exception {
+        onIntentExistentHandler(SkillConfig.IntentNameBuiltinHelp, StartoverIntentHandler.class, false);
     }
 
     @Test

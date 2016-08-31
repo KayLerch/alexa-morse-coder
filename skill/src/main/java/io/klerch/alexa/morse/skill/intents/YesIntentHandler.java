@@ -2,6 +2,7 @@ package io.klerch.alexa.morse.skill.intents;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
@@ -22,20 +23,17 @@ public class YesIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         try {
-            final MorseUser user = getMorseUser();
+            final MorseUser user = getMorseUser(morseSession);
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             SpeechletResponse response;
-
-            System.out.println(user.toJSON(AlexaScope.SESSION));
-
             // Answer was given for having another try in current exercise
-            if (user.getIsAskedForAnotherTry() && exercise.isPresent()) {
+            if (morseSession.getIsAskedForAnotherTry() && exercise.isPresent()) {
                 response = getExerciseSpeech(exercise.get());
             }
             // Answer was given for having another exercise
-            else if (user.getIsAskedForNewExercise()) {
+            else if (morseSession.getIsAskedForNewExercise()) {
                 // create new exercise
                 final MorseExercise exerciseNew = SessionHandler
                         .createModel(MorseExercise.class)
@@ -50,17 +48,16 @@ public class YesIntentHandler extends AbstractIntentHandler {
                 response = getExerciseSpeech(exerciseNew);
             }
             // Answer was given for having another encode
-            else if (user.getIsAskedForAnotherEncode()) {
+            else if (morseSession.getIsAskedForAnotherEncode()) {
                 // instruct user what to say for encoding phrases
                 response = ask().withSsml(ResponsePhrases.HelpOnEncode).build();
             }
             // if none of these question were asked, return general help
             else {
-                final String help = exercise.isPresent() ? ResponsePhrases.HelpOnExercise : ResponsePhrases.HelpInGeneral;
-                response = ask().withSsml("I am not sure what question you answered. " + user.getIsAskedForAnotherEncode() + " " + help).build();
+                response = ask().withSsml("I am not sure what question you answered. " + ResponsePhrases.HelpBriefly).build();
             }
             // reset memory of question asked
-            SessionHandler.writeModel(user.withNothingAsked());
+            morseSession.withNothingAsked().saveState();
             return response;
         }
         catch(AlexaStateException | URISyntaxException | IOException e) {

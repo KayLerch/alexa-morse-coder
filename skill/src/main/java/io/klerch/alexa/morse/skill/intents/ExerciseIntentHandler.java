@@ -3,6 +3,7 @@ package io.klerch.alexa.morse.skill.intents;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.Card;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.utils.AlexaSpeechletResponse;
 import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
@@ -27,9 +28,9 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         try {
-            final MorseUser user = getMorseUser();
+            final MorseUser user = getMorseUser(morseSession);
             // look for ongoing exercise
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             // exercise ongoing?
@@ -42,9 +43,10 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
                     // increase score by wpm and decrease it a bit in case of Farnsworth enabled
                     final Integer score = user.getWpm() - (user.getFarnsworthEnabled() ? SkillConfig.ScoreDecreaseOnFarnsworth : 0);
                     user.withIncreasedPersonalScoreBy(score)
-                            .withIsAskedForNewExercise(true) // remember having asked for another exercise
                             .withHandler(DynamoDbHandler)
                             .saveState();
+                    // remember having asked for another exercise
+                    morseSession.withIsAskedForNewExercise(true).saveState();
                     // return speech with image-card
                     return getCorrectAnswerResponse(user, exerciseForSure);
                 }
@@ -52,9 +54,10 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
                 else {
                     // decrease score and save score immediately to db
                     user.withDecreasedPersonalScoreBy(SkillConfig.ScoreDecreaseOnRetry)
-                            .withIsAskedForAnotherTry(true) // remember having asked for another try
                             .withHandler(DynamoDbHandler)
                             .saveState();
+                    // remember having asked for another try
+                    morseSession.withIsAskedForAnotherTry(true).saveState();
                     return getWrongAnswerResponse();
                 }
             }
@@ -84,7 +87,7 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
     }
 
     private AlexaSpeechletResponse getCorrectAnswerResponse(final MorseUser user, final MorseExercise exercise) {
-        final String speech = ResponsePhrases.getSuperlative() + "! " +
+        final String speech = ResponsePhrases.getSuperlative() + ", " + user.getName() + "! " +
                 ResponsePhrases.getAnswerCorrect() + "." +
                 "<p>" + ResponsePhrases.getScoreIs() + " " + user.getPersonalScore() + "</p>" +
                 "<p>" + ResponsePhrases.getWantAnotherCode() + "</p>";

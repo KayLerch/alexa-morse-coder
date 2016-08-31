@@ -31,7 +31,7 @@ public class MorseRecordTest {
 
     @Test
     public void setOverallHighscorer() throws Exception {
-        final List<String> highscorer = Arrays.asList("Bob", "Michael", "Tina");
+        final String highscorer = "Bob";
         record.setOverallHighscorer(highscorer);
         assertEquals(highscorer, record.getOverallHighscorer());
     }
@@ -44,12 +44,12 @@ public class MorseRecordTest {
         assertTrue(record2.isPresent());
         assertEquals(record, record2.get());
         assertEquals(user.getPersonalScore(), record.getOverallHighscore());
-        assertTrue(record.getOverallHighscorer().contains(user.getName()));
+        assertTrue(record.getOverallHighscorer().equals(user.getName()));
         // try again but now without new highscore
         final MorseUser user2 = new MorseUser().withName("Tina").withPersonalScore(highscore - 1);
         assertFalse(record.withNewOverallHighscore(user2).isPresent());
         // should still be bob's highscore
         assertEquals(user.getPersonalScore(), record.getOverallHighscore());
-        assertTrue(record.getOverallHighscorer().contains(user.getName()));
+        assertTrue(record.getOverallHighscorer().equals(user.getName()));
     }
 }

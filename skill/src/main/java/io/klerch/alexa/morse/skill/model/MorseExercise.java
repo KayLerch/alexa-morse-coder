@@ -63,6 +63,16 @@ public class MorseExercise extends AlexaStateModel {
         this.timestamp = timestamp;
     }
 
+    public MorseExercise withTimestamp(final long timestamp) {
+        setTimestamp(timestamp);
+        return this;
+    }
+
+    public MorseExercise withNewTimestamp() {
+        setTimestamp(System.currentTimeMillis());
+        return this;
+    }
+
     public MorseExercise withLiteral(final String literal) {
         setLiteral(literal);
         return this;
@@ -136,32 +146,19 @@ public class MorseExercise extends AlexaStateModel {
         final String s = IOUtils.toString(entity.getContent(), "UTF-8");
         // take over values from http-response
         fromJSON(s);
-
-        this.timestamp = System.currentTimeMillis();
-        return this;
-    }
-
-    /**
-     * Sets a random word out of the exercise word list
-     * @return random word
-     */
-    public MorseExercise withRandomLiteral() {
-        final Integer wordLength = literal == null ? 0 : literal.length();
-        return withRandomLiteral(wordLength);
+        return this.withNewTimestamp();
     }
 
     /**
      * Sets a random word out of the exercise word list with a specific length
      *
-     * @param wordLength the number of letters the random word should contain
      * @return random word
      */
-    public MorseExercise withRandomLiteral(Integer wordLength) {
-        // if length of word is out of bounds apply something in bounds
-        if (wordLength < SkillConfig.ExerciseWordMinLength)
-            wordLength = SkillConfig.ExerciseWordMinLength;
-        else if (wordLength > SkillConfig.ExerciseWordMaxLength)
-            wordLength = SkillConfig.ExerciseWordMaxLength;
+    public MorseExercise withRandomLiteral() {
+        // random word-length within min-max bounds
+        final int wordLength = new Random()
+                .nextInt(SkillConfig.ExerciseWordMaxLength - SkillConfig.ExerciseWordMinLength + 1) + SkillConfig.ExerciseWordMinLength;
+
         final List<String> exerciseWords = SkillConfig.getExerciseWords(wordLength);
         // pick random word from a collection
         final int idx = new Random().nextInt(exerciseWords.size());

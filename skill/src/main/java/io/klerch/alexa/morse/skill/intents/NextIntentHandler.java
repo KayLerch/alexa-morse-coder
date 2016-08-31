@@ -2,6 +2,7 @@ package io.klerch.alexa.morse.skill.intents;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
 import io.klerch.alexa.morse.skill.model.MorseUser;
@@ -23,18 +24,18 @@ public class NextIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         String preface = "";
         // in any case, "next" means to give the user a new exercise
         try {
-            final MorseUser user = getMorseUser();
+            final MorseUser user = getMorseUser(morseSession);
             // look for ongoing exercise
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             // exercise ongoing?
             if (exercise.isPresent()) {
                 DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(SkillConfig.ScoreDecreaseOnSkipped));
                 // set preface speech
-                preface = "The correct answer would have been <p>" + exercise.get().getLiteral() + "</p>. Anyway, here is another code.";
+                preface = "The correct answer would have been <p>" + exercise.get().getLiteral() + "</p> Anyway, here is another code. ";
             }
             // generate new exercise
             final MorseExercise exerciseNew = SessionHandler.createModel(MorseExercise.class);

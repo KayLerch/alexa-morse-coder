@@ -9,14 +9,16 @@ public class ResponsePhrases {
     public static final String HelpOnExercise = "If you are asked for the decoded word in an exercise, say the word right away. " +
             "Alternatively say <p>repeat</p> to listen to the code once again or say <p>next</p> to proceed with another code. " +
             "You can control playback speed at any time with saying <p>Set words per minute to</p> followed " +
-            "by a number. Or just tell me to <p>Increase speed</p> or <p>Decrease speed</p> Another option is to <p>Enable Farnsworth</p> which " +
-            "results in slowing down speed of only the spaces in those codes.";
+            "by a number. Or just tell me to <p>Speed up</p> or <p>Slow down</p> Another option is to <p>Enable Farnsworth</p> which " +
+            "results in slowing down speed of only the spaces in those codes. ";
 
-    public static final String HelpOnEncode = "Say <p>Encode</p> followed by the phrase you want me to play back in Morse code.";
+    public static final String HelpOnEncode = "Say <p>Encode</p> followed by the phrase you want me to play back in Morse code. ";
 
-    public static final String HelpInGeneral = "This skill teaches you how to morse code. Let me encode " +
-            "any phrases by saying something like <p>Encode hello world</p> Or just say <p>Start exercise</p> and follow the" +
-            "my instructions. " + HelpOnExercise;
+    public static final String HelpBriefly = "This skill teaches you how to morse code. Let me encode " +
+            "any phrase by saying something like <p>Encode hello world</p> Or just say <p>Start exercise</p> and follow " +
+            "my instructions. ";
+
+    public static final String HelpInGeneral = HelpBriefly + HelpOnExercise;
 
     private static final List<String> superlatives = Arrays.asList("awesome", "excellent", "fantastic", "brilliant", "wow", "great", "perfect", "incredible", "super", "amazing");
     private static final List<String> answerCorrect = Arrays.asList("your answer is correct", "that is correct", "you nailed it", "answer is right", "you got it right", "that's it");
@@ -29,7 +31,7 @@ public class ResponsePhrases {
     private static final List<String> listenUp = Arrays.asList("Listen up!", "Listen carefully!", "Listen!", "Listen closely!", "Attention!", "Code is coming!", "This is your code!", "Here we go!", "Here you are!");
     private static final List<String> whatsTheAnswer = Arrays.asList("What's the answer", "What's the word?", "Tell me what you heard!", "Well?", "Tell me your guess!", "What does this code mean?", "Spell or tell me the word.");
     private static final List<String> helpYou = Arrays.asList("Ok, let me help you with repeating this.", "Let's play it again.", "One more time", "Listen again", "Here you are again", "Here we go again", "No clue? Once more.", "Let's replay this for you.", "A replay will help you.", "Replaying this might help you.");
-    private static final List<String> goodBye = Arrays.asList("Have a nice day.", "Bye bye.", "Good bye.");
+    private static final List<String> goodBye = Arrays.asList("Have a nice day ", "Bye  ", "Good bye ", "Talk to you later ", "Have a good one ", "Take care ", "I'm out ", "Peace out ", "Peace ");
 
     public static String getHelpYou() { return getRandomOf(helpYou); }
 

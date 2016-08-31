@@ -4,6 +4,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.SimpleCard;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.state.model.AlexaScope;
@@ -23,11 +24,11 @@ public class CfgDeviceIntegrationIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         // extract command from intent
         final MorseUser.SETUP_MODE mode = getIntegrationSetupMode(intent);
         try {
-            final MorseUser user = getMorseUser();
+            final MorseUser user = getMorseUser(morseSession);
             // try get current exercise in order to apply new speed
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             // set new value and continue with saving if the value has changed
@@ -41,7 +42,7 @@ public class CfgDeviceIntegrationIntentHandler extends AbstractIntentHandler {
             }
             final String speech = user.getDeviceIntegrationEnabled() ?
                     "From now on, whenever this skill plays back a Morse code, it propagates data to a device shadow whose name you can find in your Alexa app." :
-                    "From now on, no more data will be propagated to your device shadow.";
+                    "From now on, no more data will be propagated to your device shadow. ";
             // create the card with all the instructions if integration was enabled
             final SimpleCard card = user.getDeviceIntegrationEnabled() ?
                     getIotSetupCard(IotHandler.getThingName(AlexaScope.USER)) : null;
@@ -54,7 +55,7 @@ public class CfgDeviceIntegrationIntentHandler extends AbstractIntentHandler {
                 return getNewExerciseAskSpeech(speech, card);
             }
         } catch (AlexaStateException e) {
-            log.error("Could not set up device integration.", e);
+            log.error("Could not set up device integration. ", e);
             return getErrorResponse();
         }
     }

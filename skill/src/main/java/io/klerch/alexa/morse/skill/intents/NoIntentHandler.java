@@ -3,6 +3,7 @@ package io.klerch.alexa.morse.skill.intents;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
@@ -22,45 +23,44 @@ public class NoIntentHandler extends AbstractIntentHandler {
     }
 
     @Override
-    public SpeechletResponse handleIntentRequest(final Intent intent) {
+    public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
 
         try {
-            final MorseUser user = getMorseUser();
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             SpeechletResponse response = new SpeechletResponse();
 
             // Answer was given for having another try in current exercise
-            if (user.getIsAskedForAnotherTry() && exercise.isPresent()) {
+            if (morseSession.getIsAskedForAnotherTry() && exercise.isPresent()) {
                 // redirect to exercise intent handler (which should treat this as a wrong answer)
-                return new ExerciseIntentHandler().withSession(Session).handleIntentRequest(intent);
+                return new ExerciseIntentHandler().withSession(Session).handleIntentRequest(morseSession, intent);
             }
             // Answer was given for having another exercise
-            else if (user.getIsAskedForNewExercise()) {
+            else if (morseSession.getIsAskedForNewExercise()) {
                 // redirect to cancel intent handler
-                return new CancelIntentHandler().withSession(Session).handleIntentRequest(intent);
+                return new CancelIntentHandler().withSession(Session).handleIntentRequest(morseSession, intent);
             }
             // Answer was given for having another encode and no exercise ongoing
-            else if (user.getIsAskedForAnotherEncode() && !exercise.isPresent()) {
+            else if (morseSession.getIsAskedForAnotherEncode() && !exercise.isPresent()) {
                 // ask for staring an exercise
-                SessionHandler.writeModel(user.withIsAskedForNewExercise(true));
-                return getNewExerciseAskSpeech("Got you.");
+                morseSession.withIsAskedForNewExercise(true).saveState();
+                return getNewExerciseAskSpeech("Got you. ");
             }
             // Answer was given for having another encode and exercise ongoing
-            else if (user.getIsAskedForAnotherEncode() && exercise.isPresent()) {
+            else if (morseSession.getIsAskedForAnotherEncode() && exercise.isPresent()) {
                 // repeat that exercise
                 return getExerciseSpeech(exercise.get(), "Okay. Let's move on with your current exercise. ");
             }
             // if none of these question were asked, return general help
             else {
-                final String help = exercise.isPresent() ? ResponsePhrases.HelpOnExercise : ResponsePhrases.HelpInGeneral;
+                final String help = exercise.isPresent() ? ResponsePhrases.HelpOnExercise : ResponsePhrases.HelpBriefly;
                 response = ask().withSsml("I am not sure what question you answered. " + help).build();
             }
             // reset memory of question asked
-            SessionHandler.writeModel(user.withNothingAsked());
+            morseSession.withNothingAsked().saveState();
             return response;
         }
         catch(AlexaStateException e) {
-            log.error("Error on handling No intent.", e);
+            log.error("Error on handling No intent. ", e);
             return getErrorResponse();
         }
     }
