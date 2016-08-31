@@ -1,6 +1,7 @@
 package io.klerch.alexa.morse.skill.intents;
 
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
 import io.klerch.alexa.morse.skill.model.MorseSession;
@@ -12,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -29,6 +32,21 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
     public SpeechletResponse handleIntentRequest(final MorseSession morseSession, final Intent intent) {
         final String name = getName(intent);
         try {
+            // check if there is an exercise ongoing
+            final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
+            // if it is: the name provided is likely meant to be an answer for this exercise
+            // we cannot prevent the user from giving US_FIRST_NAMEs as exercise answers
+            if (exercise.isPresent()) {
+                // that is why we pass this answer to the exercise intent handler
+                // prepare an exercise intent handler and hand over the answer in an exercise slot
+                final Slot slot = Slot.builder().withName(SkillConfig.getAlexaSlotExerciseWord())
+                        .withValue(name).build();
+                final Map<String, Slot> slots = new HashMap<>();
+                slots.put(SkillConfig.getAlexaIntentEncode(), slot);
+                final Intent exerciseIntent = Intent.builder().withName(SkillConfig.getAlexaIntentEncode()).withSlots(slots).build();
+                return new ExerciseIntentHandler().withSession(Session).handleIntentRequest(morseSession, exerciseIntent);
+            }
+
             if (name != null && !name.isEmpty()) {
                 // remember name and unset reminder for having asked for the name
                 morseSession.withName(name).withNothingAsked().saveState();
@@ -55,7 +73,7 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
         }
     }
 
-    private String getName(final Intent intent) {
+    public static String getName(final Intent intent) {
         final String SlotName = SkillConfig.getAlexaSlotIntroductionName();
         return intent.getSlots().containsKey(SlotName) &&
                 intent.getSlot(SlotName) != null ?

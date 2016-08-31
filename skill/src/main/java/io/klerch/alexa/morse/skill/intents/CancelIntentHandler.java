@@ -35,12 +35,12 @@ public class CancelIntentHandler extends AbstractIntentHandler {
                 MorseExercise exerciseForSure = exercise.get();
                 // cancel exercise by removing it from session
                 exerciseForSure.removeState();
-                final String speech = ResponsePhrases.getCorrectAnswerIs() + "<p>" + exerciseForSure.getLiteral() + "</p>";
+                final String speech = ResponsePhrases.getCorrectAnswerIs() + "<p>" + exerciseForSure.getLiteral() + ". Go on with next code?</p>";
                 // remember being asked for a new exercise in order to get upcoming YES/NO right
                 morseSession.withIsAskedForNewExercise(true).saveState();
                 // in addition decrease score. that is why model is written with dynamo handler instead of just session handler
                 DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(SkillConfig.ScoreDecreaseOnSkipped));
-                return getNewExerciseAskSpeech(speech);
+                return ask().withSsml(speech).build();
             }
             // read or create record in dynamodb
             final MorseRecord record = getMorseRecord();

@@ -34,6 +34,7 @@ public class MorseSpeechletRequestStreamHandler extends SpeechletRequestStreamHa
                 .addIntentHandler(new ExerciseIntentHandler())
                 .addIntentHandler(new CancelIntentHandler())
                 .addIntentHandler(new HelpIntentHandler())
+                .addIntentHandler(new IntroductionIntentHandler())
                 .addIntentHandler(new NextIntentHandler())
                 .addIntentHandler(new NoIntentHandler())
                 .addIntentHandler(new RepeatIntentHandler())

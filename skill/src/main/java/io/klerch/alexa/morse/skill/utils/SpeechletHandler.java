@@ -1,7 +1,9 @@
 package io.klerch.alexa.morse.skill.utils;
 
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.*;
+import io.klerch.alexa.morse.skill.intents.ExerciseIntentHandler;
 import io.klerch.alexa.morse.skill.intents.IntroductionIntentHandler;
 import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
@@ -10,9 +12,7 @@ import io.klerch.alexa.state.utils.AlexaStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class SpeechletHandler implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(SpeechletHandler.class);
@@ -83,7 +83,7 @@ public class SpeechletHandler implements Speechlet {
         final Optional<IntentHandler> intentHandler = intentHandlers.stream()
                 .filter(x -> x.getIntentName().equals(intentName))
                 .findFirst();
-        // in case there's no intent handler for this intent, let the user know
+        // now let the right handler handle that intent
         return intentHandler.isPresent() ?
                 intentHandler.get().withSession(session).handleIntentRequest(morseSession, intent) :
                 AlexaSpeechletResponse.ask().withSsml(unknownIntentText).build();
