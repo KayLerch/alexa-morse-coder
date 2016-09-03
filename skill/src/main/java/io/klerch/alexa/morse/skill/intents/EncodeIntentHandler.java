@@ -40,7 +40,7 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
                     .withNewEncoding(phrase, user);
             // save that to be able to repeat it
             encoding.saveState();
-            final String speech = "Morse code of " + encoding.getLiteral() + " is as follows: " + encoding.getAudioSsml() + "<p>Do you want me to encode another phrase?</p>";
+            final String speech = "Morse code of " + encoding.getLiteral() + " is as follows: " + encoding.getAudioSsml() + "<p>Do you want me to play back another phrase?</p>";
             // get image card with letters of encoded phrase
             final Card card = getExerciseCard(encoding, false);
             // remember having ask for another encoding

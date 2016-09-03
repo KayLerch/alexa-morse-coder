@@ -12,10 +12,10 @@ public class ResponsePhrases {
             "by a number. Or just tell me to <p>Speed up</p> or <p>Slow down</p> Another option is to <p>Enable Farnsworth</p> which " +
             "results in slowing down speed of only the spaces in those codes. ";
 
-    public static final String HelpOnEncode = "Say <p>Encode</p> followed by the phrase you want me to play back in Morse code. ";
+    public static final String HelpOnEncode = "Say <p>play back</p> followed by the phrase you want me to encode in Morse. ";
 
     public static final String HelpBriefly = "This skill teaches you how to morse code. Let me encode " +
-            "any phrase by saying something like <p>Encode hello world</p> Or just say <p>Start exercise</p> and follow " +
+            "any phrase by saying something like <p>Play back hello world</p> Or just say <p>Start exercise</p> and follow " +
             "my instructions. ";
 
     public static final String HelpInGeneral = HelpBriefly + HelpOnExercise;
