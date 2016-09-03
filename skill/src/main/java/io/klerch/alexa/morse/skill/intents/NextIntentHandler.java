@@ -43,7 +43,7 @@ public class NextIntentHandler extends AbstractIntentHandler {
             // play back new code
             return getExerciseSpeech(exerciseNew, preface);
         }
-        catch (IOException | URISyntaxException | AlexaStateException e) {
+        catch (final IOException | URISyntaxException | AlexaStateException e) {
             log.error("Error handling Next intent.", e);
             return getErrorResponse();
         }

@@ -54,7 +54,7 @@ public class YesIntentHandler extends AbstractIntentHandler {
             }
             // if none of these question were asked, return general help
             else {
-                response = ask().withSsml("I am not sure what question you answered. " + ResponsePhrases.HelpBriefly).build();
+                response = ask().withSsml("I am not sure what question you answered. Ask me for help if you don't now what to say. ").build();
             }
             // reset memory of question asked
             morseSession.withNothingAsked().saveState();

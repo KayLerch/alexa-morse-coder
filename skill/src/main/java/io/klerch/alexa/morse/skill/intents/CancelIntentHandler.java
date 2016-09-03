@@ -32,10 +32,9 @@ public class CancelIntentHandler extends AbstractIntentHandler {
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             // if there is an exercise ongoing
             if (exercise.isPresent()) {
-                MorseExercise exerciseForSure = exercise.get();
                 // cancel exercise by removing it from session
-                exerciseForSure.removeState();
-                final String speech = ResponsePhrases.getCorrectAnswerIs() + "<p>" + exerciseForSure.getLiteral() + ". Go on with next code?</p>";
+                exercise.get().removeState();
+                final String speech = ResponsePhrases.getCorrectAnswerIs() + "<p>" + exercise.get().getLiteral() + ". Go on with next code?</p>";
                 // remember being asked for a new exercise in order to get upcoming YES/NO right
                 morseSession.withIsAskedForNewExercise(true).saveState();
                 // in addition decrease score. that is why model is written with dynamo handler instead of just session handler
@@ -49,11 +48,10 @@ public class CancelIntentHandler extends AbstractIntentHandler {
                 // save and congrat
                 record.saveState();
                 // congrat and good bye
-                preface = "Wow, " + user.getName() + ". You got the highest score of all players in this game. ";
+                preface = ResponsePhrases.getSuperlative() + ", " + user.getName() + ". " + ResponsePhrases.getHighscore();
             }
             else {
                 preface = "Highest score is " + record.getOverallHighscore() + " owned by " + record.getOverallHighscorer() + ". ";
-
             }
             return getGoodBye(preface, user);
         }

@@ -30,10 +30,9 @@ public class SkillConfig {
     public static final String IntentNameBuiltinYes = "AMAZON.YesIntent";
     public static final Integer ExerciseWordMaxLengthForOutput = 255;
     public static final Integer ExerciseWordMinLength = 4;
-    public static final Integer ExerciseWordMaxLength = 7;
-    public static final Integer ExerciseWordDefaultLength = 4;
+    public static final Integer ExerciseWordMaxLength = 8;
     public static final Integer ScoreDecreaseOnRetry = 1;
-    public static final Integer ScoreDecreaseOnSkipped = 3;
+    public static final Integer ScoreDecreaseOnSkipped = 2;
     public static final Integer ScoreDecreaseOnFarnsworth = 3;
 
     /**

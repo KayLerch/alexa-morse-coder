@@ -41,7 +41,8 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
                     // remove exercise
                     exerciseForSure.removeState();
                     // increase score by wpm and decrease it a bit in case of Farnsworth enabled
-                    final Integer score = user.getWpm() - (user.getFarnsworthEnabled() ? SkillConfig.ScoreDecreaseOnFarnsworth : 0);
+                    final Integer farnsWorthReduction = (user.getFarnsworthEnabled() ? SkillConfig.ScoreDecreaseOnFarnsworth : 0);
+                    final Integer score = Math.round((exerciseForSure.getLowestWpm() / 3) + exerciseForSure.getLiteral().length() - farnsWorthReduction);
                     user.withIncreasedPersonalScoreBy(score)
                             .withHandler(DynamoDbHandler)
                             .saveState();
@@ -76,7 +77,7 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
                 return getExerciseSpeech(exerciseNew);
             }
         }
-        catch (IOException | URISyntaxException | AlexaStateException e) {
+        catch (final IOException | URISyntaxException | AlexaStateException e) {
             log.error("Error handling exercise intent.", e);
             return getErrorResponse();
         }

@@ -30,6 +30,7 @@ public class MorseExercise extends AlexaStateModel {
     private String literal;
     private String mp3Url;
     private long timestamp;
+    private Integer lowestWpm;
 
     public MorseExercise() {
     }
@@ -63,6 +64,10 @@ public class MorseExercise extends AlexaStateModel {
         this.timestamp = timestamp;
     }
 
+    public Integer getLowestWpm() {
+        return lowestWpm;
+    }
+
     public MorseExercise withTimestamp(final long timestamp) {
         setTimestamp(timestamp);
         return this;
@@ -87,7 +92,8 @@ public class MorseExercise extends AlexaStateModel {
     }
 
     public String getAudioSsml() {
-        return mp3Url != null && !mp3Url.isEmpty() ? "<audio src=\"" + this.mp3Url + "\" />" : null;
+        // ensure there's a little break before playing back morse
+        return mp3Url != null && !mp3Url.isEmpty() ? "<break time=\"1s\"/><audio src=\"" + this.mp3Url + "\" />" : null;
     }
 
     public MorseExercise withMp3Url(final String mp3Url) {
@@ -127,6 +133,13 @@ public class MorseExercise extends AlexaStateModel {
                 .addParameter("text", text)
                 .addParameter("wpm", String.valueOf(user.getWpm()))
                 .addParameter("fw", String.valueOf(user.getWpmSpaces()));
+
+        // remember the lowest wpm at which this exercise was played back to the user
+        // this impacts the score given to the user on right answer. Users may cheat with already
+        // knowing an answer but give this answer at a much higher speed
+        if (lowestWpm == null || lowestWpm > user.getWpm()) {
+            lowestWpm = user.getWpm();
+        }
 
         // set up web request
         final HttpGet httpGet = new HttpGet(uri.build());

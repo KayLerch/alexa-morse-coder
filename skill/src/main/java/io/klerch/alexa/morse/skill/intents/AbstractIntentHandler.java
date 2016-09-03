@@ -63,7 +63,7 @@ public abstract class AbstractIntentHandler implements IntentHandler {
     }
 
     SpeechletResponse getErrorResponse(String preface) {
-        return tell().withText((preface != null ? preface : "") + ". Please try again. ").build();
+        return tell().withText((preface != null ? preface : "") + " <p>Please try again</p>").build();
     }
 
     SpeechletResponse getExerciseSpeech(final MorseExercise exercise, final String preface, final SimpleCard card) throws AlexaStateException {

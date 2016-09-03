@@ -39,19 +39,19 @@ public class SpeechletHandler implements Speechlet {
         this.repromptText = builder.repromptText;
     }
 
-    public String getWelcomeText() {
+    String getWelcomeText() {
         return this.welcomeText;
     }
 
-    public String getUnknownIntentText() {
+    String getUnknownIntentText() {
         return this.unknownIntentText;
     }
 
-    public String getRepromptText() {
+    String getRepromptText() {
         return this.repromptText;
     }
 
-    public List<IntentHandler> getIntentHandlers() {
+    List<IntentHandler> getIntentHandlers() {
         return this.intentHandlers;
     }
 

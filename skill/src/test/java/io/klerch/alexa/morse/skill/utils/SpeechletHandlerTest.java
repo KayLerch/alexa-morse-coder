@@ -20,9 +20,7 @@ import static org.junit.Assert.*;
 
 public class SpeechletHandlerTest {
     private Session session;
-    final String repromptText = "repromptText";
-    final String welcomeText = "welcomeText";
-    final String unknownIntentText = "unknownIntentText";
+    private final String unknownIntentText = "unknownIntentText";
 
     @Before
     public void createSession() {
@@ -34,6 +32,9 @@ public class SpeechletHandlerTest {
 
     @Test
     public void create() throws Exception {
+        final String repromptText = "repromptText";
+        final String welcomeText = "welcomeText";
+
         final IntentHandler intentHandler = new CancelIntentHandler();
         final IntentHandler intentHandler2 = new StopIntentHandler();
         final IntentHandler intentHandler3 = new StartoverIntentHandler();
@@ -84,10 +85,7 @@ public class SpeechletHandlerTest {
                 if (invocationOnMock.getMethod().getName().equals("handleIntentRequest")) {
                     return dummyResponse;
                 }
-                else if (invocationOnMock.getMethod().getName().equals("getIntentName")) {
-                    return intentName;
-                }
-                return null;
+                return invocationOnMock.callRealMethod();
             }
         });
         final SpeechletHandler handler = SpeechletHandler.create()
@@ -116,7 +114,6 @@ public class SpeechletHandlerTest {
     }
 
     @Test
-    @Ignore
     public void onIntentExistentHandler() throws Exception {
         // test if intents kick off their corresponding handlers
         onIntentExistentHandler(SkillConfig.IntentNameBuiltinCancel, CancelIntentHandler.class);
@@ -135,7 +132,6 @@ public class SpeechletHandlerTest {
     }
 
     @Test
-    @Ignore
     public void onUnknownIntentHandler() throws Exception {
         onIntentExistentHandler(SkillConfig.IntentNameBuiltinHelp, StartoverIntentHandler.class, false);
     }
