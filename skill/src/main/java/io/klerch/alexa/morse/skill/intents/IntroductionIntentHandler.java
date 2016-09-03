@@ -4,6 +4,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseRecord;
 import io.klerch.alexa.morse.skill.model.MorseSession;
 import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
@@ -47,17 +48,25 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
                 morseSession.withName(name).withNothingAsked().saveState();
                 // try get user from store and check if this user is already known (user-wide)
                 final MorseUser user = getMorseUser(morseSession);
+                // get highscore stats
+                final MorseRecord record = getMorseRecord();
+                final String highscoreInfo = record.getOverallHighscore() <= user.getPersonalScore() ?
+                        "You still got the highest score in the game. " :
+                        "Try beat the highscore of " + record.getOverallHighscore() + " by " + record.getOverallHighscorer() + ". ";
+                String preface = "";
                 if (name.equals(user.getName())) {
                     // welcome back existing user with her score
-                    final String speech = "Welcome back " + user.getName() + ". Your current score is " + user.getPersonalScore() + ". Tell me what to do next.";
-                    return ask().withSsml(speech).withRepromptSsml(ResponsePhrases.HelpBriefly).build();
+                    preface = "Welcome back " + user.getName() + ". ";
+                    preface += highscoreInfo;
+                    preface += "Your current score is " + user.getPersonalScore() + ". ";
                 } else {
                     // save that name
                     DynamoDbHandler.writeModel(user.withName(name));
                     // give a short intro to this new user
-                    final String speech = "Welcome " + user.getName() + ". " + ResponsePhrases.HelpBriefly;
-                    return ask().withSsml(speech).withRepromptSsml(ResponsePhrases.HelpInGeneral).build();
+                    preface += "Welcome " + user.getName() + ". " + highscoreInfo;
                 }
+                morseSession.withIsAskedForNewExercise(true).saveState();
+                return getNewExerciseAskSpeech(preface);
             }
             // something went wrong. Keep asking for name
             morseSession.withIsAskedForName(true).saveState();
