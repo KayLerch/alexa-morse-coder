@@ -19,8 +19,8 @@ import java.util.*;
 public class SpeechletHandler implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(SpeechletHandler.class);
 
-    private static final String defaultWelcomeText = "Hello.";
-    private static final String defaultUnkownIntentText = "Sorry. I cannot handle this intent.";
+    private static final String defaultWelcomeText = "Hello. ";
+    private static final String defaultUnkownIntentText = "Sorry. I cannot handle this intent. ";
 
     private final List<IntentHandler> intentHandlers;
     private final String welcomeText;

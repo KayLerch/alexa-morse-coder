@@ -21,6 +21,7 @@ CfgFarnsworth {CfgCommandOnOff} farnsworth
 CfgFarnsworth set farnsworth {CfgCommandOnOff}
 CfgFarnsworth set farnsworth to {CfgCommandOnOff}
 Encode play back {sample|EncodePhrase}
+Encode play back {this is a sample with more words to be encoded|EncodePhrase}
 Encode encode {sample|EncodePhrase}
 Encode encode {this is a sample with more words to be encoded|EncodePhrase}
 Encode morse {sample|EncodePhrase}

@@ -42,8 +42,8 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
                 final Slot slot = Slot.builder().withName(SkillConfig.getAlexaSlotExerciseWord())
                         .withValue(name).build();
                 final Map<String, Slot> slots = new HashMap<>();
-                slots.put(SkillConfig.getAlexaIntentEncode(), slot);
-                final Intent exerciseIntent = Intent.builder().withName(SkillConfig.getAlexaIntentEncode()).withSlots(slots).build();
+                slots.put(SkillConfig.getAlexaSlotExerciseWord(), slot);
+                final Intent exerciseIntent = Intent.builder().withName(SkillConfig.getAlexaIntentExercise()).withSlots(slots).build();
                 return new ExerciseIntentHandler().withSession(Session).handleIntentRequest(morseSession, exerciseIntent);
             }
 
