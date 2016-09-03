@@ -3,6 +3,8 @@ package io.klerch.alexa.morse.skill.utils;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,6 +13,8 @@ import java.io.*;
 import java.net.URLEncoder;
 
 public class MorseCodeImage {
+    private static final Logger log = LoggerFactory.getLogger(MorseCodeImage.class);
+
     private final AmazonS3Client s3Client;
 
     public MorseCodeImage() {
@@ -22,7 +26,7 @@ public class MorseCodeImage {
     }
 
     public String getImage(final String word, final boolean codeOnly) throws IOException {
-        // check if image already existant in S3 bucket
+        // check if image already existent in S3 bucket
         return isImageAlreadyExisting(word, codeOnly) ? getS3Url(word, codeOnly) :
                 // otherwise generate and upload the image based on the provided word
                 uploadFileToS3(createImage(word, codeOnly), word, codeOnly);
@@ -80,9 +84,9 @@ public class MorseCodeImage {
 
     private String getFileKey(final String word, final Boolean codeOnly) {
         try {
-            return (codeOnly ? SkillConfig.getS3BucketFolderImgCodes() : SkillConfig.getS3BucketFolderImg()) + "/" + URLEncoder.encode(word.toLowerCase(), "UTF-8") + ".png";
+            return (codeOnly ? SkillConfig.getS3BucketFolderImgCodes() : SkillConfig.getS3BucketFolderImg()) + "/" + URLEncoder.encode(word.replace(" ", "_").toLowerCase(), "UTF-8") + ".png";
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error("Failed generating name for the image file of " + word, e);
             return null;
         }
     }
@@ -109,8 +113,8 @@ public class MorseCodeImage {
                 bos.close();
                 if (bis != null) bis.close();
             }
-            catch(IOException ex) {
-                ex.printStackTrace();
+            catch(IOException e) {
+                log.error("Error while closing stream for writing an image for " + word, e);
             }
         }
     }

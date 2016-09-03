@@ -32,7 +32,7 @@ public class NoIntentHandler extends AbstractIntentHandler {
             // Answer was given for having another try in current exercise
             if (morseSession.getIsAskedForAnotherTry() && exercise.isPresent()) {
                 // redirect to exercise intent handler (which should treat this as a wrong answer)
-                return new ExerciseIntentHandler().withSession(Session).handleIntentRequest(morseSession, intent);
+                return new NextIntentHandler().withSession(Session).handleIntentRequest(morseSession, intent);
             }
             // Answer was given for having another exercise
             else if (morseSession.getIsAskedForNewExercise()) {

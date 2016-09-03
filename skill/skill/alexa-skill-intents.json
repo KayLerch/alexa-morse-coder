@@ -1,6 +1,30 @@
 {
   "intents": [
     {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.RepeatIntent"
+    },
+    {
+      "intent": "AMAZON.StartOverIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NextIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
       "intent": "CfgSpeed",
       "slots": [
         {
@@ -41,15 +65,6 @@
       ]
     },
     {
-      "intent": "Exercise",
-      "slots": [
-        {
-          "name": "ExerciseWord",
-          "type": "ExerciseWords"
-        }
-      ]
-    },
-    {
       "intent": "Introduction",
       "slots": [
         {
@@ -59,28 +74,13 @@
       ]
     },
     {
-      "intent": "AMAZON.HelpIntent"
-    },
-    {
-      "intent": "AMAZON.RepeatIntent"
-    },
-    {
-      "intent": "AMAZON.StartOverIntent"
-    },
-    {
-      "intent": "AMAZON.NoIntent"
-    },
-    {
-      "intent": "AMAZON.YesIntent"
-    },
-    {
-      "intent": "AMAZON.NextIntent"
-    },
-    {
-      "intent": "AMAZON.CancelIntent"
-    },
-    {
-      "intent": "AMAZON.StopIntent"
+      "intent": "Exercise",
+      "slots": [
+        {
+          "name": "ExerciseWord",
+          "type": "ExerciseWords"
+        }
+      ]
     }
   ]
 }

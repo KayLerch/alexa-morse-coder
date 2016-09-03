@@ -62,7 +62,7 @@ public abstract class AbstractIntentHandler implements IntentHandler {
     }
 
     SpeechletResponse getErrorResponse(String preface) {
-        return tell().withText((preface != null ? preface : "") + " <p>Please try again</p>").build();
+        return ask().withText((preface != null ? preface : "") + " <p>Please try again</p>").build();
     }
 
     SpeechletResponse getExerciseSpeech(final MorseExercise exercise, final String preface, final SimpleCard card) throws AlexaStateException {
@@ -116,7 +116,7 @@ public abstract class AbstractIntentHandler implements IntentHandler {
     SpeechletResponse getGoodBye(final String prefix, final MorseUser user) {
         String speech = prefix != null ? prefix : "";
         if (user != null) {
-            speech += "Your current score is " + user.getPersonalScore() + ". ";
+            speech += " Your current score is " + user.getPersonalScore() + ". ";
         }
         speech += ResponsePhrases.getGoodBye();
         return tell().withSsml(speech).build();

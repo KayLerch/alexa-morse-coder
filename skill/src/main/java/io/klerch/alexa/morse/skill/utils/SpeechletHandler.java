@@ -3,6 +3,8 @@ package io.klerch.alexa.morse.skill.utils;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.klerch.alexa.morse.skill.intents.ExerciseIntentHandler;
 import io.klerch.alexa.morse.skill.intents.IntroductionIntentHandler;
 import io.klerch.alexa.morse.skill.model.MorseSession;
@@ -71,6 +73,13 @@ public class SpeechletHandler implements Speechlet {
 
     @Override
     public SpeechletResponse onIntent(IntentRequest intentRequest, Session session) throws SpeechletException {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            log.info(om.writeValueAsString(intentRequest));
+        } catch (JsonProcessingException e) {
+            log.error("Some error", e);
+        }
+
         log.debug("Session got an intent");
         final Intent intent = intentRequest.getIntent();
         // check if this procedure should be intervened for reason of unknown username
@@ -123,7 +132,7 @@ public class SpeechletHandler implements Speechlet {
             return Optional.empty();
         } catch (AlexaStateException e) {
             log.error("Error reading from MorseSession.", e);
-            return Optional.of(AlexaSpeechletResponse.tell().withSsml("Sorry, there was an error.").build());
+            return Optional.of(AlexaSpeechletResponse.tell().withSsml("Sorry, there was an error. ").build());
         }
     }
 

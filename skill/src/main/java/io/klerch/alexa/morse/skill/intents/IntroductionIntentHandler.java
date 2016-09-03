@@ -66,7 +66,7 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
             }
             // something went wrong. Keep asking for name
             morseSession.withIsAskedForName(true).saveState();
-            return ask().withText("Sorry, I didn't get that. What is your first name?").build();
+            return ask().withText("Sorry, I only accept common names in the US. What is your first name?").build();
         } catch (AlexaStateException e) {
             log.error(e);
             return getErrorResponse();

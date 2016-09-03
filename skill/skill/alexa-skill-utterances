@@ -1,14 +1,16 @@
+Introduction {Name}
 Introduction My name is {Name}
-CfgSpeed slow {CfgCommandUpDown}
-CfgSpeed speed {CfgCommandUpDown}
+Introduction I am {Name}
+CfgSpeed Slow {CfgCommandUpDown}
+CfgSpeed Speed {CfgCommandUpDown}
 CfgSpeed {CfgCommandUpDown} speed
 CfgSpeed {CfgCommandUpDown} words per minute
 CfgSpeed {CfgCommandUpDown} playback speed
-CfgSpeed play {CfgCommandUpDown}
-CfgSpeed set speed to {CfpWpm}
-CfgSpeed set speed to {CfpWpm} words per minute
-CfgSpeed set playback speed to {CfpWpm}
-CfgSpeed set playback speed to {CfpWpm} words per minute
+CfgSpeed Play {CfgCommandUpDown}
+CfgSpeed Set speed to {CfpWpm}
+CfgSpeed Set speed to {CfpWpm} words per minute
+CfgSpeed Set playback speed to {CfpWpm}
+CfgSpeed Set playback speed to {CfpWpm} words per minute
 CfgSpeed {CfgCommandUpDown} speed to {CfpWpm} words per minute
 CfgSpeed {CfgCommandUpDown} playback speed to {CfpWpm} words per minute
 CfgSpeed {CfgCommandUpDown} words per minute to {CfpWpm}

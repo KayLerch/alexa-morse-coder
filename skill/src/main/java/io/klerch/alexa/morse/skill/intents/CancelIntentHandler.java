@@ -34,7 +34,7 @@ public class CancelIntentHandler extends AbstractIntentHandler {
             if (exercise.isPresent()) {
                 // cancel exercise by removing it from session
                 exercise.get().removeState();
-                final String speech = ResponsePhrases.getCorrectAnswerIs() + "<p>" + exercise.get().getLiteral() + "</p> Go on with next code?</p>";
+                final String speech = ResponsePhrases.getCorrectAnswerIs() + "<p>" + exercise.get().getLiteral() + "</p> <p>Go on with next code?</p>";
                 // remember being asked for a new exercise in order to get upcoming YES/NO right
                 morseSession.withIsAskedForNewExercise(true).saveState();
                 // in addition decrease score. that is why model is written with dynamo handler instead of just session handler

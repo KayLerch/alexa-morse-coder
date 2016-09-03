@@ -35,7 +35,7 @@ public class NextIntentHandler extends AbstractIntentHandler {
             if (exercise.isPresent()) {
                 DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(SkillConfig.ScoreDecreaseOnSkipped));
                 // set preface speech
-                preface = "The correct answer would have been <p>" + exercise.get().getLiteral() + "</p> Anyway, here is another code. ";
+                preface = "The correct answer would have been <p>" + exercise.get().getLiteral() + "</p> <p>Anyway, here is another code.</p>";
             }
             // generate new exercise
             final MorseExercise exerciseNew = SessionHandler.createModel(MorseExercise.class);
