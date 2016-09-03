@@ -68,6 +68,10 @@ public class MorseExercise extends AlexaStateModel {
         return lowestWpm;
     }
 
+    public void setLowestWpm(final Integer lowestWpm) {
+        this.lowestWpm = lowestWpm;
+    }
+
     public MorseExercise withTimestamp(final long timestamp) {
         setTimestamp(timestamp);
         return this;
