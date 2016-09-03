@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+import static java.lang.String.format;
+
 /**
  * Handles an intent given while exercising with the morse skill
  */
@@ -62,6 +64,7 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
                     return getWrongAnswerResponse();
                 }
             }
+            // no exercise ongoing
             else {
                 // create new exercise
                 final MorseExercise exerciseNew = SessionHandler
@@ -98,15 +101,24 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
     }
 
     private boolean hasExerciseCorrect(final Intent intent, final String word) {
-        final String SlotNameExerciseWord = SkillConfig.getAlexaSlotExerciseWord();
-
+        String slotName = SkillConfig.getAlexaSlotExerciseWord();
+        // optionally look for the introduction name slot as an answer to
+        // an exercise could be a common first name
+        // the introduction intent handler routes intent request to this
+        // handler if it recognizes an ongoing exercise.
+        if (!intent.getSlots().containsKey(slotName)) {
+            slotName = SkillConfig.getAlexaSlotIntroductionName();
+        }
         // read out the word (if any) which was given by the user as an answer
         final String intentWord =
-                (intent.getSlots().containsKey(SlotNameExerciseWord) ?
-                        intent.getSlot(SlotNameExerciseWord).getValue() : null);
-
+                (intent.getSlots().containsKey(slotName) ?
+                        intent.getSlot(slotName).getValue() : null);
         // check for phonetic equality
-        return intentWord != null && word != null &&
-            new DoubleMetaphone().isDoubleMetaphoneEqual(intentWord, word);
+        if (intentWord == null || word == null ||
+            !new DoubleMetaphone().isDoubleMetaphoneEqual(intentWord, word)) {
+            log.info(format("There war a wrong answer given. Given '%1$s' but expected '%2$s'", intentWord, word));
+            return false;
+        }
+        return true;
     }
 }

@@ -133,6 +133,7 @@ public class SpeechletHandlerTest {
 
     @Test
     public void onUnknownIntentHandler() throws Exception {
+        // an exercise-intent should never result in an exercise intent cause it needs a user introduction first
         onIntentExistentHandler(SkillConfig.IntentNameBuiltinHelp, StartoverIntentHandler.class, false);
     }
 

@@ -36,17 +36,12 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
             // if it is: the name provided is likely meant to be an answer for this exercise
             // we cannot prevent the user from giving US_FIRST_NAMEs as exercise answers
+            // or it is even not ensured that an exercise word is a US_FIRST_NAME
             if (exercise.isPresent()) {
+                log.info("Introduction intent is routed to exercise intent with slot value " + name);
                 // that is why we pass this answer to the exercise intent handler
-                // prepare an exercise intent handler and hand over the answer in an exercise slot
-                final Slot slot = Slot.builder().withName(SkillConfig.getAlexaSlotExerciseWord())
-                        .withValue(name).build();
-                final Map<String, Slot> slots = new HashMap<>();
-                slots.put(SkillConfig.getAlexaSlotExerciseWord(), slot);
-                final Intent exerciseIntent = Intent.builder().withName(SkillConfig.getAlexaIntentExercise()).withSlots(slots).build();
-                return new ExerciseIntentHandler().withSession(Session).handleIntentRequest(morseSession, exerciseIntent);
+                return new ExerciseIntentHandler().withSession(Session).handleIntentRequest(morseSession, intent);
             }
-
             if (name != null && !name.isEmpty()) {
                 // remember name and unset reminder for having asked for the name
                 morseSession.withName(name).withNothingAsked().saveState();
@@ -66,7 +61,7 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
             }
             // something went wrong. Keep asking for name
             morseSession.withIsAskedForName(true).saveState();
-            return ask().withText("Sorry, I only accept common names in the US. What is your first name?").build();
+            return ask().withText("Sorry, I did not get you. Please give me your name.").build();
         } catch (AlexaStateException e) {
             log.error(e);
             return getErrorResponse();

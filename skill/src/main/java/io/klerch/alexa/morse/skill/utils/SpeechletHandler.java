@@ -75,12 +75,11 @@ public class SpeechletHandler implements Speechlet {
     public SpeechletResponse onIntent(IntentRequest intentRequest, Session session) throws SpeechletException {
         ObjectMapper om = new ObjectMapper();
         try {
-            log.info(om.writeValueAsString(intentRequest));
+            log.debug(om.writeValueAsString(intentRequest));
         } catch (JsonProcessingException e) {
             log.error("Some error", e);
         }
 
-        log.debug("Session got an intent");
         final Intent intent = intentRequest.getIntent();
         // check if this procedure should be intervened for reason of unknown username
         final Optional<SpeechletResponse> earlyResponse = getResponseIfNameUnknown(intent, session);
@@ -108,27 +107,36 @@ public class SpeechletHandler implements Speechlet {
         try {
             // try read from morse session (holding the name) from Alexa session
             morseSession = sessionHandler.readModel(MorseSession.class).orElse(sessionHandler.createModel(MorseSession.class));
-            // if there's no name then we need to intervene with an early response
-            // having the caller of this method to not proceed with his actual duty
-            if (morseSession.getName().isEmpty()) {
-                log.info("A request was received while having no username. Try get it from the user.");
-                // if there is a reminder set because the user was asked for his name
-                if (morseSession.getIsAskedForName()) {
-                    // route to introduction handler to look for that given name
-                    return Optional.of(new IntroductionIntentHandler()
-                            .withSession(session)
-                            .handleIntentRequest(morseSession, intent));
-                }
-                else {
-                    // ask for name and remember having done this
-                    morseSession.withIsAskedForName(true).saveState();
-                    return Optional.of(AlexaSpeechletResponse.ask()
-                            .withSsml("Before we start, please tell me your first name.")
-                            .withRepromptText("Please provide your given name.")
-                            .build());
-                }
+            // if a name is already known to the current session, no need for an
+            // introduction at all
+            if (morseSession.getName() != null && !morseSession.getName().isEmpty())
+                return Optional.empty();
+
+            // a name is mandatory if an exercise is kicked off
+            // this is either the case on an exercise intent or on a yes-intent
+            // in combination with a question having ask for an exercise
+            final boolean exerciseKickedOff = intent.getName().equals(SkillConfig.getAlexaIntentExercise()) ||
+                    (morseSession.getIsAskedForNewExercise() && intent.getName().equals(SkillConfig.IntentNameBuiltinYes));
+            // Alexa asked for a name and the intent seems to contain an introduction (a name)
+            final boolean introductionMade = intent.getName().equals(SkillConfig.getAlexaIntentIntroduction()) &&
+                    morseSession.getIsAskedForName();
+
+            if (introductionMade) {
+                // route to introduction handler to look for that given name
+                return Optional.of(new IntroductionIntentHandler()
+                        .withSession(session)
+                        .handleIntentRequest(morseSession, intent));
             }
-            // if we got here the name is not unknown. there's no reason to intervene with an early response
+            else if (exerciseKickedOff) {
+                // ask for name and remember having done this
+                morseSession.withIsAskedForName(true).saveState();
+                return Optional.of(AlexaSpeechletResponse.ask()
+                        .withSsml("Before we start, please tell me your first name.")
+                        .withRepromptText("Please provide your given name.")
+                        .build());
+            }
+            // if we got here the name is not necessary (no exercise)
+            // there's no reason to intervene with an early response
             return Optional.empty();
         } catch (AlexaStateException e) {
             log.error("Error reading from MorseSession.", e);

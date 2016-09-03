@@ -31,12 +31,15 @@ public class NextIntentHandler extends AbstractIntentHandler {
             final MorseUser user = getMorseUser(morseSession);
             // look for ongoing exercise
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
-            // exercise ongoing?
-            if (exercise.isPresent()) {
-                DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(SkillConfig.ScoreDecreaseOnSkipped));
-                // set preface speech
-                preface = "The correct answer would have been <p>" + exercise.get().getLiteral() + "</p> <p>Anyway, here is another code.</p>";
+            // if no exercise ongoing then there's nothing to go next
+            if (!exercise.isPresent()) {
+                // instead ask for starting an exercise
+                morseSession.withIsAskedForNewExercise(true).saveState();
+                return getNewExerciseAskSpeech();
             }
+            DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(SkillConfig.ScoreDecreaseOnSkipped));
+            // set preface speech
+            preface = "The correct answer would have been <p>" + exercise.get().getLiteral() + "</p><p>However, here is another code.</p>";
             // generate new exercise
             final MorseExercise exerciseNew = SessionHandler.createModel(MorseExercise.class);
             exerciseNew.withRandomLiteral().withNewEncoding(user).saveState();

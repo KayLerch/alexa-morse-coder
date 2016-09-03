@@ -26,10 +26,14 @@ public class StartoverIntentHandler extends AbstractIntentHandler {
             final MorseUser user = getMorseUser(morseSession);
             final Optional<MorseExercise> exercise = SessionHandler.readModel(MorseExercise.class);
 
-            if (exercise.isPresent()) {
-                // decrease score because an exercise is skipped
-                DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(3));
+            // if no exercise ongoing then there's nothing to start over
+            if (!exercise.isPresent()) {
+                // instead ask for starting an exercise
+                morseSession.withIsAskedForNewExercise(true).saveState();
+                return getNewExerciseAskSpeech();
             }
+            // decrease score because an exercise is skipped
+            DynamoDbHandler.writeModel(user.withDecreasedPersonalScoreBy(3));
             // create new exercise
             final MorseExercise exerciseNew = SessionHandler
                     .createModel(MorseExercise.class)
