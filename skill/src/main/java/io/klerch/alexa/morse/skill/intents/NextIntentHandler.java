@@ -41,6 +41,11 @@ public class NextIntentHandler extends AbstractIntentHandler {
             final MorseExercise exerciseNew = SessionHandler.createModel(MorseExercise.class);
             exerciseNew.withRandomLiteral().withNewEncoding(user).saveState();
             // play back new code
+            // if device integration is enabled by user ...
+            if (user.getDeviceIntegrationEnabled()) {
+                // publish state to thing shadow of user
+                sendIotHook(exerciseNew);
+            }
             return getExerciseSpeech(exerciseNew, preface);
         }
         catch (final IOException | URISyntaxException | AlexaStateException e) {

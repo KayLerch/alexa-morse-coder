@@ -41,7 +41,7 @@ public class CfgDeviceIntegrationIntentHandler extends AbstractIntentHandler {
                 IotHandler.createThingIfNotExisting(AlexaScope.USER);
             }
             final String speech = user.getDeviceIntegrationEnabled() ?
-                    "From now on, whenever this skill plays back a Morse code, it propagates data to a device shadow whose name you can find in your Alexa app." :
+                    "From now on, whenever this skill plays back a Morse code, it propagates data to a device shadow whose name you can find in your Alexa app. " :
                     "From now on, no more data will be propagated to your device shadow. ";
             // create the card with all the instructions if integration was enabled
             final SimpleCard card = user.getDeviceIntegrationEnabled() ?
@@ -52,6 +52,8 @@ public class CfgDeviceIntegrationIntentHandler extends AbstractIntentHandler {
                 return getExerciseSpeech(exercise.get(), speech, card);
             }
             else {
+                // remember being asked for a new exercise
+                morseSession.withIsAskedForNewExercise(true).saveState();
                 return getNewExerciseAskSpeech(speech, card);
             }
         } catch (AlexaStateException e) {

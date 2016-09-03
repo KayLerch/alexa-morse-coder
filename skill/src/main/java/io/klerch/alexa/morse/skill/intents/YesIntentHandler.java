@@ -40,9 +40,10 @@ public class YesIntentHandler extends AbstractIntentHandler {
                         .withRandomLiteral()
                         .withNewEncoding(user);
                 exerciseNew.saveState();
-                // if device integration, publish state to thing shadow of user
+                // if device integration is enabled by user ...
                 if (user.getDeviceIntegrationEnabled()) {
-                    IotHandler.writeModel(exerciseNew);
+                    // publish state to thing shadow of user
+                    sendIotHook(exerciseNew);
                 }
                 // play back new exercise code
                 response = getExerciseSpeech(exerciseNew);

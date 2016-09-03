@@ -45,6 +45,10 @@ public class EncodeIntentHandler extends AbstractIntentHandler {
             final Card card = getExerciseCard(encoding, false);
             // remember having ask for another encoding
             morseSession.withIsAskedForAnotherEncode(true).saveState();
+            // if device integration, publish state to thing shadow of user
+            if (user.getDeviceIntegrationEnabled()) {
+                sendIotHook(encoding);
+            }
             return ask().withCard(card).withSsml(speech).build();
         }
         catch (IOException | URISyntaxException | AlexaStateException e) {

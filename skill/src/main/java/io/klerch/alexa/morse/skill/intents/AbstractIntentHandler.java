@@ -4,14 +4,11 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.*;
-import io.klerch.alexa.morse.skill.model.MorseRecord;
-import io.klerch.alexa.morse.skill.model.MorseSession;
+import io.klerch.alexa.morse.skill.model.*;
 import io.klerch.alexa.morse.skill.utils.AlexaSpeechletResponse;
 import io.klerch.alexa.morse.skill.utils.IntentHandler;
 import io.klerch.alexa.morse.skill.utils.MorseCodeImage;
 import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
-import io.klerch.alexa.morse.skill.model.MorseExercise;
-import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.state.handler.AWSDynamoStateHandler;
 import io.klerch.alexa.state.handler.AWSIotStateHandler;
 import io.klerch.alexa.state.handler.AlexaSessionStateHandler;
@@ -19,6 +16,8 @@ import io.klerch.alexa.state.utils.AlexaStateException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+
+import static java.lang.String.format;
 
 public abstract class AbstractIntentHandler implements IntentHandler {
     final Logger log = Logger.getLogger(AbstractIntentHandler.class);
@@ -146,5 +145,21 @@ public abstract class AbstractIntentHandler implements IntentHandler {
         card.setTitle("Morse Code: " + (codeOnly ? "" : exercise.getLiteral()));
         card.setText(exercise.getPhonetic());
         return card;
+    }
+
+    /**
+     * Sends out a hook to a device shadow which contains information on the
+     * given exercise
+     * @param exercise the exercise whose information should be send to a device shadow
+     */
+    void sendIotHook(final MorseExercise exercise) {
+        try {
+            new MorseIoTHook(exercise).withHandler(IotHandler).saveState();
+            log.info(format("Sent exercise data to shadow of thing '%1$s'", IotHandler.getUserScopedThingName()));
+
+        } catch (AlexaStateException e) {
+            // never ever let this feature crash the session
+            log.error(e);
+        }
     }
 }
