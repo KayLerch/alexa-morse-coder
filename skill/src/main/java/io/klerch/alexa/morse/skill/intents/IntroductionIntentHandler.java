@@ -74,7 +74,12 @@ public class IntroductionIntentHandler extends AbstractIntentHandler {
     }
 
     public static String getName(final Intent intent) {
-        final String SlotName = SkillConfig.getAlexaSlotIntroductionName();
+        String SlotName = SkillConfig.getAlexaSlotIntroductionName();
+        if (!intent.getSlots().containsKey(SlotName)) {
+            // alternatively look in the exercise slot because there's maybe
+            // a name given which is similar or equal to an exercise word
+            SlotName = SkillConfig.getAlexaSlotExerciseWord();
+        }
         return intent.getSlots().containsKey(SlotName) &&
                 intent.getSlot(SlotName) != null ?
                 intent.getSlot(SlotName).getValue() : null;
