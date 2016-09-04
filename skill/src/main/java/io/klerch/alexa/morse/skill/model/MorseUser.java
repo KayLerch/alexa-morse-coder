@@ -5,8 +5,11 @@ import io.klerch.alexa.state.model.AlexaScope;
 import io.klerch.alexa.state.model.AlexaStateIgnore;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
+import io.klerch.alexa.state.utils.AlexaStateException;
 import org.apache.commons.lang3.Validate;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 @AlexaStateSave(Scope = AlexaScope.USER)
@@ -22,8 +25,35 @@ public class MorseUser extends AlexaStateModel {
     private Integer wpmSpaces = SkillConfig.getWpmLevelDefault();
     private boolean deviceIntegrationEnabled;
     private boolean farnsworthEnabled;
+    private String namesSsml;
 
     public MorseUser() {
+    }
+
+    /**
+     * Gets the SSML representation of the name which is either simply the name as a string
+     * or in case name is a call sign the audio ssml with code played back.
+     * @return SSML representation of the user name
+     */
+    public String getNamesSsml() throws AlexaStateException, IOException, URISyntaxException {
+        // return ssml if it was generated before (this saves a server-roundtrip for callsigns)
+        if (namesSsml != null && !namesSsml.isEmpty()) return namesSsml;
+        // is a call-sign if there is a numeral in the name
+        if (name != null && name.matches(".*\\d+.*")) {
+            // encode call-sign by using an exercise for this
+            namesSsml = new MorseExercise()
+                    .withLiteral(name)
+                    .withNewEncoding(name, 20, 20)
+                    .getAudioSsml(true);
+        }
+        else {
+            namesSsml = name;
+        }
+        return namesSsml;
+    }
+
+    public void setNamesSsml(final String namesSsml) {
+        this.namesSsml = namesSsml;
     }
 
     public String getName() {

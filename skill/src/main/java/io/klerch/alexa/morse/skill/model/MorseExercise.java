@@ -97,7 +97,13 @@ public class MorseExercise extends AlexaStateModel {
 
     public String getAudioSsml() {
         // ensure there's a little break before playing back morse
-        return mp3Url != null && !mp3Url.isEmpty() ? "<break time=\"1s\"/><audio src=\"" + this.mp3Url + "\" />" : null;
+        return getAudioSsml(false);
+    }
+
+    public String getAudioSsml(boolean noBreak) {
+        // ensure there's a little break before playing back morse in case it is desired
+        final String breakTag = noBreak ? "" : "<break time=\"1s\"/>";
+        return mp3Url != null && !mp3Url.isEmpty() ? breakTag + "<audio src=\"" + this.mp3Url + "\" />" : null;
     }
 
     public MorseExercise withMp3Url(final String mp3Url) {
@@ -128,6 +134,10 @@ public class MorseExercise extends AlexaStateModel {
     }
 
     public MorseExercise withNewEncoding(final String text, final MorseUser user) throws IOException, URISyntaxException, AlexaStateException {
+        return withNewEncoding(text, user.getWpm(), user.getWpmSpaces());
+    }
+
+    public MorseExercise withNewEncoding(final String text, final Integer wpm, final Integer wpmSpaces) throws IOException, URISyntaxException, AlexaStateException {
         // get credentials for webservice from application config
         final String apiKey = SkillConfig.getMorseCoderAPIuser();
         final String apiPass = SkillConfig.getMorseCoderAPIpass();
@@ -135,14 +145,14 @@ public class MorseExercise extends AlexaStateModel {
         // build uri
         final URIBuilder uri = new URIBuilder(SkillConfig.getMorseCoderAPIencode())
                 .addParameter("text", text)
-                .addParameter("wpm", String.valueOf(user.getWpm()))
-                .addParameter("fw", String.valueOf(user.getWpmSpaces()));
+                .addParameter("wpm", String.valueOf(wpm))
+                .addParameter("fw", String.valueOf(wpmSpaces));
 
         // remember the lowest wpm at which this exercise was played back to the user
         // this impacts the score given to the user on right answer. Users may cheat with already
         // knowing an answer but give this answer at a much higher speed
-        if (lowestWpm == null || lowestWpm > user.getWpm()) {
-            lowestWpm = user.getWpm();
+        if (lowestWpm == null || lowestWpm > wpm) {
+            lowestWpm = wpm;
         }
 
         // set up web request

@@ -10,6 +10,7 @@ import org.mockito.stubbing.Answer;
 import static org.junit.Assert.*;
 
 public class MorseCodeImageTest {
+
     @Test
     public void getImage() throws Exception {
         final AmazonS3Client s3Client = Mockito.mock(AmazonS3Client.class, new Answer() {

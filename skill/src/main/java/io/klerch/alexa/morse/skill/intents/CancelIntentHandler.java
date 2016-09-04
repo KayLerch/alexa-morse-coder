@@ -10,6 +10,8 @@ import io.klerch.alexa.morse.skill.utils.ResponsePhrases;
 import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.state.utils.AlexaStateException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
@@ -48,14 +50,14 @@ public class CancelIntentHandler extends AbstractIntentHandler {
                 // save and congrat
                 record.saveState();
                 // congrat and good bye
-                preface = ResponsePhrases.getSuperlative() + ", " + user.getName() + ". " + ResponsePhrases.getHighscore();
+                preface = ResponsePhrases.getSuperlative() + ", " + user.getNamesSsml() + ". " + ResponsePhrases.getHighscore();
             }
             else {
-                preface = "Highest score is " + record.getOverallHighscore() + " owned by " + record.getOverallHighscorer() + ". ";
+                preface = "Highest score is " + record.getOverallHighscore() + " owned by " + record.getOverallHighscorerSsml() + ". ";
             }
             return getGoodBye(preface, user);
         }
-        catch (AlexaStateException e) {
+        catch (URISyntaxException | AlexaStateException | IOException e) {
             log.error("Could not handle cancel request.", e);
             return getErrorResponse();
         }

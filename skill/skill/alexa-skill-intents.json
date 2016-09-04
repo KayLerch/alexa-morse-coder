@@ -70,6 +70,38 @@
         {
           "name": "Name",
           "type": "AMAZON.US_FIRST_NAME"
+        },
+        {
+          "name": "CallSignA",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignB",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignC",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignD",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignE",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignF",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignG",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignH",
+          "type": "CallSigns"
         }
       ]
     },

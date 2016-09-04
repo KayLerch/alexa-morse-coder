@@ -3,9 +3,12 @@ package io.klerch.alexa.morse.skill.utils;
 import com.amazon.speech.ui.*;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class AlexaSpeechletResponseTest {
+
     @Test
     public void tell() throws Exception {
         final AlexaSpeechletResponse response = AlexaSpeechletResponse.tell().withText("text").build();

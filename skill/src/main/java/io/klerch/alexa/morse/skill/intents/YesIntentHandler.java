@@ -32,6 +32,11 @@ public class YesIntentHandler extends AbstractIntentHandler {
             if (morseSession.getIsAskedForAnotherTry() && exercise.isPresent()) {
                 response = getExerciseSpeech(exercise.get());
             }
+            // Answer was given as a confirmation during the introduction process
+            else if (morseSession.getIsAskedForNameIsCorrect()) {
+                // route to introduction intent
+                return new IntroductionIntentHandler().withSession(Session).handleIntentRequest(morseSession, intent);
+            }
             // Answer was given for having another exercise
             else if (morseSession.getIsAskedForNewExercise()) {
                 // create new exercise

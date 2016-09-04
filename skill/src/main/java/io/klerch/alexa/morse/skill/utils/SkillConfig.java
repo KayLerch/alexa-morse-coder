@@ -153,11 +153,32 @@ public class SkillConfig {
         return properties.getProperty("AlexaIntentIntroduction");
     }
 
-    /**
-     * Name of the participant
-     */
     public static String getAlexaSlotIntroductionName() {
         return properties.getProperty("AlexaSlotIntroductionName");
+    }
+    public static String getAlexaSlotIntroductionSignA() {
+        return properties.getProperty("AlexaSlotIntroductionSignA");
+    }
+    public static String getAlexaSlotIntroductionSignB() {
+        return properties.getProperty("AlexaSlotIntroductionSignB");
+    }
+    public static String getAlexaSlotIntroductionSignC() {
+        return properties.getProperty("AlexaSlotIntroductionSignC");
+    }
+    public static String getAlexaSlotIntroductionSignD() {
+        return properties.getProperty("AlexaSlotIntroductionSignD");
+    }
+    public static String getAlexaSlotIntroductionSignE() {
+        return properties.getProperty("AlexaSlotIntroductionSignE");
+    }
+    public static String getAlexaSlotIntroductionSignF() {
+        return properties.getProperty("AlexaSlotIntroductionSignF");
+    }
+    public static String getAlexaSlotIntroductionSignG() {
+        return properties.getProperty("AlexaSlotIntroductionSignG");
+    }
+    public static String getAlexaSlotIntroductionSignH() {
+        return properties.getProperty("AlexaSlotIntroductionSignH");
     }
 
     /**

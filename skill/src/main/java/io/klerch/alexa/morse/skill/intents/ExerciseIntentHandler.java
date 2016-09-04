@@ -92,7 +92,7 @@ public class ExerciseIntentHandler extends AbstractIntentHandler {
     }
 
     private AlexaSpeechletResponse getCorrectAnswerResponse(final MorseUser user, final MorseExercise exercise) {
-        final String speech = ResponsePhrases.getSuperlative() + ", " + user.getName() + "! " +
+        final String speech = ResponsePhrases.getSuperlative() + "! " +
                 ResponsePhrases.getAnswerCorrect() + "." +
                 "<p>" + ResponsePhrases.getScoreIs() + " " + user.getPersonalScore() + "</p>" +
                 "<p>" + ResponsePhrases.getWantAnotherCode() + "</p>";

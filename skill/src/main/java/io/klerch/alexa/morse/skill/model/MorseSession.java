@@ -4,6 +4,8 @@ import io.klerch.alexa.state.model.AlexaScope;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
 
+import java.util.Optional;
+
 @AlexaStateSave (Scope= AlexaScope.SESSION)
 public class MorseSession extends AlexaStateModel {
     private String name = "";
@@ -11,9 +13,14 @@ public class MorseSession extends AlexaStateModel {
     private boolean isAskedForAnotherEncode;
     private boolean isAskedForAnotherTry;
     private boolean isAskedForName;
+    private boolean isAskedForNameIsCorrect;
 
     public String getName() {
         return this.name;
+    }
+
+    public Optional<String> getNameIfSet() {
+        return this.name != null && !this.name.isEmpty() ? Optional.of(this.name) : Optional.empty();
     }
 
     public void setName(final String name) {
@@ -81,11 +88,26 @@ public class MorseSession extends AlexaStateModel {
         return this;
     }
 
+    public boolean getIsAskedForNameIsCorrect() {
+        return this.isAskedForNameIsCorrect;
+    }
+
+    public void setIsAskedForNameIsCorrect(boolean askedForNameIsCorrect) {
+        if (askedForNameIsCorrect) withNothingAsked();
+        this.isAskedForNameIsCorrect = askedForNameIsCorrect;
+    }
+
+    public MorseSession withIsAskedForNameIsCorrect(final boolean askedForNameIsCorrect) {
+        setIsAskedForNameIsCorrect(askedForNameIsCorrect);
+        return this;
+    }
+
     public MorseSession withNothingAsked() {
         this.isAskedForAnotherEncode = false;
         this.isAskedForNewExercise = false;
         this.isAskedForAnotherTry = false;
         this.isAskedForName = false;
+        this.isAskedForNameIsCorrect = false;
         return this;
     }
 }

@@ -109,7 +109,8 @@ public class SpeechletHandler implements Speechlet {
             morseSession = sessionHandler.readModel(MorseSession.class).orElse(sessionHandler.createModel(MorseSession.class));
             // if a name is already known to the current session, no need for an
             // introduction at all
-            if (morseSession.getName() != null && !morseSession.getName().isEmpty())
+            if (morseSession.getName() != null && !morseSession.getName().isEmpty() &&
+                    !morseSession.getIsAskedForNameIsCorrect())
                 return Optional.empty();
 
             // a name is mandatory if an exercise is kicked off
@@ -119,7 +120,7 @@ public class SpeechletHandler implements Speechlet {
                     (morseSession.getIsAskedForNewExercise() && intent.getName().equals(SkillConfig.IntentNameBuiltinYes));
             // Alexa asked for a name and the intent seems to contain an introduction (a name)
             final boolean introductionMade = intent.getName().equals(SkillConfig.getAlexaIntentIntroduction()) &&
-                    morseSession.getIsAskedForName();
+                    (morseSession.getIsAskedForName() || morseSession.getIsAskedForNameIsCorrect());
 
             if (introductionMade) {
                 // route to introduction handler to look for that given name
