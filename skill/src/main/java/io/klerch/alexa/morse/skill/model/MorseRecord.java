@@ -5,6 +5,8 @@ import io.klerch.alexa.state.model.AlexaStateIgnore;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
 import io.klerch.alexa.state.utils.AlexaStateException;
+import io.klerch.alexa.tellask.schema.annotation.AlexaSlotSave;
+import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -16,8 +18,11 @@ public class MorseRecord extends AlexaStateModel {
     @AlexaStateIgnore
     final Logger log = Logger.getLogger(MorseRecord.class);
 
+    @AlexaSlotSave(slotName = "highscore", formatAs = AlexaOutputFormat.NUMBER)
     private Integer overallHighscore = 1;
+    @AlexaSlotSave(slotName = "highscorer")
     private String overallHighscorer = "Alexa";
+    @AlexaSlotSave(slotName = "highscorerSsml")
     private String overallHighscorerSsml = "Alexa";
 
     public Integer getOverallHighscore() {

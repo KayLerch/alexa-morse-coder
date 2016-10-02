@@ -6,7 +6,10 @@ import io.klerch.alexa.state.model.AlexaStateIgnore;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
 import io.klerch.alexa.state.utils.AlexaStateException;
+import io.klerch.alexa.tellask.schema.annotation.AlexaSlotSave;
+import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
 import org.apache.commons.lang3.Validate;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -14,17 +17,24 @@ import java.util.Optional;
 
 @AlexaStateSave(Scope = AlexaScope.USER)
 public class MorseUser extends AlexaStateModel {
+    @AlexaStateIgnore
+    private static final Logger log = Logger.getLogger(MorseUser.class);
+
     public enum SETUP_MODE {
         UP, DOWN, ON, OFF, NAN
     }
 
     private String name;
+    @AlexaSlotSave(slotName = "userScore", formatAs = AlexaOutputFormat.NUMBER)
     private Integer personalScore = 0;
+    @AlexaSlotSave(slotName = "wpm", formatAs = AlexaOutputFormat.NUMBER)
     private Integer wpm = SkillConfig.getWpmLevelDefault();
     @AlexaStateIgnore
+    @AlexaSlotSave(slotName = "wpmSpaces", formatAs = AlexaOutputFormat.NUMBER)
     private Integer wpmSpaces = SkillConfig.getWpmLevelDefault();
     private boolean deviceIntegrationEnabled;
     private boolean farnsworthEnabled;
+    @AlexaSlotSave(slotName = "userNameSsml")
     private String namesSsml;
 
     public MorseUser() {
@@ -36,24 +46,7 @@ public class MorseUser extends AlexaStateModel {
      * @return SSML representation of the user name
      */
     public String getNamesSsml() throws AlexaStateException, IOException, URISyntaxException {
-        // return ssml if it was generated before (this saves a server-roundtrip for callsigns)
-        if (namesSsml != null && !namesSsml.isEmpty()) return namesSsml;
-        // is a call-sign if there is a numeral in the name
-        if (name != null && name.matches(".*\\d+.*")) {
-            // encode call-sign by using an exercise for this
-            namesSsml = new MorseExercise()
-                    .withLiteral(name)
-                    .withNewEncoding(name, 20, 20)
-                    .getAudioSsml(true);
-        }
-        else {
-            namesSsml = name;
-        }
         return namesSsml;
-    }
-
-    public void setNamesSsml(final String namesSsml) {
-        this.namesSsml = namesSsml;
     }
 
     public String getName() {
@@ -61,7 +54,25 @@ public class MorseUser extends AlexaStateModel {
     }
 
     public void setName(final String name) {
-        this.name = name;
+        if (this.name == null || !this.name.equals(name)) {
+            this.name = name;
+            // is a call-sign if there is a numeral in the name
+            if (name != null && name.matches(".*\\d+.*")) {
+                // encode call-sign by using an exercise for this
+                try {
+                    namesSsml = new MorseExercise()
+                            .withLiteral(name)
+                            .withNewEncoding(name, 20, 20)
+                            .getAudioSsml(true);
+                } catch (IOException | URISyntaxException | AlexaStateException e) {
+                    log.error(e);
+                    namesSsml = name;
+                }
+            }
+            else {
+                namesSsml = name;
+            }
+        }
     }
 
     public MorseUser withName(final String name) {

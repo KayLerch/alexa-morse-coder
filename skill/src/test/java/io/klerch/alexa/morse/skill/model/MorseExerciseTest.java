@@ -140,7 +140,7 @@ public class MorseExerciseTest {
     public void withRandomLiteral() throws Exception {
         final String literal = "word";
         exercise.setLiteral(literal);
-        final MorseExercise exercise2 = exercise.withRandomLiteral();
+        final MorseExercise exercise2 = exercise.withRandomLiteral("en-US");
         Assert.assertEquals(exercise, exercise2);
         Assert.assertNotNull(exercise2.getLiteral());
         Assert.assertNotEquals(literal, exercise2.getLiteral());

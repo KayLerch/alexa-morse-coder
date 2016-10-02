@@ -3,6 +3,7 @@ package io.klerch.alexa.morse.skill.model;
 import io.klerch.alexa.state.model.AlexaScope;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
+import io.klerch.alexa.tellask.schema.annotation.AlexaSlotSave;
 
 import java.util.Optional;
 

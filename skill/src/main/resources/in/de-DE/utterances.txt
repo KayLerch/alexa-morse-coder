@@ -1,0 +1,78 @@
+CfgSpeedUp Schneller
+CfgSpeedUp Tempo hoch
+CfgSpeedUp Erhöhe Tempo
+CfgSpeedUp Mehr Tempo
+CfgSpeedUp Geschwindigkeit hoch
+CfgSpeedUp Erhöhe Geschwindigkeit
+CfgSpeedUp Beschleunige
+CfgSpeedUp Schneller wiedergeben
+CfgSpeedUp Schneller abspielen
+CfgSpeedUp Spiele schneller
+CfgSpeedUp Spiele schneller ab
+
+CfgSpeedDown Langsamer
+CfgSpeedDown Tempo runter
+CfgSpeedDown Verringere Tempo
+CfgSpeedDown Weniger Tempo
+CfgSpeedDown Geschwindigkeit runter
+CfgSpeedDown Verringere Geschwindigkeit
+CfgSpeedDown Langsamer wiedergeben
+CfgSpeedDown Langsamer abspielen
+CfgSpeedDown Spiele langsamer
+CfgSpeedDown Spiele langsamer ab
+
+CfgSpeed Setze Tempo auf {CfpWpm}
+CfgSpeed Setze Tempo auf {CfpWpm} Wörter pro Minute
+CfgSpeed Setze Tempo auf {CfpWpm} Wörter je Minute
+CfgSpeed Setze Geschwindigkeit auf {CfpWpm}
+CfgSpeed Setze Geschwindigkeit auf {CfpWpm} Wörter pro Minute
+CfgSpeed Setze Geschwindigkeit auf {CfpWpm} Wörter je Minute
+
+CfgDeviceIntegrationOn Aktiviere Geräte-Integration
+CfgDeviceIntegrationOn Schalte Geräte-Integration ein
+CfgDeviceIntegrationOn Geräte-Integration ein
+CfgDeviceIntegrationOn Schalte Geräte-Integration an
+CfgDeviceIntegrationOn Geräte-Integration an
+
+CfgDeviceIntegrationOff Deaktiviere Geräte-Integration
+CfgDeviceIntegrationOff Schalte Geräte-Integration aus
+CfgDeviceIntegrationOff Geräte-Integration aus
+
+CfgFarnsworthOn Aktiviere Farnsworth
+CfgFarnsworthOn Schalte Farnsworth ein
+CfgFarnsworthOn Farnsworth ein
+CfgFarnsworthOn Schalte Farnsworth an
+CfgFarnsworthOn Farnsworth an
+CfgFarnsworthOn Aktiviere Hilfe
+CfgFarnsworthOn Schalte Hilfe ein
+CfgFarnsworthOn Hilfe ein
+CfgFarnsworthOn Schalte Hilfe an
+CfgFarnsworthOn Hilfe an
+
+CfgFarnsworthOff Deaktiviere Farnsworth
+CfgFarnsworthOff Schalte Farnsworth aus
+CfgFarnsworthOff Farnsworth aus
+CfgFarnsworthOff Deaktiviere Hilfe
+CfgFarnsworthOff Schalte Hilfe aus
+CfgFarnsworthOff Hilfe aus
+
+Encode Kodiere {EncodePhrase}
+Encode Verschlüssele {EncodePhrase}
+Encode Übersetze {EncodePhrase}
+
+Exercise Teste mich
+Exercise Trainiere mich
+Exercise Training
+Exercise Starte Training
+Exercise Beginne Training
+Exercise Starte Übung
+Exercise Beginne Übung
+Exercise Übung
+Exercise {ExerciseWord}
+
+Introduction {Name}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE} {CallSignF}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE} {CallSignF} {CallSignG}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE} {CallSignF} {CallSignG} {CallSignH}

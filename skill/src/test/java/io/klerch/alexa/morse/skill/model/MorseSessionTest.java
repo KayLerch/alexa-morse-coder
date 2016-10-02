@@ -4,6 +4,7 @@ import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import org.apache.commons.codec.language.Caverphone2;
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -105,25 +106,6 @@ public class MorseSessionTest {
         assertFalse(morseSession2.getIsAskedForName());
         morseSession.withIsAskedForName(true);
         assertTrue(morseSession.getIsAskedForName());
-    }
-
-    @Test
-    public void test() {
-        List<String> keyWords = Arrays.asList("play", "morse", "encode", "translate", "enable", "disable", "down\n" +
-                "decrease", "reduce","lower","slower","increase","raise","elevate","enhance","faster");
-        final DoubleMetaphone doubleMetaphone = new DoubleMetaphone();
-        for (int i = 5; i < 9; i++) {
-            for (String exerciseWord :  SkillConfig.getExerciseWords(i)) {
-                for (String keyWord : keyWords) {
-                    if(doubleMetaphone.isDoubleMetaphoneEqual(exerciseWord, keyWord)) {
-                        System.out.println(String.format("%1$s : %2$s", exerciseWord, keyWord));
-                    }
-                    /*assertFalse(
-                            String.format("Exercise word %1$s is a phonetic sibling of utterance word %2$s", exerciseWord, keyWord),
-                            doubleMetaphone.isDoubleMetaphoneEqual(exerciseWord, keyWord));*/
-                }
-            }
-        }
     }
 
     @Test

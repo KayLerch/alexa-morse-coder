@@ -1,0 +1,114 @@
+{
+  "intents": [
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.RepeatIntent"
+    },
+    {
+      "intent": "AMAZON.StartOverIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NextIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "CfgSpeedUp"
+    },
+    {
+      "intent": "CfgSpeedDown"
+    },
+    {
+      "intent": "CfgSpeed",
+      "slots": [
+        {
+          "name": "CfpWpm",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "CfgDeviceIntegrationOn"
+    },
+    {
+      "intent": "CfgDeviceIntegrationOff"
+    },
+    {
+      "intent": "CfgFarnsworthOn"
+    },
+    {
+      "intent": "CfgFarnsworthOff"
+    },
+    {
+      "intent": "Encode",
+      "slots": [
+        {
+          "name": "EncodePhrase",
+          "type": "AMAZON.GB_FIRST_NAME"
+        }
+      ]
+    },
+    {
+      "intent": "Introduction",
+      "slots": [
+        {
+          "name": "Name",
+          "type": "AMAZON.GB_FIRST_NAME"
+        },
+        {
+          "name": "CallSignA",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignB",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignC",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignD",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignE",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignF",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignG",
+          "type": "CallSigns"
+        },
+        {
+          "name": "CallSignH",
+          "type": "CallSigns"
+        }
+      ]
+    },
+    {
+      "intent": "Exercise",
+      "slots": [
+        {
+          "name": "ExerciseWord",
+          "type": "ExerciseWords"
+        }
+      ]
+    }
+  ]
+}

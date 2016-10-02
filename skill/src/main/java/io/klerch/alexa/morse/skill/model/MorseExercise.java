@@ -4,6 +4,10 @@ import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
 import io.klerch.alexa.state.utils.AlexaStateException;
+import io.klerch.alexa.tellask.schema.annotation.AlexaSlotSave;
+import io.klerch.alexa.tellask.schema.type.AlexaOutputFormat;
+import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
+import io.klerch.alexa.tellask.util.resource.YamlReader;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.http.HttpEntity;
@@ -15,19 +19,17 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
 
 @AlexaStateSave
 public class MorseExercise extends AlexaStateModel {
     private String code;
     private String phonetic;
+    @AlexaSlotSave(slotName = "exerciseLiteral")
     private String literal;
+    @AlexaSlotSave(slotName = "exerciseMp3", formatAs = AlexaOutputFormat.AUDIO)
     private String mp3Url;
     private long timestamp;
     private Integer lowestWpm;
@@ -66,15 +68,6 @@ public class MorseExercise extends AlexaStateModel {
 
     public Integer getLowestWpm() {
         return lowestWpm;
-    }
-
-    public void setLowestWpm(final Integer lowestWpm) {
-        this.lowestWpm = lowestWpm;
-    }
-
-    public MorseExercise withTimestamp(final long timestamp) {
-        setTimestamp(timestamp);
-        return this;
     }
 
     public MorseExercise withNewTimestamp() {
@@ -129,7 +122,7 @@ public class MorseExercise extends AlexaStateModel {
     }
 
     public MorseExercise withNewEncoding(final MorseUser user) throws IOException, URISyntaxException, AlexaStateException {
-        Validate.notBlank(this.literal, "There's not word to encode.");
+        Validate.notBlank(this.literal, "There's no word to encode.");
         return withNewEncoding(this.literal, user);
     }
 
@@ -177,19 +170,16 @@ public class MorseExercise extends AlexaStateModel {
     }
 
     /**
-     * Sets a random word out of the exercise word list with a specific length
+     * Sets a random word out of the exercise word list
      *
+     * @param locale the locale
      * @return random word
      */
-    public MorseExercise withRandomLiteral() {
-        // random word-length within min-max bounds
-        final int wordLength = new Random()
-                .nextInt(SkillConfig.ExerciseWordMaxLength - SkillConfig.ExerciseWordMinLength + 1) + SkillConfig.ExerciseWordMinLength;
-
-        final List<String> exerciseWords = SkillConfig.getExerciseWords(wordLength);
-        // pick random word from a collection
-        final int idx = new Random().nextInt(exerciseWords.size());
-        setLiteral(exerciseWords.get(idx));
+    public MorseExercise withRandomLiteral(final String locale) {
+        final ResourceUtteranceReader reader = new ResourceUtteranceReader("/out", "/exercises.yml");
+        final YamlReader yamlReader = new YamlReader(reader, locale);
+        final String exerciseWord = yamlReader.getRandomUtterance("exerciseWords").orElse("");
+        setLiteral(exerciseWord);
         return this;
     }
 }

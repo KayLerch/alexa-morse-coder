@@ -1,0 +1,355 @@
+Awesome: "[
+  Super|
+  Toll|
+  Fantastisch|
+  Großartig|
+  Stark|
+  Sehr gut|
+  Wahnsinn]!"
+
+ListenUp: "[
+  Ohren auf|
+  Achtung|
+  Hör gut hin|
+  Aufgepasst|
+  Konzentration|
+  Code kommt|
+  Hör gut zu]!"
+
+LetMeRepeat: "[
+  Noch einmal|
+  Dann nochmal|
+  Ich wiederhole|
+  Wir wiederholen|
+  Auf ein Neues|
+  Und nochmal]."
+
+WhatsTheAnswer: "[
+  Wie lautet das Wort?|
+  Welche Wort verbirgt sich dahinter?|
+  Was denkst du?|
+  Nenne mir das Wort!|
+  Weißt du es?|
+  Nun?|
+  Hast du es?|
+  Wie lautet die Lösung?|
+  Und?]"
+
+AnswerIsCorrect: "[
+  Richtig|
+  Das war richtig|
+  Das ist die richtige Antwort|
+  Genau das war es|
+  Volltreffer|
+  Stimmt genau|
+  Korrekt|
+  Vollkommen richtig|
+  Haargenau]!"
+
+WantAnotherCode: "[
+  Möchtest du weitermachen|
+  Möchtest du noch einen Code|
+  Wollen wir weitermachen|
+  Auf zum nächsten Code|
+  Weiter mit dem nächsten Wort|
+  Weitermachen|
+  Fortfahren mit dem nächsten Wort|
+  Noch eine Übung|
+  Neue Übung]?"
+
+AnswerIsWrong: "[
+  Schade|
+  Leider nein|
+  Das war es nicht|
+  Nein, leider nicht|
+  Daneben|
+  Kein Treffer|
+  Das ist nicht richtig|
+  Leider nicht korrekt|
+  Das war nix|
+  Leider falsch|
+  Falsch]!"
+
+CorrectAnswerIs: "[
+  Die richtige Lösung ist|
+  Das gesuchte Wort ist|
+  Das Wort war|
+  Die Lösung lautete|
+  Gesucht wurde|
+  Richtig wäre gewesen] <p>{exerciseLiteral}</p>"
+
+YourLastCode: "[
+  Hier dein letzter Code|
+  Ich wiederhole die letzte Übung]."
+
+WantAnotherTry: "[
+  Nochmal probieren|
+  Noch ein Versuch|
+  Möchtest du es nochmal versuchen|
+  Nochmal versuchen|
+  Erneut versuchen|
+  Nochmal raten|
+  Möchtest du es erneut probieren]?"
+
+WantAnotherEncode: "
+  [Möchtest|Willst] [du noch einen Namen übersetzen|du einen weiteren Namen hören]?"
+
+YourScoreIs: "[
+  Dein Punktestand ist|
+  Deine aktuellen Punkte|
+  Deine Punkte] {userScore}."
+
+WantAnExercise: "[
+  Möchtest du jetzt mit einer Übung starten|
+  Bist du bereit für eine Übung|
+  Bereit für die Übung|
+  Wollen wir eine Übung beginnen|
+  Übung jetzt starten]?"
+
+WantAnotherExercise: "[
+  Weiter zur nächsten Übung|
+  Neue Übung|
+  Nächste Runde|
+  Neue Runde|
+  Möchtest du den nächsten Code|
+  Neuer Code]?"
+
+ExerciseHelp: "Wenn ich dich nach dem Vorspielen nach einem Wort frage, sprich es einfach vor.
+  Wahlweise sage <p>Wiederholung</p>, um den Code erneut zu hören. Oder aber sage <p>Weiter</p>,
+  um die Übung zu überspringen. Die Wiedergabe-Geschwindigkeit kannst du anpassen, indem du
+  <p>Schneller</p> oder <p>Langsamer</p> sagst oder aber <p>Setze Tempo auf</p> gefolgt von der
+  Anzahl Wörter pro Minute. Zuguterletzt kannst du mit <p>Farnsworth an</p> die Schwierigkeit verringern,
+  da dieser Modus die Pausen zwischen den Tönen erhöht."
+
+BriefHelp: "Dieser Skill bringt dir Morse-Zeichen bei. Lass mich dir jeden beliebigen Vornamen in
+  Morse-Code ausgeben, indem du etwa Folgendes sagst <p>Übersetze Michael</p>. Oder lege direkt mit
+  einer Übung los mit dem Befehl <p>Starte Übung</p>"
+
+FarnsworthIsEnabled: "Farnsworth ist jetzt aktiviert mit {wpmSpaces} Wörtern pro Minute bezogen auf die Pausen zwischen den Tönen."
+
+FarnsworthIsDisabled: "Farnsworth ist jetzt ausgestellt."
+
+NewSpeedIs: "Wiedergabe-Geschwindigkeit ist nun auf {wpm} Wörter pro Minute eingestellt."
+
+KeepSpeedAt: "Ich bleibe lieber bei {wpm} Wörter pro Minute."
+
+DeviceIntegrationEnabled: "Von nun an werden übersetzte Morse-Codes an einen Übertragungskanal
+  gesendet, auf dem sich ein mobiles Endgerät abonnieren kann. Für weitere Details konsultiere bitte
+  den Autor dieses Skills."
+
+DeviceIntegtationDisabled: "Geräte-Integration ist nun wieder deaktiviert."
+
+GoodBye: "[
+  Tschüss|
+  Bis bald|
+  Auf wiedersehen|
+  Ciao|
+  Mach's gut|
+  Bis später|
+  Wir hören uns|
+  Bin dann mal weg]!"
+
+HighestScore: "[
+  Du hast die höchste Punktzahl im ganzen Spiel|
+  Mit deinem Punktestand bist du auf Platz eins|
+  Niemand hat mehr Punkte als du in diesem Spiel|
+  Dir gehört die Bestmarke im Spiel]."
+
+SayWelcome:
+  Utterances:
+    - "{hi-mp3} Willkommen beim Morse-Coder. Lerne Morse-Zeichen verstehen oder lass mich einen Vornamen für dich übersetzen."
+  Reprompts:
+    - "Wenn du dir unsicher bist, frage mich nach Hilfe."
+
+SayWelcomeToUser:
+  Utterances:
+    - "Willkommen {userNameSsml}, ${YourScoreIs} Versuche dich an der Bestmarke von {highscore} Punkten, aufgestellt von {highscorerSsml}, ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayWelcomeToHighscorer:
+  Utterances:
+    - "Willkommen zurück {userNameSsml}, dein Punktestand {userScore} ist die Bestmarke des gesamten Spiels. ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayIntroduction:
+  Utterances:
+    - "Bevor wir loslegen, nenne bitte deinen Vornamen oder dein Rufzeichen."
+  Reprompts:
+    - "Nenne bitte deinen Vornamen oder dein Rufzeichen."
+
+SayIntroductionAgain:
+  Utterances:
+    - "Okay, probiere es erneut. Rufzeichen kannst du ebenso buchstabieren - auch mit Alpha, Bravo, Charlie."
+  Reprompts:
+    - "Nenne bitte deinen Vornamen oder dein Rufzeichen."
+
+SayIntroConfirmRequest:
+  Utterances:
+    - "Verstanden habe ich <p>{name}</p> Ist das korrekt?"
+  Reprompts:
+    - "Bitte bestätige mir <p>{name}</p> mit <p>Ja</p> oder <p>Nein</p>"
+
+SayExercise:
+  Utterances:
+    - "${ListenUp} <break time=\"1s\"/> {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${LetMeRepeat} <break time=\"1s\"/> {exerciseMp3} ${WhatsTheAnswer}"
+
+SayContinueExercise:
+  Utterances:
+    - "Ok, lass uns mit der letzten Übung fortfahren. ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${LetMeRepeat} <break time=\"1s\"/> {exerciseMp3} ${WhatsTheAnswer}"
+
+SayExerciseCorrect:
+  Utterances:
+    - "${Awesome} ${AnswerIsCorrect} ${YourScoreIs} ${WantAnotherCode}"
+  Reprompts:
+    - "${WantAnotherCode}"
+
+SayExerciseWrong:
+  Utterances:
+    - "${AnswerIsWrong} ${WantAnotherTry}"
+  Reprompts:
+    - "${WantAnotherTry}"
+
+SayEncoding:
+  Utterances:
+    - "Der Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+  Reprompts:
+    - "${WantAnotherEncode}"
+
+SayHelpOnEncode:
+  Utterances:
+    - "Um mich einen Vornamen abspielen zu lassen, sage <p>Übersetze</p> gefolgt von einem beliebigen Vornamen."
+  Reprompts:
+    - "Sag <p>Übersetze</p> gefolgt von einem Vornamen."
+
+SayHelpOnExercise:
+  Utterances:
+    - "${ExerciseHelp} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayHelpInGeneral:
+  Utterances:
+    - "${BriefHelp} ${ExerciseHelp} ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayFarnsworthEnabledOnExercise:
+  Utterances:
+    - "${FarnsworthIsEnabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayFarnsworthEnabled:
+  Utterances:
+    - "${FarnsworthIsEnabled} ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayFarnsworthDisabledOnExercise:
+  Utterances:
+    - "${FarnsworthIsDisabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayFarnsworthDisabled:
+  Utterances:
+    - "${FarnsworthIsDisabled} ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SaySpeedUnchanged:
+  Utterances:
+    - "${KeepSpeedAt} ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SaySpeed:
+  Utterances:
+    - "${NewSpeedIs} ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SaySpeedOnExercise:
+  Utterances:
+    - "${NewSpeedIs} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SaySpeedUnchangedOnExercise:
+  Utterances:
+    - "${KeepSpeedAt} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayDeviceIntegrationEnabled:
+  Utterances:
+    - "${DeviceIntegrationEnabled} ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayDeviceIntegrationDisabled:
+  Utterances:
+    - "${DeviceIntegrationDisabled} ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayDeviceIntegrationEnabledOnExercise:
+  Utterances:
+    - "${DeviceIntegrationEnabled} {YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayDeviceIntegrationDisabledOnExercise:
+  Utterances:
+    - "${DeviceIntegrationDisabled} {YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayExerciseAnswer:
+  Utterances:
+    - "${CorrectAnswerIs} ${WantAnotherExercise}"
+  Reprompts:
+    - "${WantAnotherExercise}"
+
+SayExerciseAnswerWithNew:
+  Utterances:
+    - "${CorrectAnswerIs} <break time=\"200ms\"/>Wie auch immer, hier dein nächster Code. <break time=\"1s\"/> {exerciseMp3} ${WhatsTheAnswer}"
+  Reprompts:
+    - "${LetMeRepeat} <break time=\"1s\"/> {exerciseMp3} ${WhatsTheAnswer}"
+
+SayWantAnExercise:
+  Utterances:
+    - "${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayGoodBye:
+  - "Die Bestmarke von <p>{highscorerSsml}</p> liegt bei <p>{highscore}</p> Punkten. ${GoodBye}"
+
+SayGoodByeToUser:
+  - "Die Bestmarke von <p>{highscorerSsml}</p> liegt bei <p>{highscore}</p> Punkten.
+     Du hast {personalScore} Punkte. ${GoodBye}"
+
+SayGoodByeToHighscorer:
+  - "${Awesome} {userNameSsml}, du hast die Bestmarke des Spiels erreicht. ${GoodBye}"
+
+SayNothingToRepeat:
+  Utterances:
+    - "Leider gibt es für mich nichts zum Wiederholen. ${WantAnExercise}"
+  Reprompts:
+    - "${WantAnExercise}"
+
+SayNothingToAnswer:
+  Utterances:
+    - "Leider weiß ich nicht auf welche Frage du antwortest. Bitte mich um Hilfe oder probiere es erneut."
+  Reprompts:
+    - "Bitte mich um Hilfe oder probiere es erneut."
+
+SaySorry:
+  - "Leider kann ich dich nicht richtig deuten. Probiere es erneut oder bitte mich um Hilfe."

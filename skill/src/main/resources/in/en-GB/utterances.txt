@@ -1,0 +1,77 @@
+CfgSpeedUp Speed up
+CfgSpeedUp Increase speed
+CfgSpeedUp Enhance speed
+CfgSpeedUp Elevate speed
+CfgSpeedUp Raise speed
+CfgSpeedUp Increase words per minute
+CfgSpeedUp Enhance words per minute
+CfgSpeedUp Elevate words per minute
+CfgSpeedUp Raise words per minute
+CfgSpeedUp Increase playback speed
+CfgSpeedUp Enhance playback speed
+CfgSpeedUp Elevate playback speed
+CfgSpeedUp Raise playback speed
+CfgSpeedUp Play faster
+CfgSpeedUp Play back faster
+
+CfgSpeedDown Slow down
+CfgSpeedDown Speed down
+CfgSpeedDown Decrease speed
+CfgSpeedDown Reduce speed
+CfgSpeedDown Lower speed
+CfgSpeedDown Decrease words per minute
+CfgSpeedDown Reduce words per minute
+CfgSpeedDown Lower words per minute
+CfgSpeedDown Decrease playback speed
+CfgSpeedDown Reduce playback speed
+CfgSpeedDown Lower playback speed
+CfgSpeedDown Play slower
+CfgSpeedDown Play back slower
+
+CfgSpeed Set speed to {CfpWpm}
+CfgSpeed Set speed to {CfpWpm} words per minute
+CfgSpeed Set playback speed to {CfpWpm}
+CfgSpeed Set playback speed to {CfpWpm} words per minute
+
+CfgDeviceIntegrationOn Enable device integration
+CfgDeviceIntegrationOn Activate device integration
+CfgDeviceIntegrationOn Set device integration on
+CfgDeviceIntegrationOn Turn device integration on
+CfgDeviceIntegrationOn Turn on device integration
+
+CfgDeviceIntegrationOff Disable device integration
+CfgDeviceIntegrationOff Deactivate device integration
+CfgDeviceIntegrationOff Set device integration off
+CfgDeviceIntegrationOff Turn device integration off
+CfgDeviceIntegrationOff Turn off device integration
+
+CfgFarnsworthOn Enable farnsworth
+CfgFarnsworthOn Activate farnsworth
+CfgFarnsworthOn Set farnsworth on
+CfgFarnsworthOn Turn farnsworth on
+CfgFarnsworthOn Turn on farnsworth
+
+CfgFarnsworthOff Disable farnsworth
+CfgFarnsworthOff Deactivate farnsworth
+CfgFarnsworthOff Set farnsworth off
+CfgFarnsworthOff Turn farnsworth off
+CfgFarnsworthOff Turn off farnsworth
+
+Encode play back {EncodePhrase}
+Encode encode {EncodePhrase}
+Encode morse {EncodePhrase}
+Encode translate {EncodePhrase}
+
+Exercise exercise me
+Exercise train me
+Exercise teach me
+Exercise start training
+Exercise start exercise
+Exercise {ExerciseWord}
+
+Introduction {Name}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE} {CallSignF}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE} {CallSignF} {CallSignG}
+Introduction {CallSignA} {CallSignB} {CallSignC} {CallSignD} {CallSignE} {CallSignF} {CallSignG} {CallSignH}
