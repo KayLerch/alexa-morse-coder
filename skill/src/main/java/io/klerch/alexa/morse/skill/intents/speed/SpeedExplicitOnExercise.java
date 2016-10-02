@@ -43,7 +43,12 @@ public class SpeedExplicitOnExercise extends AbstractHandler implements AlexaInt
         final Integer newWpm = Integer.valueOf(input.getSlotValue(SkillConfig.getAlexaSlotCfgWpm()));
         // enable farnsworth and assign dynamo handler to permanently save this setting
         final MorseUser morseUser = getMorseUser();
+        String intentName = "SaySpeedOnExercise";
 
+        if ("Encode".equals(lastExercise.getId())) {
+            morseSession.withIsAskedForAnotherEncode(true);
+            intentName = "SaySpeedOnEncode";
+        }
         // only if speed does change (because it may exceed bounds)
         if (morseUser.withNewWpm(newWpm).isPresent()) {
             // re-encode with new setting
@@ -53,14 +58,15 @@ public class SpeedExplicitOnExercise extends AbstractHandler implements AlexaInt
                 log.error(e);
                 throw new AlexaRequestHandlerException("Could not re-encode last exercise with new setting", e, input, null);
             }
-            return AlexaOutput.ask("SaySpeedOnExercise")
-                    .putState(lastExercise, morseUser.withHandler(dynamoHandler))
+            return AlexaOutput.ask(intentName)
+                    .putState(morseSession, lastExercise, morseUser.withHandler(dynamoHandler))
                     .withReprompt(true)
                     .build();
         }
-        return AlexaOutput.ask("SaySpeedUnchangedOnExercise")
+        return AlexaOutput.ask(intentName + "Unchanged")
                 .putState(lastExercise.withNewTimestamp())
                 .putState(morseUser.withHandler(sessionHandler))
+                .putState(morseSession)
                 .withReprompt(true)
                 .build();
     }

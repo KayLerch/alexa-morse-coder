@@ -96,8 +96,8 @@ WantAnotherEncode: "
 
 YourScoreIs: "[
   Dein Punktestand ist|
-  Deine aktuellen Punkte|
-  Deine Punkte] {userScore}."
+  Deine aktuellen Punkte betragen|
+  Deine Punkte betragen] <p>{userScore}</p>."
 
 WantAnExercise: "[
   Möchtest du jetzt mit einer Übung starten|
@@ -163,7 +163,7 @@ SayWelcome:
 
 SayWelcomeToUser:
   Utterances:
-    - "Willkommen {userNameSsml}, ${YourScoreIs} Versuche dich an der Bestmarke von {highscore} Punkten, aufgestellt von {highscorerSsml}, ${WantAnExercise}"
+    - "Willkommen {userNameSsml}, ${YourScoreIs} Versuche dich an der Bestmarke von {highscore} Punkten, aufgestellt von {highscorerSsml}. ${WantAnExercise}"
   Reprompts:
     - "${WantAnExercise}"
 
@@ -245,6 +245,12 @@ SayFarnsworthEnabledOnExercise:
   Reprompts:
     - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
 
+SayFarnsworthEnabledOnEncode:
+  Utterances:
+    - "${FarnsworthIsEnabled} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+  Reprompts:
+    - "${WantAnotherEncode}"
+
 SayFarnsworthEnabled:
   Utterances:
     - "${FarnsworthIsEnabled} ${WantAnExercise}"
@@ -256,6 +262,12 @@ SayFarnsworthDisabledOnExercise:
     - "${FarnsworthIsDisabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
   Reprompts:
     - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayFarnsworthDisabledOnEncode:
+  Utterances:
+    - "${FarnsworthIsDisabled} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+  Reprompts:
+    - "${WantAnotherEncode}"
 
 SayFarnsworthDisabled:
   Utterances:
@@ -281,11 +293,23 @@ SaySpeedOnExercise:
   Reprompts:
     - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
 
-SaySpeedUnchangedOnExercise:
+SaySpeedOnEncode:
+  Utterances:
+    - "${NewSpeedIs} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+  Reprompts:
+    - "${WantAnotherEncode}"
+
+SaySpeedOnExerciseUnchanged:
   Utterances:
     - "${KeepSpeedAt} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
   Reprompts:
     - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SaySpeedOnEncodeUnchanged:
+  Utterances:
+    - "${KeepSpeedAt} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+  Reprompts:
+    - "${WantAnotherEncode}"
 
 SayDeviceIntegrationEnabled:
   Utterances:
@@ -305,11 +329,23 @@ SayDeviceIntegrationEnabledOnExercise:
   Reprompts:
     - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
 
+SayDeviceIntegrationEnabledOnEncode:
+  Utterances:
+    - "${DeviceIntegrationEnabled} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+  Reprompts:
+    - "${WantAnotherEncode}"
+
 SayDeviceIntegrationDisabledOnExercise:
   Utterances:
     - "${DeviceIntegrationDisabled} {YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
   Reprompts:
     - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+
+SayDeviceIntegrationDisabledOnEncode:
+  Utterances:
+    - "${DeviceIntegrationDisabled} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+  Reprompts:
+    - "${WantAnotherEncode}"
 
 SayExerciseAnswer:
   Utterances:

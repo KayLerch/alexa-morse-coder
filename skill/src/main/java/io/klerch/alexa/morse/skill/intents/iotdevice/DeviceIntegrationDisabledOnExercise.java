@@ -38,12 +38,17 @@ public class DeviceIntegrationDisabledOnExercise extends AbstractHandler impleme
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         final MorseUser morseUser = getMorseUser();
 
-        if (morseUser.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.OFF).isPresent()) {
+        if (morseUser.withNewDeviceIntegrationEnabled(false).isPresent()) {
             // save setting in dynamo
             morseUser.setHandler(dynamoHandler);
         }
-        return AlexaOutput.ask("SayDeviceIntegrationDisabledOnExercise")
-                .putState(morseUser, lastExercise)
+        String intentName = "SayDeviceIntegrationDisabledOnExercise";
+        if ("Encode".equals(lastExercise.getId())) {
+            intentName = "SayDeviceIntegrationDisabledOnEncode";
+            morseSession.withIsAskedForAnotherEncode(true);
+        };
+        return AlexaOutput.ask(intentName)
+                .putState(morseUser, lastExercise, morseSession)
                 .withReprompt(true)
                 .build();
     }

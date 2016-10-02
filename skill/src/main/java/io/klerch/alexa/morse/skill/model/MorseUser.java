@@ -20,10 +20,6 @@ public class MorseUser extends AlexaStateModel {
     @AlexaStateIgnore
     private static final Logger log = Logger.getLogger(MorseUser.class);
 
-    public enum SETUP_MODE {
-        UP, DOWN, ON, OFF, NAN
-    }
-
     private String name;
     @AlexaSlotSave(slotName = "userScore", formatAs = AlexaOutputFormat.NUMBER)
     private Integer personalScore = 0;
@@ -192,24 +188,22 @@ public class MorseUser extends AlexaStateModel {
         this.deviceIntegrationEnabled = deviceIntegrationEnabled;
     }
 
-    public Optional<MorseUser> withNewDeviceIntegrationEnabled(final SETUP_MODE mode) {
+    public Optional<MorseUser> withNewDeviceIntegrationEnabled(final boolean deviceIntegrationEnabled) {
         // check if configuration value changes
-        if (deviceIntegrationEnabled && SETUP_MODE.OFF.equals(mode) ||
-                !deviceIntegrationEnabled && SETUP_MODE.ON.equals(mode)) {
+        if (this.deviceIntegrationEnabled != deviceIntegrationEnabled) {
             // apply value and return object
-            setDeviceIntegrationEnabled(!deviceIntegrationEnabled);
+            setDeviceIntegrationEnabled(deviceIntegrationEnabled);
             return Optional.of(this);
         }
         // return nothing to indicate the caller nothing changed
         return Optional.empty();
     }
 
-    public Optional<MorseUser> withNewFarnsworthEnabled(final SETUP_MODE mode) {
+    public Optional<MorseUser> withNewFarnsworthEnabled(final boolean farnsworthEnabled) {
         // check if configuration value changes
-        if (farnsworthEnabled && SETUP_MODE.OFF.equals(mode) ||
-                !farnsworthEnabled && SETUP_MODE.ON.equals(mode)) {
+        if (this.farnsworthEnabled != farnsworthEnabled) {
             // apply value and return object
-            setFarnsworthEnabled(!farnsworthEnabled);
+            setFarnsworthEnabled(farnsworthEnabled);
             return Optional.of(this);
         }
         // return nothing to indicate the caller nothing changed

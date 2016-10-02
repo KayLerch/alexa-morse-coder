@@ -31,7 +31,7 @@ public class DeviceIntegrationDisabled extends AbstractHandler implements AlexaI
         // enable device integration
         final MorseUser morseUser = getMorseUser();
 
-        if (morseUser.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.ON).isPresent()) {
+        if (morseUser.withNewDeviceIntegrationEnabled(false).isPresent()) {
             morseUser.setHandler(dynamoHandler);
         }
         // remember having asked for new exercise

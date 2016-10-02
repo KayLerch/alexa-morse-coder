@@ -30,7 +30,7 @@ public class FarnsworthDisabled extends AbstractHandler implements AlexaIntentHa
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         final MorseUser morseUser = getMorseUser();
 
-        if (morseUser.withNewFarnsworthEnabled(MorseUser.SETUP_MODE.OFF).isPresent()) {
+        if (morseUser.withNewFarnsworthEnabled(false).isPresent()) {
             morseUser.setHandler(dynamoHandler);
         }
         // remember having asked for new exercise

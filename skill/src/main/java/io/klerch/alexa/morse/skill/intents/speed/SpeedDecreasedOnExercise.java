@@ -39,7 +39,12 @@ public class SpeedDecreasedOnExercise extends AbstractHandler implements AlexaIn
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         // enable farnsworth and assign dynamo handler to permanently save this setting
         final MorseUser morseUser = getMorseUser();
+        String intentName = "SaySpeedOnExercise";
 
+        if ("Encode".equals(lastExercise.getId())) {
+            morseSession.withIsAskedForAnotherEncode(true);
+            intentName = "SaySpeedOnEncode";
+        }
         // only if speed does change (because it may exceed bounds)
         if (morseUser.withWpmDecreased().isPresent()) {
             // re-encode with new setting
@@ -49,14 +54,15 @@ public class SpeedDecreasedOnExercise extends AbstractHandler implements AlexaIn
                 log.error(e);
                 throw new AlexaRequestHandlerException("Could not re-encode last exercise with new setting", e, input, null);
             }
-            return AlexaOutput.ask("SaySpeedOnExercise")
-                    .putState(lastExercise, morseUser.withHandler(dynamoHandler))
+            return AlexaOutput.ask(intentName)
+                    .putState(morseSession, lastExercise, morseUser.withHandler(dynamoHandler))
                     .withReprompt(true)
                     .build();
         }
-        return AlexaOutput.ask("SaySpeedUnchangedOnExercise")
+        return AlexaOutput.ask(intentName + "Unchanged")
                 .putState(lastExercise.withNewTimestamp())
                 .putState(morseUser.withHandler(sessionHandler))
+                .putState(morseSession)
                 .withReprompt(true)
                 .build();
     }

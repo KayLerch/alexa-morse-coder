@@ -40,7 +40,7 @@ public class FarnsworthEnabledOnExercise extends AbstractHandler implements Alex
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         final MorseUser morseUser = getMorseUser();
 
-        if (morseUser.withNewFarnsworthEnabled(MorseUser.SETUP_MODE.OFF).isPresent()) {
+        if (morseUser.withNewFarnsworthEnabled(true).isPresent()) {
             // save setting to dynamo
             morseUser.setHandler(dynamoHandler);
             // re-encode with new setting
@@ -51,8 +51,13 @@ public class FarnsworthEnabledOnExercise extends AbstractHandler implements Alex
                 throw new AlexaRequestHandlerException("Could not re-encode last exercise with new setting", e, input, null);
             }
         }
-        return AlexaOutput.ask("SayFarnsworthEnabledOnExercise")
-                .putState(morseUser, lastExercise)
+        String intentName = "SayFarnsworthEnabledOnExercise";
+        if ("Encode".equals(lastExercise.getId())) {
+            intentName = "SayFarnsworthEnabledOnEncode";
+            morseSession.withIsAskedForAnotherEncode(true);
+        };
+        return AlexaOutput.ask(intentName)
+                .putState(morseUser, lastExercise, morseSession)
                 .withReprompt(true)
                 .build();
     }

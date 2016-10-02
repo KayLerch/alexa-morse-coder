@@ -31,7 +31,7 @@ public class DeviceIntegrationEnabled extends AbstractHandler implements AlexaIn
     @Override
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         final MorseUser morseUser = getMorseUser();
-        if (morseUser.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.ON).isPresent()) {
+        if (morseUser.withNewDeviceIntegrationEnabled(true).isPresent()) {
             // save new setting in dynamo
             morseUser.setHandler(dynamoHandler);
             // ensure thing shadow exists

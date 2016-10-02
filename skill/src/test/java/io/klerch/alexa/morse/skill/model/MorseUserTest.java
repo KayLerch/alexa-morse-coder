@@ -228,28 +228,22 @@ public class MorseUserTest {
     @Test
     public void withNewDeviceIntegrationEnabled() throws Exception {
         user.setDeviceIntegrationEnabled(false);
-        final Optional<MorseUser> user2 = user.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.ON);
+        final Optional<MorseUser> user2 = user.withNewDeviceIntegrationEnabled(true);
         assertTrue(user2.isPresent());
         assertEquals(user, user2.get());
         assertTrue(user2.get().getDeviceIntegrationEnabled());
-        assertFalse(user.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.DOWN).isPresent());
-        assertFalse(user.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.UP).isPresent());
-        assertFalse(user.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.NAN).isPresent());
-        assertTrue(user.withNewDeviceIntegrationEnabled(MorseUser.SETUP_MODE.OFF).isPresent());
+        user.withNewDeviceIntegrationEnabled(false);
         assertFalse(user.getDeviceIntegrationEnabled());
     }
 
     @Test
     public void withNewFarnsworthEnabled() throws Exception {
         user.setFarnsworthEnabled(false);
-        final Optional<MorseUser> user2 = user.withNewFarnsworthEnabled(MorseUser.SETUP_MODE.ON);
+        final Optional<MorseUser> user2 = user.withNewFarnsworthEnabled(true);
         assertTrue(user2.isPresent());
         assertEquals(user, user2.get());
         assertTrue(user2.get().getFarnsworthEnabled());
-        assertFalse(user.withNewFarnsworthEnabled(MorseUser.SETUP_MODE.DOWN).isPresent());
-        assertFalse(user.withNewFarnsworthEnabled(MorseUser.SETUP_MODE.UP).isPresent());
-        assertFalse(user.withNewFarnsworthEnabled(MorseUser.SETUP_MODE.NAN).isPresent());
-        assertTrue(user.withNewFarnsworthEnabled(MorseUser.SETUP_MODE.OFF).isPresent());
+        assertTrue(user.withNewFarnsworthEnabled(false).isPresent());
         assertFalse(user.getFarnsworthEnabled());
     }
 }
