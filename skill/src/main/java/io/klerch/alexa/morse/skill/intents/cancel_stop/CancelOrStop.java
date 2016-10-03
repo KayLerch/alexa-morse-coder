@@ -36,21 +36,15 @@ public class CancelOrStop extends AbstractHandler implements AlexaIntentHandler{
         if (morseSession.getNameIfSet().isPresent() && !morseSession.getIsAskedForNameIsCorrect()) {
             final MorseUser morseUser = getMorseUser();
 
-            // if user made a new highscore
-            if (morseRecord.withNewOverallHighscore(morseUser).isPresent()) {
-                // congrat and say good bye
-                return AlexaOutput.tell("SayGoodByeToHighscorer")
-                        .putState(morseUser, morseRecord)
-                        .build();
-            }
-            // as record did not change prevent it from being saved to dynamo
-            morseRecord.setHandler(sessionHandler);
-            return AlexaOutput.tell("SayGoodByeToUser")
-                    .putState(morseUser, morseRecord)
+            final String intentName = morseRecord.isHighscoreUser(morseUser) ?
+                    "SayGoodByeToHighscorer" : "SayGoodByeToUser";
+
+            return AlexaOutput.tell(intentName)
+                    .putState(morseUser, morseRecord.withHandler(sessionHandler))
                     .build();
         }
         return AlexaOutput.tell("SayGoodBye")
-                .putState(morseRecord)
+                .putState(morseRecord.withHandler(sessionHandler))
                 .build();
     }
 }

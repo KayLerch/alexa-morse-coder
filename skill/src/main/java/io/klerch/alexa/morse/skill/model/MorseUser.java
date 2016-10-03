@@ -20,6 +20,7 @@ public class MorseUser extends AlexaStateModel {
     @AlexaStateIgnore
     private static final Logger log = Logger.getLogger(MorseUser.class);
 
+    private String userId;
     private String name;
     @AlexaSlotSave(slotName = "userScore", formatAs = AlexaOutputFormat.NUMBER)
     private Integer personalScore = 0;
@@ -34,6 +35,19 @@ public class MorseUser extends AlexaStateModel {
     private String namesSsml;
 
     public MorseUser() {
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(final String userId) {
+        this.userId = userId;
+    }
+
+    public MorseUser withUserid(final String userId) {
+        setUserId(userId);
+        return this;
     }
 
     /**

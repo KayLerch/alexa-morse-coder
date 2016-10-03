@@ -3,6 +3,7 @@ package io.klerch.alexa.morse.skill.intents.exercise;
 import com.amazon.speech.ui.Card;
 import io.klerch.alexa.morse.skill.intents.AbstractHandler;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseRecord;
 import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.morse.skill.SkillConfig;
 import io.klerch.alexa.state.utils.AlexaStateException;
@@ -53,10 +54,22 @@ public class ExerciseOnCorrect extends AbstractHandler implements AlexaIntentHan
         // return speech with image-card
         final Card imageCard = getExerciseCard(exercise, false);
 
+        final MorseRecord morseRecord = sessionHandler.readModel(MorseRecord.class)
+                .orElse(sessionHandler.createModel(MorseRecord.class));
+
+        if (morseRecord.withNewOverallHighscore(morseUser).isPresent()) {
+            // double-check record is new record in dynamo
+            final MorseRecord morseRecordForSure = sessionHandler.readModel(MorseRecord.class)
+                    .orElse(sessionHandler.createModel(MorseRecord.class));
+            if (morseRecordForSure.withNewOverallHighscore(morseUser).isPresent()) {
+                // ensure new highscore is written to dynamo
+                morseRecord.setHandler(dynamoHandler);
+            }
+        }
         return AlexaOutput.ask("SayExerciseCorrect")
                 .withCard(imageCard)
                 .withReprompt(true)
-                .putState(morseSession, morseUser.withHandler(dynamoHandler))
+                .putState(morseRecord, morseSession, morseUser.withHandler(dynamoHandler))
                 .build();
     }
 }

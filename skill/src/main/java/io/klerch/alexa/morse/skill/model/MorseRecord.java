@@ -24,6 +24,7 @@ public class MorseRecord extends AlexaStateModel {
     private String overallHighscorer = "Alexa";
     @AlexaSlotSave(slotName = "highscorerSsml")
     private String overallHighscorerSsml = "Alexa";
+    private String overallHighscorerUserId = "Alexa";
 
     public Integer getOverallHighscore() {
         return this.overallHighscore;
@@ -57,6 +58,7 @@ public class MorseRecord extends AlexaStateModel {
             // apply userdata to the record-set
             setOverallHighscore(user.getPersonalScore());
             setOverallHighscorer(user.getName());
+            setOverallHighscorerUserId(user.getUserId());
             try {
                 setOverallHighscorerSsml(user.getNamesSsml());
             } catch (IOException | AlexaStateException | URISyntaxException e) {
@@ -66,5 +68,17 @@ public class MorseRecord extends AlexaStateModel {
             return Optional.of(this);
         }
         return Optional.empty();
+    }
+
+    public String getOverallHighscorerUserId() {
+        return overallHighscorerUserId;
+    }
+
+    public void setOverallHighscorerUserId(String overallHighscorerUserId) {
+        this.overallHighscorerUserId = overallHighscorerUserId;
+    }
+
+    public boolean isHighscoreUser(final MorseUser morseUser) {
+        return morseUser.getUserId().equals(overallHighscorerUserId);
     }
 }

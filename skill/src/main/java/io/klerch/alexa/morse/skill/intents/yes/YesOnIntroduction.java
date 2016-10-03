@@ -22,13 +22,15 @@ public class YesOnIntroduction extends AbstractHandler implements AlexaIntentHan
     @Override
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         // create user
-        final MorseUser morseUser = getMorseUser();
+        final MorseUser morseUser = getMorseUser()
+                .withName(morseSession.getName())
+                .withUserid(sessionHandler.getSession().getUser().getUserId() + ":" + morseSession.getName());
 
         final MorseRecord morseRecord = getMorseRecord();
 
         return AlexaOutput.ask("SayWelcomeToUser")
                 .putState(morseRecord.withHandler(sessionHandler))
-                .putState(morseUser.withName(morseSession.getName()))
+                .putState(morseUser)
                 .putState(morseSession.withIsAskedForNewExercise(true))
                 .withReprompt(true)
                 .build();

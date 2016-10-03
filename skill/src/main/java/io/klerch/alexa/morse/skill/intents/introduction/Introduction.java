@@ -33,7 +33,7 @@ public class Introduction extends AbstractHandler implements AlexaIntentHandler 
         if (morseUser.isPresent()) {
             final MorseRecord morseRecord = getMorseRecord();
 
-            final String intentName = morseRecord.getOverallHighscore() <= morseUser.get().getPersonalScore() ?
+            final String intentName = morseRecord.isHighscoreUser(morseUser.get()) ?
                     "SayWelcomeToHighscorer" : "SayWelcomeToUser";
 
             return AlexaOutput.ask(intentName)
