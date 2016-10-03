@@ -11,3 +11,7 @@ logging:
 
 my:
   bucket: morse-coder-dev
+  bucketUrl: https://s3.amazonaws.com/io.klerch.alexa.morse/
+  bucketImgCodeFolder: img/codes
+  bucketImgLiteralFolder: img/letters
+
