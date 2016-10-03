@@ -97,6 +97,6 @@ public class S3Utils {
             logger.info(String.format("%s already exists in S3 bucket thus encoding is skipped.", s3Mp3FilePath));
         }
         // return public url of mp3 in bucket
-        return s3Client.getResourceUrl(bucket, s3Mp3FilePath);
+        return bucketUrl + mp3Filename;
     }
 }
