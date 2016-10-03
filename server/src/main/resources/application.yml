@@ -14,4 +14,4 @@ my:
   bucketUrl: https://s3.amazonaws.com/io.klerch.alexa.morse/
   bucketImgCodeFolder: img/codes
   bucketImgLiteralFolder: img/letters
-
+  bucketMp3Folder: mp3

@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
@@ -29,6 +28,9 @@ public class S3Utils {
 
     @Value("${my.bucketUrl}")
     private String bucketUrl;
+
+    @Value("${my.bucketMp3Folder}")
+    private String bucketMp3Folder;
 
     public S3Utils() {
         s3Client = new AmazonS3Client();
@@ -69,6 +71,7 @@ public class S3Utils {
         final String filename = URLEncoder.encode(text.replace(" ", "_"), "UTF-8") + "-" + String.valueOf(wpm) + "-" + String.valueOf(wpmFarnsworth);
         final String mp3Filename = filename + ".mp3";
         final String filenameWav = filename + ".wav";
+        final String s3Mp3FilePath = bucketMp3Folder + "/" + mp3Filename;
 
         // check if this code was already encoded and is available in the bucket
         if (!s3Client.doesObjectExist(bucket, mp3Filename)) {
@@ -77,8 +80,9 @@ public class S3Utils {
             final File wavFile = MorseUtils.encodeMorseToWave(text, filenameWav, wpm, wpmFarnsworth);
             // convert the wave file to mp3 leveraging ffmpeg
             final File mp3File = Mp3Utils.convertWaveToMp3(wavFile, mp3Filename);
+
             // upload mp3 to S3 bucket
-            final PutObjectRequest s3Put = new PutObjectRequest(bucket, mp3Filename, mp3File).withCannedAcl(CannedAccessControlList.PublicRead);
+            final PutObjectRequest s3Put = new PutObjectRequest(bucket, s3Mp3FilePath, mp3File).withCannedAcl(CannedAccessControlList.PublicRead);
             s3Client.putObject(s3Put);
             try {
                 // delete files from local disk
@@ -90,9 +94,9 @@ public class S3Utils {
             }
         }
         else {
-            logger.info(String.format("%s already exists in S3 bucket thus encoding is skipped.", mp3Filename));
+            logger.info(String.format("%s already exists in S3 bucket thus encoding is skipped.", s3Mp3FilePath));
         }
         // return public url of mp3 in bucket
-        return s3Client.getResourceUrl(bucket, mp3Filename);
+        return s3Client.getResourceUrl(bucket, s3Mp3FilePath);
     }
 }
