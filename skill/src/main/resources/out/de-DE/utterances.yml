@@ -325,9 +325,9 @@ SayDeviceIntegrationDisabled:
 
 SayDeviceIntegrationEnabledOnExercise:
   Utterances:
-    - "${DeviceIntegrationEnabled} {YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${DeviceIntegrationEnabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
   Reprompts:
-    - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
 
 SayDeviceIntegrationEnabledOnEncode:
   Utterances:
@@ -337,9 +337,9 @@ SayDeviceIntegrationEnabledOnEncode:
 
 SayDeviceIntegrationDisabledOnExercise:
   Utterances:
-    - "${DeviceIntegrationDisabled} {YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${DeviceIntegrationDisabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
   Reprompts:
-    - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
 
 SayDeviceIntegrationDisabledOnEncode:
   Utterances:
@@ -366,11 +366,11 @@ SayWantAnExercise:
     - "${WantAnExercise}"
 
 SayGoodBye:
-  - "Die Bestmarke von <p>{highscorerSsml}</p> liegt bei <p>{highscore}</p> Punkten. ${GoodBye}"
+  - "Die Bestmarke von <p>{highscorerSsml}</p> liegt bei {highscore} Punkten. ${GoodBye}"
 
 SayGoodByeToUser:
-  - "Die Bestmarke von <p>{highscorerSsml}</p> liegt bei <p>{highscore}</p> Punkten.
-     Du hast {personalScore} Punkte. ${GoodBye}"
+  - "Die Bestmarke von <p>{highscorerSsml}</p> liegt bei {highscore} Punkten.
+     Du hast {userScore} Punkte. ${GoodBye}"
 
 SayGoodByeToHighscorer:
   - "${Awesome} {userNameSsml}, du hast die Bestmarke des Spiels erreicht. ${GoodBye}"

@@ -93,7 +93,7 @@ YourScoreIs: "[
   Current score is|
   Your score is|
   Your current score is|
-  Score is] {userScore}."
+  Score is] <p>{userScore}</p>"
 
 WantAnExercise: "[
   Are you ready for an exercise now|
@@ -319,9 +319,9 @@ SayDeviceIntegrationDisabled:
 
 SayDeviceIntegrationEnabledOnExercise:
   Utterances:
-    - "${DeviceIntegrationEnabled} {YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${DeviceIntegrationEnabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
   Reprompts:
-    - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
 
 SayDeviceIntegrationEnabledOnEncode:
   Utterances:
@@ -331,9 +331,9 @@ SayDeviceIntegrationEnabledOnEncode:
 
 SayDeviceIntegrationDisabledOnExercise:
   Utterances:
-    - "${DeviceIntegrationDisabled} {YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${DeviceIntegrationDisabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
   Reprompts:
-    - "{YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
 
 SayDeviceIntegrationDisabledOnEncode:
   Utterances:
@@ -364,7 +364,7 @@ SayGoodBye:
 
 SayGoodByeToUser:
   - "Highest score is <p>{highscore}</p> owned by <p>{highscorerSsml}</p>
-     Your current score is {personalScore} ${GoodBye}"
+     ${YourScoreIs} ${GoodBye}"
 
 SayGoodByeToHighscorer:
   - "${Awesome} {userNameSsml}, you got the highest score in the game. ${GoodBye}"

@@ -36,7 +36,7 @@ public class DeviceIntegrationDisabled extends AbstractHandler implements AlexaI
         }
         // remember having asked for new exercise
         morseSession.withIsAskedForNewExercise(true);
-        return AlexaOutput.ask("SayDeviceIntegrationEnabled")
+        return AlexaOutput.ask("SayDeviceIntegrationDisabled")
                 .putState(morseSession, morseUser)
                 .withReprompt(true)
                 .build();

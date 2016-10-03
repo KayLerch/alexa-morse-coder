@@ -37,6 +37,7 @@ public class DeviceIntegrationEnabled extends AbstractHandler implements AlexaIn
             // ensure thing shadow exists
             final AWSIotStateHandler iotHandler = new AWSIotStateHandler(sessionHandler.getSession());
             iotHandler.createThingIfNotExisting(AlexaScope.USER);
+            log.info("Device integration enabled for " + iotHandler.getThingName(AlexaScope.USER));
         }
         // remember having asked for new exercise
         morseSession.withIsAskedForNewExercise(true);
