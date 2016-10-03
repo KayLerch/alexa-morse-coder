@@ -71,7 +71,7 @@ public class S3Utils {
         final String filename = URLEncoder.encode(text.replace(" ", "_"), "UTF-8") + "-" + String.valueOf(wpm) + "-" + String.valueOf(wpmFarnsworth);
         final String mp3Filename = filename + ".mp3";
         final String filenameWav = filename + ".wav";
-        final String s3Mp3FilePath = bucketMp3Folder + "/" + mp3Filename;
+        final String s3Mp3FilePath = mp3Filename;
 
         // check if this code was already encoded and is available in the bucket
         if (!s3Client.doesObjectExist(bucket, mp3Filename)) {
