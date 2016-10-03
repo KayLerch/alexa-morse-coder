@@ -1,6 +1,5 @@
 package io.klerch.alexa.morse.skill.model;
 
-import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import org.junit.Assert;
 import org.junit.Before;
 

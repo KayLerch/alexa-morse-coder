@@ -1,6 +1,6 @@
 package io.klerch.alexa.morse.skill.model;
 
-import io.klerch.alexa.morse.skill.utils.SkillConfig;
+import io.klerch.alexa.morse.skill.SkillConfig;
 import io.klerch.alexa.state.model.AlexaScope;
 import io.klerch.alexa.state.model.AlexaStateIgnore;
 import io.klerch.alexa.state.model.AlexaStateModel;

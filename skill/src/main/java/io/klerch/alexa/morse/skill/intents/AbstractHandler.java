@@ -3,7 +3,6 @@ package io.klerch.alexa.morse.skill.intents;
 import com.amazon.speech.ui.StandardCard;
 import io.klerch.alexa.morse.skill.intents.exercise.ExerciseOnNew;
 import io.klerch.alexa.morse.skill.model.*;
-import io.klerch.alexa.morse.skill.utils.MorseCodeImage;
 import io.klerch.alexa.state.handler.AWSDynamoStateHandler;
 import io.klerch.alexa.state.handler.AWSIotStateHandler;
 import io.klerch.alexa.state.handler.AlexaStateHandler;
@@ -14,7 +13,6 @@ import io.klerch.alexa.tellask.schema.AlexaIntentHandler;
 import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -49,12 +47,7 @@ public class AbstractHandler implements AlexaIntentHandler {
      * @return a card to be added to a speechlet response
      */
     protected StandardCard getExerciseCard(final MorseExercise exercise, final Boolean codeOnly) {
-        String imgUri = null;
-        try {
-            imgUri = new MorseCodeImage().getImage(exercise.getLiteral().trim(), codeOnly);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        final String imgUri = codeOnly ? exercise.getCodeImgUrl() : exercise.getLiteralImgUrl();
         final StandardCard card = new StandardCard();
         if (imgUri != null) {
             com.amazon.speech.ui.Image img = new com.amazon.speech.ui.Image();
@@ -62,7 +55,7 @@ public class AbstractHandler implements AlexaIntentHandler {
             img.setLargeImageUrl(imgUri);
             card.setImage(img);
         }
-        card.setTitle("Morse Code: " + (codeOnly ? "" : exercise.getLiteral()));
+        card.setTitle("Morse-Code: " + (codeOnly ? "" : exercise.getLiteral()));
         card.setText(exercise.getPhonetic());
         return card;
     }

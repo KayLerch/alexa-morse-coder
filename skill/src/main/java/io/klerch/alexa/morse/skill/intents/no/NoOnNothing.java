@@ -15,7 +15,7 @@ public class NoOnNothing extends AbstractHandler implements AlexaIntentHandler {
     public boolean verify(final AlexaInput input) {
         super.verify(input);
         // with the lowest priority this handler should handle the request if all
-        // of the yes-intent-handlers did not verify the request
+        // of the no-intent-handlers did not verify the request
         return true;
     }
 

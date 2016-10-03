@@ -1,7 +1,6 @@
 package io.klerch.alexa.morse.skill.model;
 
-import io.klerch.alexa.morse.skill.utils.SkillConfig;
-import org.apache.commons.codec.language.DoubleMetaphone;
+import io.klerch.alexa.morse.skill.SkillConfig;
 import org.junit.Before;
 import org.junit.Test;
 

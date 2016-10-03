@@ -1,14 +1,7 @@
 package io.klerch.alexa.morse.skill.model;
 
-import io.klerch.alexa.morse.skill.utils.SkillConfig;
-import org.apache.commons.codec.language.Caverphone2;
-import org.apache.commons.codec.language.DoubleMetaphone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNull;

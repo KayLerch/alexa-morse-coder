@@ -1,9 +1,7 @@
-package io.klerch.alexa.morse.skill.utils;
+package io.klerch.alexa.morse.skill;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -113,18 +111,6 @@ public class SkillConfig {
 
     public static String getS3BucketUrl() {
         return properties.getProperty("S3BucketUrl");
-    }
-
-    public static String getS3BucketName() {
-        return properties.getProperty("S3BucketName");
-    }
-
-    public static String getS3BucketFolderImg() {
-        return properties.getProperty("S3BucketFolderImg");
-    }
-
-    public static String getS3BucketFolderImgCodes() {
-        return properties.getProperty("S3BucketFolderImgCodes");
     }
 
     public static Integer getWpmLevelMin() {

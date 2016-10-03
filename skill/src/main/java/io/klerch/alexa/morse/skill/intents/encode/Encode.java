@@ -4,7 +4,7 @@ import com.amazon.speech.ui.Card;
 import io.klerch.alexa.morse.skill.intents.AbstractHandler;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
 import io.klerch.alexa.morse.skill.model.MorseUser;
-import io.klerch.alexa.morse.skill.utils.SkillConfig;
+import io.klerch.alexa.morse.skill.SkillConfig;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;

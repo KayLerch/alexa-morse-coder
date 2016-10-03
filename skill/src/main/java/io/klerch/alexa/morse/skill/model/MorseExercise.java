@@ -1,6 +1,6 @@
 package io.klerch.alexa.morse.skill.model;
 
-import io.klerch.alexa.morse.skill.utils.SkillConfig;
+import io.klerch.alexa.morse.skill.SkillConfig;
 import io.klerch.alexa.state.model.AlexaStateModel;
 import io.klerch.alexa.state.model.AlexaStateSave;
 import io.klerch.alexa.state.utils.AlexaStateException;
@@ -33,6 +33,8 @@ public class MorseExercise extends AlexaStateModel {
     private String mp3Url;
     private long timestamp;
     private Integer lowestWpm;
+    private String codeImgUrl;
+    private String literalImgUrl;
 
     public MorseExercise() {
     }
@@ -115,6 +117,22 @@ public class MorseExercise extends AlexaStateModel {
     public MorseExercise withPhonetic(final String phonetic) {
         setPhonetic(phonetic);
         return this;
+    }
+
+    public String getCodeImgUrl() {
+        return codeImgUrl;
+    }
+
+    public void setCodeImgUrl(String codeImgUrl) {
+        this.codeImgUrl = codeImgUrl;
+    }
+
+    public String getLiteralImgUrl() {
+        return literalImgUrl;
+    }
+
+    public void setLiteralImgUrl(String literalImgUrl) {
+        this.literalImgUrl = literalImgUrl;
     }
 
     public boolean isAfter(final MorseExercise exercise) {

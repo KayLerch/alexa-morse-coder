@@ -1,6 +1,5 @@
 package io.klerch.alexa.morse.skill;
 
-import io.klerch.alexa.morse.skill.utils.SkillConfig;
 import io.klerch.alexa.tellask.model.wrapper.AlexaRequestStreamHandler;
 import io.klerch.alexa.tellask.schema.UtteranceReader;
 import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
