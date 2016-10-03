@@ -1,6 +1,5 @@
 package io.klerch.morse.utils;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class ImageUtils {
 
     private BufferedImage createImage(final String word, final boolean codeOnly) throws IOException {
         // remove all non-letter characters as there is no letter card for it
-        final char[] letters = word.toLowerCase().replaceAll("[^a-z_]", "").toCharArray();
+        final char[] letters = word.toLowerCase().replaceAll("[^a-zäöüß_]", "").toCharArray();
         /*
         * --------- cols  (x)
         * |---> width
