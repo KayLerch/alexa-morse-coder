@@ -31,7 +31,7 @@ public class ExerciseOnCorrect extends AbstractHandler implements AlexaIntentHan
             // exercise ongoing?
             if (exercise2.isPresent()) {
                 exercise = exercise2.get();
-                return input.hasSlotIsDoubleMetaphoneEqual(slotExerciseWord, exercise.getLiteral());
+                return input.hasSlotIsPhoneticallyEqual(slotExerciseWord, exercise.getLiteral());
             }
             return false;
         } catch (final AlexaStateException e) {

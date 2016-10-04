@@ -29,7 +29,7 @@ public class ExerciseOnWrong extends AbstractHandler implements AlexaIntentHandl
             // morseExercise ongoing?
             if (exercise.isPresent()) {
                 morseExercise = exercise.get();
-                return !input.hasSlotIsDoubleMetaphoneEqual(slotExerciseWord, morseExercise.getLiteral());
+                return !input.hasSlotIsPhoneticallyEqual(slotExerciseWord, morseExercise.getLiteral());
             }
             return false;
         } catch (final AlexaStateException e) {
