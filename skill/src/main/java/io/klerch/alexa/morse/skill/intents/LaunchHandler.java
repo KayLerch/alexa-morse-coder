@@ -14,10 +14,8 @@ import io.klerch.alexa.tellask.util.AlexaRequestHandlerException;
 public class LaunchHandler implements AlexaLaunchHandler {
     @Override
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
-        final String urlToHiMp3 = SkillConfig.getS3BucketUrl() + "hi-18-18.mp3";
-
         return AlexaOutput.ask("SayWelcome")
-                .putSlot(new AlexaOutputSlot("hi-mp3", urlToHiMp3).formatAs(AlexaOutputFormat.AUDIO))
+                .putSlot(new AlexaOutputSlot("hi-mp3", SkillConfig.getMp3HiFileUrl()).formatAs(AlexaOutputFormat.AUDIO))
                 .withReprompt(true)
                 .build();
     }

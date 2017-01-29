@@ -6,12 +6,11 @@ import io.klerch.alexa.tellask.util.resource.ResourceUtteranceReader;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class MorseSpeechletHandler extends AlexaRequestStreamHandler {
     @Override
     public Set<String> getSupportedApplicationIds() {
-        return Collections.singletonList(SkillConfig.getAlexaAppId()).stream().collect(Collectors.toSet());
+        return Collections.singleton(SkillConfig.getAlexaAppId());
     }
 
     @Override

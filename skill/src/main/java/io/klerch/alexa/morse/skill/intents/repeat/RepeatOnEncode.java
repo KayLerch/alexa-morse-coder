@@ -2,6 +2,7 @@ package io.klerch.alexa.morse.skill.intents.repeat;
 
 import io.klerch.alexa.morse.skill.intents.AbstractHandler;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
@@ -33,10 +34,19 @@ public class RepeatOnEncode extends AbstractHandler implements AlexaIntentHandle
     }
 
     @Override
-    public AlexaOutput handleRequest(final AlexaInput input) {
+    public AlexaOutput handleRequest(final AlexaInput input) throws AlexaStateException {
+        final MorseUser morseUser = getMorseUser();
+        String intentName = "SayEncoding";
+
+        // if device integration is enabled by user ...
+        if (morseUser.getDeviceIntegrationEnabled()) {
+            // publish state to thing shadow of user
+            sendIotHook(morseEncode, morseUser);
+            intentName = "SayLookAtLightbox";
+        }
         //remember having asked for another encode
         morseSession.withIsAskedForAnotherEncode(true);
-        return AlexaOutput.ask("SayEncoding")
+        return AlexaOutput.ask(intentName)
                 .putState(morseEncode.withNewTimestamp())
                 .putState(morseSession)
                 .withReprompt(true)

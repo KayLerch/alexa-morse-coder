@@ -126,11 +126,10 @@ NewSpeedIs: "Playback speed is set to {wpm} words per minute."
 
 KeepSpeedAt: "I better stick at {wpm} words per minute."
 
-DeviceIntegrationEnabled: "From now on, whenever this skill plays back a Morse code,
-  it propagates data to a device shadow whose name you can find in your Alexa app."
+DeviceIntegrationEnabled: "From now on, whenever I am asked to play back a Morse code
+  I will send out light signals to the lightbox."
 
-DeviceIntegtationDisabled: "From now on, no more data will be propagated to your device
-  shadow."
+DeviceIntegtationDisabled: "From now on, Morse codes will be returned as audio again."
 
 GoodBye: "[
   Have a nice day|
@@ -319,9 +318,9 @@ SayDeviceIntegrationDisabled:
 
 SayDeviceIntegrationEnabledOnExercise:
   Utterances:
-    - "${DeviceIntegrationEnabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${DeviceIntegrationEnabled} Say <p>repeat</p> if you want your last code to be returned on the lightbox."
   Reprompts:
-    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - " Say <p>repeat</p> if you want your last code to be returned on the lightbox"
 
 SayDeviceIntegrationEnabledOnEncode:
   Utterances:
@@ -340,6 +339,12 @@ SayDeviceIntegrationDisabledOnEncode:
     - "${DeviceIntegrationDisabled} Morse code of {exerciseLiteral} is {exerciseMp3} ${WantAnotherEncode}"
   Reprompts:
     - "${WantAnotherEncode}"
+
+SayLookAtLightbox:
+  Utterances:
+    - "Look at the lightbox."
+  Reprompts:
+    - "${WhatsTheAnswer}"
 
 SayExerciseAnswer:
   Utterances:

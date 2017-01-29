@@ -2,6 +2,7 @@ package io.klerch.alexa.morse.skill.intents.repeat;
 
 import io.klerch.alexa.morse.skill.intents.AbstractHandler;
 import io.klerch.alexa.morse.skill.model.MorseExercise;
+import io.klerch.alexa.morse.skill.model.MorseUser;
 import io.klerch.alexa.state.utils.AlexaStateException;
 import io.klerch.alexa.tellask.model.AlexaInput;
 import io.klerch.alexa.tellask.model.AlexaOutput;
@@ -33,8 +34,18 @@ public class RepeatOnExercise extends AbstractHandler implements AlexaIntentHand
     }
 
     @Override
-    public AlexaOutput handleRequest(final AlexaInput input) {
-        return AlexaOutput.ask("SayExercise")
+    public AlexaOutput handleRequest(final AlexaInput input) throws AlexaStateException {
+        final MorseUser morseUser = getMorseUser();
+        String intentName = "SayExercise";
+
+        // if device integration is enabled by user ...
+        if (morseUser.getDeviceIntegrationEnabled()) {
+            // publish state to thing shadow of user
+            sendIotHook(morseExercise, morseUser);
+            intentName = "SayLookAtLightbox";
+        }
+
+        return AlexaOutput.ask(intentName)
                 .putState(morseExercise.withNewTimestamp())
                 .withReprompt(true)
                 .withCard(getExerciseCard(morseExercise, true))

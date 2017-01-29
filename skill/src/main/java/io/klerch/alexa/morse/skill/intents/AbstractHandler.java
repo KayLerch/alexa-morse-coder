@@ -1,6 +1,7 @@
 package io.klerch.alexa.morse.skill.intents;
 
 import com.amazon.speech.ui.StandardCard;
+import io.klerch.alexa.morse.skill.SkillConfig;
 import io.klerch.alexa.morse.skill.intents.exercise.ExerciseOnNew;
 import io.klerch.alexa.morse.skill.model.*;
 import io.klerch.alexa.state.handler.AWSDynamoStateHandler;
@@ -29,14 +30,18 @@ public class AbstractHandler implements AlexaIntentHandler {
      * given exercise
      * @param exercise the exercise whose information should be send to a device shadow
      */
-    protected void sendIotHook(final MorseExercise exercise) {
-        AWSIotStateHandler iotHandler = new AWSIotStateHandler(sessionHandler.getSession());
-        try {
-            new MorseIoTHook(exercise).withHandler(iotHandler).saveState();
-            log.info(format("Sent exercise data to shadow of thing '%1$s'", iotHandler.getUserScopedThingName()));
-        } catch (final AlexaStateException e) {
-            // never ever let this feature crash the session
-            log.error(e);
+    protected void sendIotHook(final MorseExercise exercise, final MorseUser user) {
+        if (SkillConfig.shouldExposeIoTHook()) {
+            final AWSIotStateHandler iotHandler = new AWSIotStateHandler(sessionHandler.getSession());
+            try {
+                new MorseIoTHook(exercise, user).withHandler(iotHandler).saveState();
+                log.info(format("Sent exercise data to shadow of thing '%1$s'", iotHandler.getUserScopedThingName()));
+            } catch (final AlexaStateException e) {
+                // never ever let this feature crash the session
+                log.error(e);
+            }
+        } else {
+            log.debug("Skipping IoT-hook to comply with configuration setting of ExposeIoTHook.");
         }
     }
 

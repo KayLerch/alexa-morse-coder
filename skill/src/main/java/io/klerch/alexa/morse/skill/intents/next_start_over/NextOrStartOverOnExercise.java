@@ -47,12 +47,14 @@ public class NextOrStartOverOnExercise extends AbstractHandler implements AlexaI
             throw new AlexaRequestHandlerException("Could no create new exercise", e, input, null);
         }
 
+        String intentName = "SayExerciseAnswerWithNew";
         // if device integration is enabled by user ...
         if (morseUser.getDeviceIntegrationEnabled()) {
             // publish state to thing shadow of user
-            sendIotHook(exerciseNew);
+            sendIotHook(exercise, morseUser);
+            intentName = "SayLookAtLightbox";
         }
-        return AlexaOutput.ask("SayExerciseAnswerWithNew")
+        return AlexaOutput.ask(intentName)
                 .withCard(getExerciseCard(exerciseNew, true))
                 .putSlot("exerciseLiteral", exercise.getLiteral())
                 .putState(morseUser.withHandler(dynamoHandler), exerciseNew)

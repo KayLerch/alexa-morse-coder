@@ -36,6 +36,7 @@ public class ExerciseOnNew extends AbstractHandler implements AlexaIntentHandler
     public AlexaOutput handleRequest(final AlexaInput input) throws AlexaRequestHandlerException, AlexaStateException {
         final MorseUser morseUser = getMorseUser();
         try {
+            String intentName = "SayExercise";
             // create new exercise with random word
             final MorseExercise exercise = input.getSessionStateHandler()
                     .createModel(MorseExercise.class)
@@ -47,9 +48,10 @@ public class ExerciseOnNew extends AbstractHandler implements AlexaIntentHandler
             // if device integration is enabled by user ...
             if (morseUser.getDeviceIntegrationEnabled()) {
                 // publish state to thing shadow of user
-                sendIotHook(exercise);
+                sendIotHook(exercise, morseUser);
+                intentName = "SayLookAtLightbox";
             }
-            return AlexaOutput.ask("SayExercise")
+            return AlexaOutput.ask(intentName)
                     .putState(exercise)
                     .withReprompt(true)
                     .withCard(card)

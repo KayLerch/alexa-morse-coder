@@ -15,8 +15,6 @@ import java.util.Optional;
 
 @AlexaIntentListener(customIntents = "Introduction")
 public class Introduction extends AbstractHandler implements AlexaIntentHandler {
-    private static final Logger log = Logger.getLogger(Introduction.class);
-
     @Override
     public boolean verify(final AlexaInput input) {
         super.verify(input);

@@ -97,7 +97,7 @@ WantAnotherEncode: "
 YourScoreIs: "[
   Dein Punktestand ist|
   Deine aktuellen Punkte betragen|
-  Deine Punkte betragen] <p>{userScore}</p>."
+  Deine Punkte betragen] <p>{userScore}</p>"
 
 WantAnExercise: "[
   Möchtest du jetzt mit einer Übung starten|
@@ -122,7 +122,7 @@ ExerciseHelp: "Wenn ich dich nach dem Vorspielen nach einem Wort frage, sprich e
   da dieser Modus die Pausen zwischen den Tönen erhöht."
 
 BriefHelp: "Dieser Skill bringt dir Morse-Zeichen bei. Lass mich dir jeden beliebigen Vornamen in
-  Morse-Code ausgeben, indem du etwa Folgendes sagst <p>Übersetze Michael</p>. Oder lege direkt mit
+  Morse-Code ausgeben, indem du etwa Folgendes sagst <p>Übersetze Michael</p> Oder lege direkt mit
   einer Übung los mit dem Befehl <p>Starte Übung</p>"
 
 FarnsworthIsEnabled: "Farnsworth ist jetzt aktiviert mit {wpmSpaces} Wörtern pro Minute bezogen auf die Pausen zwischen den Tönen."
@@ -133,11 +133,9 @@ NewSpeedIs: "Wiedergabe-Geschwindigkeit ist nun auf {wpm} Wörter pro Minute ein
 
 KeepSpeedAt: "Ich bleibe lieber bei {wpm} Wörter pro Minute."
 
-DeviceIntegrationEnabled: "Von nun an werden übersetzte Morse-Codes an einen Übertragungskanal
-  gesendet, auf dem sich ein mobiles Endgerät abonnieren kann. Für weitere Details konsultiere bitte
-  den Autor dieses Skills."
+DeviceIntegrationEnabled: "Von nun an werde ich übersetzte Morse-Codes als Lichtsignale ausgeben."
 
-DeviceIntegtationDisabled: "Geräte-Integration ist nun wieder deaktiviert."
+DeviceIntegtationDisabled: "Von nun an werde ich übersetzte Morse-Codes wieder als Töne ausgeben."
 
 GoodBye: "[
   Tschüss|
@@ -325,15 +323,15 @@ SayDeviceIntegrationDisabled:
 
 SayDeviceIntegrationEnabledOnExercise:
   Utterances:
-    - "${DeviceIntegrationEnabled} ${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "${DeviceIntegrationEnabled} Sage <p>Wiederhole</p> um die letzte Übung als Lichtsignale zu erhalten."
   Reprompts:
-    - "${YourLastCode} {exerciseMp3} ${WhatsTheAnswer}"
+    - "Sage <p>Wiederhole</p> um die letzte Übung als Lichtsignale zu erhalten."
 
 SayDeviceIntegrationEnabledOnEncode:
   Utterances:
-    - "${DeviceIntegrationEnabled} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
+    - "${DeviceIntegrationEnabled} Sage <p>Wiederhole</p> um den Namen {exerciseLiteral} als Lichtsignal zu erhalten."
   Reprompts:
-    - "${WantAnotherEncode}"
+    - "Sage <p>Wiederhole</p> um den Namen {exerciseLiteral} als Lichtsignal zu erhalten."
 
 SayDeviceIntegrationDisabledOnExercise:
   Utterances:
@@ -346,6 +344,12 @@ SayDeviceIntegrationDisabledOnEncode:
     - "${DeviceIntegrationDisabled} Morse-Code für {exerciseLiteral} ist {exerciseMp3} ${WantAnotherEncode}"
   Reprompts:
     - "${WantAnotherEncode}"
+
+SayLookAtLightbox:
+  Utterances:
+    - "Schau auf die Lichtbox."
+  Reprompts:
+    - "${WhatsTheAnswer}"
 
 SayExerciseAnswer:
   Utterances:

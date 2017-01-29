@@ -34,6 +34,7 @@ public class Encode extends AbstractHandler implements AlexaIntentHandler {
         final String phrase = input.getSlotValue(slotEncodeWord);
         // validate the user input
         try {
+            String intentName = "SayEncoding";
             // use exercise for just encoding a single word
             final MorseExercise encoding = sessionHandler
                     .createModel(MorseExercise.class, "Encode")
@@ -42,11 +43,13 @@ public class Encode extends AbstractHandler implements AlexaIntentHandler {
             final Card imageCard = getExerciseCard(encoding, false);
             // remember having ask for another encoding
             morseSession.withIsAskedForAnotherEncode(true);
-            // if device integration, publish state to thing shadow of user
+            // if device integration is enabled by user ...
             if (morseUser.getDeviceIntegrationEnabled()) {
-                sendIotHook(encoding);
+                // publish state to thing shadow of user
+                sendIotHook(encoding, morseUser);
+                intentName = "SayLookAtLightbox";
             }
-            return AlexaOutput.ask("SayEncoding")
+            return AlexaOutput.ask(intentName)
                     .withCard(imageCard)
                     .withReprompt(true)
                     .putState(morseSession, morseUser.withHandler(sessionHandler), encoding)

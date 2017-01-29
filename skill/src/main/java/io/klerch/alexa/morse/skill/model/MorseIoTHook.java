@@ -9,15 +9,19 @@ public class MorseIoTHook extends AlexaStateModel {
     private String code;
     private String phonetic;
     private String literal;
+    private Integer wpm;
+    private Boolean farnsworthEnabled;
 
     public MorseIoTHook() {
 
     }
 
-    public MorseIoTHook(final MorseExercise exercise) {
+    public MorseIoTHook(final MorseExercise exercise, final MorseUser user) {
         this.code = exercise.getCode();
         this.phonetic = exercise.getPhonetic();
         this.literal = exercise.getLiteral();
+        this.wpm = user.getWpm();
+        this.farnsworthEnabled = user.getFarnsworthEnabled();
     }
 
     public String getCode() {
@@ -42,5 +46,21 @@ public class MorseIoTHook extends AlexaStateModel {
 
     public void setLiteral(String literal) {
         this.literal = literal;
+    }
+
+    public Integer getWpm() {
+        return wpm;
+    }
+
+    public void setWpm(Integer wpm) {
+        this.wpm = wpm;
+    }
+
+    public Boolean getFarnsworthEnabled() {
+        return farnsworthEnabled;
+    }
+
+    public void setFarnsworthEnabled(Boolean farnsworthEnabled) {
+        this.farnsworthEnabled = farnsworthEnabled;
     }
 }

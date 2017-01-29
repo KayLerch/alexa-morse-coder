@@ -113,6 +113,10 @@ public class SkillConfig {
         return properties.getProperty("S3BucketUrl");
     }
 
+    public static String getMp3HiFileUrl() {
+        return properties.getProperty("S3BucketUrl") + properties.getProperty("Mp3HiFilename");
+    }
+
     public static Integer getWpmLevelMin() {
         return Integer.valueOf(properties.getProperty("WpmLevelMin"));
     }
@@ -131,5 +135,9 @@ public class SkillConfig {
 
     public static Integer getFarnsworthWpmReduction() {
         return Integer.valueOf(properties.getProperty("FarnsworthWpmReduction"));
+    }
+
+    public static Boolean shouldExposeIoTHook() {
+        return Boolean.valueOf(properties.getProperty("ExposeIoTHook"));
     }
 }
